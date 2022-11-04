@@ -1,0 +1,5 @@
+@import "../../mixins/main-components-style";
+
+header {
+    @include main-components-style;
+}
