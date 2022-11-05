@@ -2,4 +2,6 @@
 
 main {
     @include main-components-style;
+
+    flex-grow: 1;
 }

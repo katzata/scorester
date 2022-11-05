@@ -2,4 +2,7 @@
 
 footer {
     @include main-components-style;
+    
+    height: 8vh;
+    // min-height: 66px;
 }
