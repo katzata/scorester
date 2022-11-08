@@ -3,9 +3,6 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import shouldBlock from './utils/blockDevTools';
-
-shouldBlock();
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
