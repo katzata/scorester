@@ -3,7 +3,6 @@
   "version": "2.0.0",
   "description": "A score keeping app",
   "keywords": ["score", "games", "utils"],
-  "homepage": "https://https://github.com/katzata/scorester",
   "license": "MIT",
   "author": {
     "name" : "Kamen Kashchiev",
