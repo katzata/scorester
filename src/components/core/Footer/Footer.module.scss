@@ -1,0 +1,31 @@
+@import "../../../mixins/main-components-style";
+
+footer {
+    @include main-components-style;
+    
+    height: 8vh;
+    min-height: 84px;
+}
+
+.startButton {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    border-radius: 2px;
+    
+    svg {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+
+        text {
+            font-family: 'Alumni Sans', sans-serif;
+            font-weight: 600;
+            font-size: 52px;
+            user-select: none;
+        }
+    }
+}

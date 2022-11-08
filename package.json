@@ -1,7 +1,16 @@
 {
   "name": "scorester",
   "version": "2.0.0",
-  "private": true,
+  "description": "A score keeping app",
+  "keywords": ["score", "games", "utils"],
+  "homepage": "https://https://github.com/katzata/scorester",
+  "license": "MIT",
+  "author": {
+    "name" : "Kamen Kashchiev",
+    "email" : "kashchievkamen@gmail.com",
+    "url" : "https://kashchiev.com/"
+  },
+  "repository": "github:katzata/scorester",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
@@ -13,8 +22,10 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "X": "node handleAppVersion.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "build-ver": "node handleAppVersion.js && react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "push-quick": "git add . && git commit -m \"Minor changes commit.\" && git push"

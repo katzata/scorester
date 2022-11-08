@@ -2,10 +2,10 @@
 	"name": "Scorester",
 	"short_name": "Scorester",
 	"description": "When you don't have a pen and paper, but want to play a game that involves score keeping.",
-	"categories": [
-		"games",
-		"utilities"
-	],
+	"display": "standalone",
+	"theme_color": "#000000",
+	"background_color": "#000000",
+	"categories": [ "games", "utilities" ],
 	"icons": [
 		{
 			"src": "./favicon/favicon512.png",
@@ -31,8 +31,5 @@
 			"src": "./favicon/favicon.svg",
 			"sizes": "any"
 		}
-	],
-	"theme_color": "#000000",
-	"background_color": "#000000",
-	"display": "standalone"
+	]
 }

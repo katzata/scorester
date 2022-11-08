@@ -1,0 +1,12 @@
+[
+    {
+        "type": "avatar",
+        "href": "../../src",
+        "title": "LogIn"
+    },
+    {
+        "type": "hiddenForm",
+        "subType": "logOrSignIn",
+        "title": "LogIn"
+    }
+]

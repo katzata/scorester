@@ -9,7 +9,9 @@
 }
 
 body {
+	height: 100vh;
+	margin: auto;
+	max-width: 640px;
 	background-color: black;
 	color: white;
-	height: 100vh;
 }
