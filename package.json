@@ -2,18 +2,24 @@
   "name": "scorester",
   "version": "2.0.0",
   "description": "A score keeping app",
-  "keywords": ["score", "games", "utils"],
+  "keywords": [
+    "score",
+    "games",
+    "utils"
+  ],
+  "proxy": "http://localhost:80",
   "license": "MIT",
   "author": {
-    "name" : "Kamen Kashchiev",
-    "email" : "kashchievkamen@gmail.com",
-    "url" : "https://kashchiev.com/"
+    "name": "Kamen Kashchiev",
+    "email": "kashchievkamen@gmail.com",
+    "url": "https://kashchiev.com"
   },
   "repository": "github:katzata/scorester",
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "crypto-js": "^4.1.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
@@ -22,9 +28,10 @@
   },
   "scripts": {
     "X": "node handleAppVersion.js",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "build-ver": "node handleAppVersion.js && react-scripts build",
+    "start": "env-cmd -e development react-scripts start",
+    "build": "env-cmd -e build react-scripts build",
+    "serve": "serve -l 5000 -s build",
+    "build-ver": "node handleAppVersion.js && env-cmd -e build react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "push-quick": "git add . && git commit -m \"Minor changes commit.\" && git push"
@@ -46,5 +53,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "env-cmd": "^10.1.0"
   }
 }

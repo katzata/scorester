@@ -1,18 +1,14 @@
-import styles from "./OptionsModal.module.scss";
+import styles from "./Modal.module.scss";
 
-export default function Modal({ isVisible, options, visibilityHandler }) {
-    // const [isVisible, setIsVisible] = useState(false);
+export default function Modal({ isVisible, children, visibilityHandler }) {
     const scale = !isVisible ? 0 : 1;
 
     const visibilityStyles = {
-        // transform: `translate(-50%, -50%) scale(${scale}, ${scale})`,
-        transitionDelay: !isVisible ? ".11s" : "0s",
+        transitionDelay: !isVisible ? ".1s" : "0s",
         zIndex: !isVisible ? -1 : 1
     };
 
-    return <div className={styles.modal} style={visibilityStyles} onTransitionEnd={(e) => {
-        console.log(e.target);
-    }}>
+    return <div className={styles.modal} style={visibilityStyles}>
         <div className={styles.modalInternal} style={{ transform: `scale(${scale}, ${scale})` }}>
             <button className={styles.closeButton} onClick={() => visibilityHandler(false)}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 50 50">
@@ -23,13 +19,7 @@ export default function Modal({ isVisible, options, visibilityHandler }) {
                 </svg>
             </button>
 
-            <h3>Options title</h3>
-
-            <form className={styles.optionsForm}>
-                {options && options.map(el => {
-                    return <p key={el}>el</p>
-                })}
-            </form>
+            {children}
         </div>
     </div>;
 };

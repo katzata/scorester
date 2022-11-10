@@ -1,0 +1,33 @@
+{
+    "title": "Game settings",
+    "content": [
+        {
+            "type": "input",
+            "subType": "number",
+            "attr": [
+                {"min": 1}
+            ],
+            "title": "Number of players"
+        },
+        {
+            "type": "checkbox",
+            "title": "Score can go below zero"
+        },
+        {
+            "type": "disabledCheck",
+            "subType": "number",
+            "attr": [
+                {"min": 1}
+            ],
+            "title": "Target score"
+        },
+        {
+            "type": "disabledCheck",
+            "subType": "number",
+            "attr": [
+                {"min": 10}
+            ],
+            "title": "Timed turns duration"
+        }
+    ]
+}

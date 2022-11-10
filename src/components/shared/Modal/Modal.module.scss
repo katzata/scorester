@@ -10,8 +10,9 @@
     
     .modalInternal {
         min-width: 200px;
-        position: relative;
+        padding: 20px;
         margin: auto;
+        position: relative;
         background-color: rebeccapurple;
         transform: scale(0, 0);
         transition-duration: .1s;
@@ -19,20 +20,11 @@
 
         .closeButton {
             position: absolute;
-            right: 8px;
-            top: 8px;
+            right: 12px;
+            top: 12px;
             width: 24px;
             height: auto;
             background-color: transparent;
-        }
-
-        >h3 {
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .optionsForm {
-            
         }
     }
 }

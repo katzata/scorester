@@ -1,0 +1,47 @@
+.setting {
+    width: 100%;
+    margin: 10px 0;
+    display: flex;
+    flex-wrap: wrap;
+    
+    >input[type="checkBox"] {
+        margin: 0 0% 0 auto;
+    }
+
+    >button {
+        margin: 0 auto;
+    }
+    
+    .loginForm {
+        display: flex;
+        flex-wrap: wrap;
+
+        >p {
+            width: 100%;
+        }
+
+        >input,
+        >button {
+            height: 18px;
+            background-color: transparent;
+            border-radius: 2px;
+            box-shadow: 0 0 2px 1px rgba(255, 255, 255, .5);
+        }
+
+        >input {
+            width: 48%;
+            margin: 2px auto;
+            text-align: center;
+            transition-duration: .1s;
+
+            &[name="rePassword"] {
+                width: 94%;
+            }
+        }
+
+        >button {
+            width: 98%;
+            margin: 6px auto;
+        }
+    }
+}

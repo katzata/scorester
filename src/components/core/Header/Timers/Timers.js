@@ -7,24 +7,24 @@ export default function Timers({ currentPlayers }) {
     // const [currentTimerIndex, setCurrentTimerIndex] = useState(0);
 
     const formatTimer = (time) => time < 10 ? `0${time}` : time;
-    const handleTimers = () => {
-        setMainTimer();
-        setTimers();
-    };
+    // const handleTimers = () => {
+    //     setMainTimer();
+    //     setTimers();
+    // };
 
-    const handleNumberOfTimers = (currentPlayers) => {
-        let players = [];
+    // const handleNumberOfTimers = (currentPlayers) => {
+    //     let players = [];
 
-        for (const player of currentPlayers) {
-            const playerExists = individualTimers.filter(el => el.name === player.name).length !== 0;
-            if (playerExists) players.push({ player: player.name, time: [0, 0, 0]});
-        };
-    };
+    //     for (const player of currentPlayers) {
+    //         const playerExists = individualTimers.filter(el => el.name === player.name).length !== 0;
+    //         if (playerExists) players.push({ player: player.name, time: [0, 0, 0]});
+    //     };
+    // };
 
     useEffect(() => {
         // console.log(individualTimers.length !== currentPlayers.lengt);
         // if (individualTimers.length !== currentPlayers.lengtj) handleNumberOfTimers(currentPlayers);
-    }, [currentPlayers, individualTimers.length])
+    }, [/* currentPlayers, individualTimers.length */]);
 
     return <section className={styles.timersSection}>
         <p className={styles.mainTimer}>{mainTimer.map(formatTimer).join(":")}</p>

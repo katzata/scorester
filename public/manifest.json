@@ -6,6 +6,7 @@
 	"theme_color": "#000000",
 	"background_color": "#000000",
 	"categories": [ "games", "utilities" ],
+	"start_url": ".",
 	"icons": [
 		{
 			"src": "./favicon/favicon512.png",
