@@ -2,19 +2,25 @@
 
 header {
     @include main-components-style;
+    position: relative;
 }
 
 .headerTitle {
+    position: absolute;
     margin: auto;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
     font-family: 'Pacifico', cursive;
-    font-size: 32px;
-    line-height: 32px;
-    font-weight: normal;
+    font-size: 30px;
+    line-height: 30px;
+    font-weight: 100;
 }
 
 .buttonsContainer {
     width: 110px;
     height: 62px;
+    margin-left: auto;
     display: block;
     
     .buttonWrapper {

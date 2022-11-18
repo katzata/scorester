@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./Header.module.scss";
 
 // import Timers from "./Timers/Timers";
+import {checkIfLogged} from "../../../services/userService";
 import Modal from "../../shared/Modal/Modal";
 import GameSettings from "./UserSettings/UserSettings";
 
@@ -11,7 +12,7 @@ export default function Header() {
     // const currentPlayers = [{ player: "p1", time: [0, 0, 0]}, { player: "p2", time: [0, 0, 0]}];
 
     useEffect(() => {
-        
+        checkIfLogged();
     }, [])
 
     return <header>
