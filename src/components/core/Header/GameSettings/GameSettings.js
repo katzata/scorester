@@ -8,36 +8,47 @@ import NumberInput from "../SettingFields/NumberInput/NumberInput";
 
 export default function GameSettings({ isLogged, handleLoggedState }) {
     const [availableSettings, setAvailableSettings] = useState(null);
+    const [currentValues, setCurrentValues] = useState({});
 
-    const handleValues = (settings) => {
-        const localData = getStogare("scUserDetails");
+    const handleValues = (settings, localData) => {
         if (localData && localData.gameSettings) {
-            for (const setting of settings) {
-                setting.value = localData.gameSettings[setting.id];
-            };
-        };
+            const values = {};
 
+            for (const { id } of settings) {
+                values[id] = localData.gameSettings[id];
+            };
+
+            setCurrentValues(values);
+        };
+        
         return settings;
     };
 
     useEffect(() => {
-        fetchHttp("settings/game.json").then(res => {
-            res.content = handleValues(res.content);
-            setAvailableSettings(res);
-        });
-        // console.log("x");
-    }, [isLogged]);
+        const localData = getStogare("scUserDetails");
+
+        if (!availableSettings) {
+            fetchHttp("settings/game.json").then(res => {
+                res.content = handleValues(res.content, localData);
+                setAvailableSettings(res);
+            });
+        };
+
+        if (isLogged) {
+            setCurrentValues(localData.gameSettings);
+        };
+    }, [isLogged, availableSettings]);
 
     return <div className={styles.gameSettings}>
         <h3>{availableSettings && availableSettings.title}</h3>
 
         <div className={styles.settingsSection}>
             {availableSettings && availableSettings.content.map((el) =>  {
-                const { type, title, id, value, min, disabled } = el;
+                const { type, title, id, min, disabled } = el;
                 const section = availableSettings.title.replace(" ", "_").toLocaleLowerCase();
                 const availableFields = {
-                    checkbox: <Checkbox title={title} id={id} section={section}  value={value} disabled={disabled} key={title} />,
-                    numberInput: <NumberInput title={title} id={id} section={section} min={min}  value={value} disabled={disabled} key={title} />
+                    checkbox: <Checkbox title={title} id={id} section={section} value={currentValues[id]} disabled={disabled} key={title} />,
+                    numberInput: <NumberInput title={title} id={id} section={section} min={min} value={currentValues[id]} disabled={disabled} key={title} />
                 };
 
                 return availableFields[type];

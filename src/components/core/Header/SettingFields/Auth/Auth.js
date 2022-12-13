@@ -2,10 +2,13 @@ import { useState } from "react";
 import styles from "./Auth.module.scss";
 
 import { register, login/* , logout, changeSetting  */} from "../../../../../services/userService";
+// import { getStogare } from "../../../../../services/storageService";
 
 function Auth({ title, callback }) {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const [username, setUsername] = useState("asd");
+    const [password, setPassword] = useState("asdasd");
+    // const [username, setUsername] = useState("");
+    // const [password, setPassword] = useState("");
     const [rePassword, setRePassword] = useState("");
     const [isRegistering, setIsRegistering] = useState(false);
     

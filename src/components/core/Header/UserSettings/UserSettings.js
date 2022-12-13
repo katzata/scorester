@@ -20,7 +20,7 @@ export default function UserSettings({ isLogged, handleLoggedState }) {
 
     const handleValues = (settings) => {
         const localData = getStogare("scUserDetails");
-
+        
         if (localData && localData.gameSettings) {
             for (const setting of settings) {
                 setting.value = localData.gameSettings[setting.id];
@@ -33,7 +33,8 @@ export default function UserSettings({ isLogged, handleLoggedState }) {
     useEffect(() => {
         fetchHttp("settings/user.json").then(res => {
             res.content = handleValues(res.content);
-            setAvailableSettings(res)
+
+            setAvailableSettings(res);
         });
     }, [isLogged]);
 

@@ -54,7 +54,7 @@ export const login = async ({username, password, callback}) => {
     body.append("username", username);
     body.append("password", password);
 
-    doFetch({ route: "/login", body }).then(res => {
+    return doFetch({ route: "/login", body }).then(res => {
         let loggedIn = false;
 
         if (res.id) {
@@ -66,6 +66,7 @@ export const login = async ({username, password, callback}) => {
         };
 
         callback(loggedIn);
+        return res;
     });
 };
 
