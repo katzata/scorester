@@ -9,11 +9,6 @@
             "type": "checkbox",
             "title": "Keep a record of your finished games.",
             "id":"keepRecord"
-        },
-        {
-            "type": "button",
-            "subType": "logOut",
-            "title": "LOGOUT"
         }
     ]
 }

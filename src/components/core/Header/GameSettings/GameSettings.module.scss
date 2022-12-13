@@ -1,34 +1,14 @@
 .gameSettings {
-    width: 90vw;
+    width: 100%;
     max-width: 320px;
 
     .settingsSection {
         width: 100%;
 
-        .setting {
+        >div {
             width: 100%;
-            display: flex;
-            flex-wrap: wrap;
-            
-            >input[type="checkBox"] {
-                margin: 0 0% 0 auto;
-            }
-            
-            .loginForm {
-                display: flex;
-                flex-wrap: wrap;
-
-                >p {
-                    width: 100%;
-                    // margin: 0 auto;
-                }
-
-                >input {
-                    width: 45%;
-                    margin: 2px auto;
-                    text-align: center;
-                }
-            }
+            margin-top: 10px;
+            gap: 5vw;
         }
     }
 }

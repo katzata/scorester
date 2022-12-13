@@ -1,0 +1,14 @@
+.numberInput {
+    display: flex;
+    // gap: 20px;
+
+    input {
+        padding-left: 2px;
+        margin-left: auto;
+        width: 8vw;
+        color: rgba(0, 0, 0, .9);
+        min-width: 45px;
+        max-width: 65px;
+        border-radius: 2px;
+    }
+}

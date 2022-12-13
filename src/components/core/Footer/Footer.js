@@ -1,6 +1,15 @@
 import styles from "./Footer.module.scss";
 
-export default function Footer() {
+import { useEffect } from "react";
+
+export default function Footer({ isLogged, handleLoggedState }) {
+    const textStyles = {
+        fill: isLogged ? "rgb(240, 240, 240)" : "rgb(0, 97, 0)"
+    }
+    useEffect(() => {
+
+    }, [isLogged]);
+
     return <footer>
         <button className={styles.startButton}>
             <svg>
@@ -19,7 +28,7 @@ export default function Footer() {
                 </filter>
                 
                 <rect x="0" y="0" width="100%" height="100%" fill="green"/>
-                <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" fill="rgb(0, 97, 0)">START</text>
+                <text x="50%" y="50%" textAnchor="middle" dominantBaseline="middle" style={textStyles}>START</text>
             </svg>
             {/* <span>START</span> */}
         </button>

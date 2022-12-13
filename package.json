@@ -7,7 +7,7 @@
     "games",
     "utils"
   ],
-  "proxy": "http://localhost:80",
+  "proxy": "https://192.168.0.185/:8080",
   "license": "MIT",
   "author": {
     "name": "Kamen Kashchiev",
