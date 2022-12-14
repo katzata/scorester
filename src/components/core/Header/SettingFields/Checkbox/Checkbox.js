@@ -1,24 +1,17 @@
-import { useEffect, useState } from "react";
 import styles from "./Checkbox.module.scss";
 import { changeSetting } from "../../../../../services/userService";
 
-function Checkbox({title, id, section, value = false, disabled}) {
-    const [checked, setChecked] = useState(value);
-
+function Checkbox({title, id, section, value, changeHandler, disabled}) {
     const loggedStyles = {
         color: `rgba(255, 255, 255, ${disabled ? ".5" : "1"})`
     };
 
     function handleChange(e) {
-        setChecked(!checked);
-        changeSetting(e);
-    };
+        const { id, checked } = e.target;
 
-    useEffect(() => {
-        if (value !== checked) {
-            setChecked(value);
-        };
-    }, [value]);
+        changeSetting(e.target);
+        changeHandler(id, checked);
+    };
 
     return <div className={styles.checkbox}>
         <p style={loggedStyles}>{title}</p>
@@ -29,7 +22,7 @@ function Checkbox({title, id, section, value = false, disabled}) {
             data-section={section}
             style={loggedStyles}
             disabled={disabled}
-            checked={checked}
+            checked={value}
             onChange={handleChange}
         />
     </div>;

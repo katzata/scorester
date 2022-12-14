@@ -1,23 +1,32 @@
-import { useEffect, useState } from "react";
+import { /* useEffect,  */useState } from "react";
 import styles from "./Header.module.scss";
 
-// import Timers from "./Timers/Timers";
+import Timers from "./Timers/Timers";
 import Modal from "../../shared/Modal/Modal";
 import UserSettings from "./UserSettings/UserSettings";
 import GameSettings from "./GameSettings/GameSettings";
 import Icons from "../../shared/Icons/Icons";
+import { getStogare } from "../../../services/storageService";
 
-export default function Header({ isLogged, handleLoggedState }) {
+export default function Header({ isLogged, handleLoggedState, setNumberOfPlayers }) {
+    const { gameSettings } = getStogare("scUserDetails");
+
     const [userSettingsVisible, setUserSettingsVisible] = useState(false);
     const [gameSettingsVisible, setGameSettingsVisible] = useState(false);
-    // const currentPlayers = [{ player: "p1", time: [0, 0, 0]}, { player: "p2", time: [0, 0, 0]}];
+    const [mainTimerVisible, setMainTimerVisible] = useState(gameSettings.mainTimer || false);
+    const [individualTimersVisible, setIndividualTimersVisible] = useState(gameSettings.individualTimers || false);
 
-    useEffect(() => {
-        // console.log("yay");
-    }, [isLogged])
+    const timerHandlers = {
+        mainTimer: setMainTimerVisible,
+        individualTimers: setIndividualTimersVisible
+    };
+
+    // useEffect(() => {
+    //     // console.log("yay");
+    // }, [isLogged])
 
     return <header>
-        {/* <Timers currentPlayers={currentPlayers}/> */}
+        {(mainTimerVisible || individualTimersVisible) && <Timers currentPlayers={"currentPlayers"} mainTimerVisible={mainTimerVisible} individualTimersVisible={individualTimersVisible}/>}
 
         <h1 className={styles.headerTitle}>Scorester</h1>
 
@@ -38,7 +47,7 @@ export default function Header({ isLogged, handleLoggedState }) {
                 </button>
 
                 <Modal isVisible={gameSettingsVisible} visibilityHandler={setGameSettingsVisible} options={"gameSettings"}>
-                    <GameSettings isLogged={isLogged} handleLoggedState={handleLoggedState} />
+                    <GameSettings isLogged={isLogged} handleLoggedState={handleLoggedState} setNumberOfPlayers={setNumberOfPlayers} timerHandlers={timerHandlers} />
                 </Modal>
             </div>
         </div>

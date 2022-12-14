@@ -53,7 +53,6 @@ export const getStogare = (storageKeys) => {
         
         return data;
     } else {
-        // const userDetails = convertJson(localStorage.getItem(storageKeys));
         return convertJson(localStorage.getItem(storageKeys));
     };
 };

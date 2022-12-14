@@ -1,14 +1,12 @@
-{
-    "title": "User settings",
-    "content": [
-        {
-            "type": "login",
-            "title": "LogIn"
-        },
-        {
-            "type": "checkbox",
-            "title": "Keep a record of your finished games.",
-            "id":"keepRecord"
-        }
-    ]
-}
+[
+    {
+        "type": "login",
+        "title": "LogIn"
+    },
+    {
+        "type": "checkbox",
+        "title": "Keep a record of your finished games.",
+        "id":"keepRecord",
+        "defaultValue": false
+    }
+]

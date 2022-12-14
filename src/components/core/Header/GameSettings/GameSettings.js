@@ -1,54 +1,63 @@
 import { useEffect, useState } from "react";
 import styles from "./GameSettings.module.scss";
-import { fetchHttp } from "../../../../services/fetchService";
-import { getStogare } from "../../../../services/storageService";
+import { fetchData } from "../../../../services/fetchService";
+import { getStogare, setStorage } from "../../../../services/storageService";
 
 import Checkbox from "../SettingFields/Checkbox/Checkbox";
 import NumberInput from "../SettingFields/NumberInput/NumberInput";
 
-export default function GameSettings({ isLogged, handleLoggedState }) {
+export default function GameSettings({ isLogged, setNumberOfPlayers, timerHandlers }) {
     const [availableSettings, setAvailableSettings] = useState(null);
-    const [currentValues, setCurrentValues] = useState({});
+    const [currentValues, setCurrentValues] = useState(null);
 
     const handleValues = (settings, localData) => {
+        const values = {};
+
         if (localData && localData.gameSettings) {
-            const values = {};
+            const { gameSettings } = localData;
 
-            for (const { id } of settings) {
-                values[id] = localData.gameSettings[id];
+            for (const { id, defaultValue } of settings) {
+                values[id] = gameSettings[id] ? gameSettings[id] : defaultValue;
             };
-
-            setCurrentValues(values);
         };
-        
-        return settings;
+
+        return values;
+    };
+
+    const changeValues = (setting, value) => {
+        const newValues = {...currentValues};
+        newValues[setting] = value;
+        setCurrentValues(newValues);
+
+        if (setting === "numberOfPlayers") {
+            setNumberOfPlayers(value);
+        };
+
+        if (setting === "mainTimer" || setting === "individualTimers") {
+            timerHandlers[setting](value);
+        };
     };
 
     useEffect(() => {
-        const localData = getStogare("scUserDetails");
+        fetchData("settings/game.json").then(res => {
+            const localData = getStogare("scUserDetails");
+            const values = handleValues(res, localData);
 
-        if (!availableSettings) {
-            fetchHttp("settings/game.json").then(res => {
-                res.content = handleValues(res.content, localData);
-                setAvailableSettings(res);
-            });
-        };
-
-        if (isLogged) {
-            setCurrentValues(localData.gameSettings);
-        };
-    }, [isLogged, availableSettings]);
+            setCurrentValues(values);
+            setAvailableSettings(res);
+        });
+    }, [isLogged]);
 
     return <div className={styles.gameSettings}>
-        <h3>{availableSettings && availableSettings.title}</h3>
+        <h3>Game settings</h3>
 
         <div className={styles.settingsSection}>
-            {availableSettings && availableSettings.content.map((el) =>  {
+            {availableSettings && availableSettings.map(el =>  {
                 const { type, title, id, min, disabled } = el;
-                const section = availableSettings.title.replace(" ", "_").toLocaleLowerCase();
+                const section = "game_settings";
                 const availableFields = {
-                    checkbox: <Checkbox title={title} id={id} section={section} value={currentValues[id]} disabled={disabled} key={title} />,
-                    numberInput: <NumberInput title={title} id={id} section={section} min={min} value={currentValues[id]} disabled={disabled} key={title} />
+                    checkbox: <Checkbox title={title} id={id} section={section} value={currentValues[id]} changeHandler={changeValues} disabled={disabled} key={title} />,
+                    numberInput: <NumberInput title={title} id={id} section={section} min={min} value={currentValues[id]} changeHandler={changeValues} disabled={disabled} key={title} />
                 };
 
                 return availableFields[type];

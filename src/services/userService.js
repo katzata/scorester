@@ -16,9 +16,9 @@ const fetching = [];
  * @property {String} obj.username The user's username.
  * @property {String} obj.password The user's password.
  * @property {String} obj.rePassword The user's rePassword.
- * @property {Function} obj.callback The callback function handling the isLogged state.
+ * @property {Function} obj.handleLoggedState The handleLoggedState function handling the isLogged state.
  */
-export const register = async ({username, password, rePassword, callback}) => {
+export const register = async ({username, password, rePassword, handleLoggedState}) => {
     const usernameCheck = checkInput({ type: "username", value: username });
     const passwordCheck = checkInput({ type: "password", value: password });
     const rePasswordCheck = checkInput({ type: "rePassword", value: rePassword });
@@ -31,7 +31,7 @@ export const register = async ({username, password, rePassword, callback}) => {
         
         doFetch({ route: "/register", body }).then(res => {
             // setStorage({ key: "scUserDetails", value: res });
-            callback();
+            handleLoggedState();
         });
     } else {
         // !!!ERROR!!!
@@ -49,7 +49,7 @@ export const register = async ({username, password, rePassword, callback}) => {
  * @property {String} obj.password The user's password.
  * @property {Function} obj.callback The callback function handling the isLogged state.
  */
-export const login = async ({username, password, callback}) => {
+export const login = async ({username, password, handleLoggedState}) => {
     const body = new URLSearchParams();
     body.append("username", username);
     body.append("password", password);
@@ -65,7 +65,7 @@ export const login = async ({username, password, callback}) => {
             console.warn(res.errors);
         };
 
-        callback(loggedIn);
+        handleLoggedState(loggedIn);
         return res;
     });
 };
@@ -75,11 +75,11 @@ export const login = async ({username, password, callback}) => {
  * Clears the id key from the userDetails object stored in localStorage.
  * @param {Function} callback The callback function handling the isLogged state.
  */
-export const logout = async (callback) => {
+export const logout = async (handleLoggedState) => {
     doFetch({ route: "/logout" }).then(res => {
         if (res) {
             clearStorage();
-            callback(false);
+            handleLoggedState(false);
         };
     });
 };
@@ -91,24 +91,24 @@ export const logout = async (callback) => {
  * !!! In case the connection fails it carries on updating the localStorage object !!!
  * @param {Event} e The triggered event object from which to extract the necessary keys.
  */
-export const changeSetting = (e) => {
-    const { type, id, dataset, checked } = e.target;
-    const storageData = getStogare("scUserDetails");
-    const isLogged = storageData && storageData.id;
+export const changeSetting = (setting) => {
+    const { type, id, dataset, checked, value } = setting;
+    const localData = getStogare("scUserDetails");
+    const isLogged = localData && localData.id;
 
-    if (type === "checkbox") setOption(dataset.section, id, checked);
+    setOption({section: dataset.section, id, checked, value});
 
-    function setOption(section, id, data) {
+    function setOption({section, id, checked, value}) {
         const route = `/${section.replace("_s", "S")}`;
-        const saveLocaly = () => {
-            const userDetails = getStogare("scUserDetails");
-            userDetails[route.slice(1)][id] = data;
+        const currentValue = type === "checkbox" ? checked : value;
 
-            setStorage({ key: "scUserDetails", value: userDetails });
+        const saveLocaly = () => {
+            localData[route.slice(1)][id] = currentValue;
+            setStorage({ key: "scUserDetails", value: localData });
         };
 
         if (isLogged && !fetching.includes(id)) {
-            const body = setRequestBody(Object.fromEntries([[id, data]]));
+            const body = setRequestBody(Object.fromEntries([[id, currentValue]]));
             fetching.push(id);
             
             doFetch({route, body}).then(res => {

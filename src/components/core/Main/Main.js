@@ -1,13 +1,16 @@
-import { useEffect/* , useState  */} from "react";
+import { useEffect/* , useState */ } from "react";
 import styles from "./Main.module.scss";
 
-export default function Main() {
+import ScoreColumn from "./ScoreColumn/ScoreColumn";
 
+export default function Main({ numberOfPlayers }) {
     useEffect(() => {
 
     }, []);
 
     return <main className={styles.main}>
-        <p>Main</p>
+        {[...Array(numberOfPlayers).fill(0)].map((_, idx) => {
+            return <ScoreColumn widthDivider={numberOfPlayers} key={`col${idx}`}/> 
+        })}
     </main>;
 };

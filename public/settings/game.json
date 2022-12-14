@@ -1,38 +1,41 @@
-{
-    "title": "Game settings",
-    "content": [
-        {
-            "title": "Number of players",
-            "type": "numberInput",
-            "id": "numberOfPlayers",
-            "min": 1
-        },
-        {
-            "title": "Game timer",
-            "type": "checkbox",
-            "id": "mainTimer"
-        },
-        {
-            "title": "Individual player timers",
-            "type": "checkbox",
-            "id": "individualTimers"
-        },
-        {
-            "title": "Timed turns duration",
-            "type": "numberInput",
-            "id": "turnDuration",
-            "min": 10
-        },
-        {
-            "title": "Score can go below zero",
-            "type": "checkbox",
-            "id": "scoreBelowZero"
-        },
-        {
-            "title": "Target score",
-            "type": "numberInput",
-            "id": "scoreTarget",
-            "min": 1
-        }
-    ]
-}
+[
+    {
+        "title": "Number of players",
+        "type": "numberInput",
+        "id": "numberOfPlayers",
+        "min": 1,
+        "defaultValue": 1
+    },
+    {
+        "title": "Game timer",
+        "type": "checkbox",
+        "id": "mainTimer",
+        "defaultValue": false
+    },
+    {
+        "title": "Individual player timers",
+        "type": "checkbox",
+        "id": "individualTimers",
+        "defaultValue": false
+    },
+    {
+        "title": "Timed turns duration",
+        "type": "numberInput",
+        "id": "turnDuration",
+        "min": 10,
+        "defaultValue": 0
+    },
+    {
+        "title": "Score can go below zero",
+        "type": "checkbox",
+        "id": "scoreBelowZero",
+        "defaultValue": false
+    },
+    {
+        "title": "Target score",
+        "type": "numberInput",
+        "id": "scoreTarget",
+        "min": 1,
+        "defaultValue": 0
+    }
+]

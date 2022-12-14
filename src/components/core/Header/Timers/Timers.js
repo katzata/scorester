@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./Timers.module.scss";
 
-export default function Timers({ currentPlayers }) {
+export default function Timers({ mainTimerVisible, individualTimersVisible }) {
     const [mainTimer, setMainTimer] = useState([0, 0, 0]);
     const [individualTimers, setTimers] = useState([{ player: "p1", time: [0, 0, 0]}]);
     // const [currentTimerIndex, setCurrentTimerIndex] = useState(0);
@@ -27,9 +27,9 @@ export default function Timers({ currentPlayers }) {
     }, [/* currentPlayers, individualTimers.length */]);
 
     return <section className={styles.timersSection}>
-        <p className={styles.mainTimer}>{mainTimer.map(formatTimer).join(":")}</p>
+        {mainTimerVisible && <p className={styles.mainTimer}>{mainTimer.map(formatTimer).join(":")}</p>}
 
-        <div className={styles.individualTimersContainer}>
+        { individualTimersVisible && <div className={styles.individualTimersContainer}>
             <div className={styles.timersRow}>
                 <div className={styles.iconContainer}>
                     <svg className={styles.timerIcon} width="1.2rem" height="1.2rem" xmlns="http://www.w3.org/2000/svg" viewBox="2 2 50 50">
@@ -50,6 +50,6 @@ export default function Timers({ currentPlayers }) {
                     })}
                 </div>
             </div>
-        </div>
+        </div>}
     </section>;
 };

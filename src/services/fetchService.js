@@ -1,4 +1,4 @@
-export const fetchHttp = (url, options = {}) => {
+export const fetchData = (url, options = {}) => {
     return fetch(url, options)
         .then(res => res.json())
         .catch(error => console.warn({type: "json", error}))

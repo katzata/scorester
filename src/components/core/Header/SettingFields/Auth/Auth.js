@@ -4,7 +4,7 @@ import styles from "./Auth.module.scss";
 import { register, login/* , logout, changeSetting  */} from "../../../../../services/userService";
 // import { getStogare } from "../../../../../services/storageService";
 
-function Auth({ title, callback }) {
+function Auth({ title, handleLoggedState }) {
     const [username, setUsername] = useState("asd");
     const [password, setPassword] = useState("asdasd");
     // const [username, setUsername] = useState("");
@@ -24,22 +24,14 @@ function Auth({ title, callback }) {
 
         const actions = { register, login };
         const currentAction = isRegistering ? "register" : "login";
-        // console.log(username, password, callback);
-        // const data = { username, password, callback: callback };
-        
-        // if (currentAction !== "login") {
-        //     data["rePassword"] = rePassword;
-        // };
 
-        actions[currentAction]({ username, password, rePassword, callback: callback });
-
-        // actions[currentAction](data);
+        actions[currentAction]({ username, password, rePassword, handleLoggedState: handleLoggedState });
     };
 
     const inputStyle = { width: isRegistering ? "94%" : "48%" };
     
     return <>
-        <form className={styles.loginForm} onSubmit={(e) => handleSubmit(e, callback)}>
+        <form className={styles.loginForm} onSubmit={(e) => handleSubmit(e, handleLoggedState)}>
             <p>{title}</p>
             
             <input type="text" name="username" placeholder="Username" style={inputStyle} value={username} onChange={(e) => setUsername(e.target.value)}/>
