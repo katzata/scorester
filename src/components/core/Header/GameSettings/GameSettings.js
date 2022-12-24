@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./GameSettings.module.scss";
 import { fetchData } from "../../../../services/fetchService";
-import { getStogare, setStorage } from "../../../../services/storageService";
+import { getStorage/* , setStorage */ } from "../../../../services/storageService";
 
 import Checkbox from "../SettingFields/Checkbox/Checkbox";
 import NumberInput from "../SettingFields/NumberInput/NumberInput";
@@ -39,8 +39,11 @@ export default function GameSettings({ isLogged, setNumberOfPlayers, timerHandle
     };
 
     useEffect(() => {
+        /**
+         * The settings are taken from a json file to simplify the addition of new options.
+         */
         fetchData("settings/game.json").then(res => {
-            const localData = getStogare("scUserDetails");
+            const localData = getStorage("scUserDetails");
             const values = handleValues(res, localData);
 
             setCurrentValues(values);

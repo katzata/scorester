@@ -1,5 +1,4 @@
 .modal {
-    position: fixed;
     left: 0;
     top: 0;
     width: 100%;
@@ -10,14 +9,10 @@
     transition-delay: 0s;
     
     .modalInternal {
-        min-width: 200px;
-        padding: 24px;
         margin: auto;
         position: relative;
-        background-color: rebeccapurple;
         transform: scale(0, 0);
         transition-duration: .1s;
-        border-radius: 5px;
 
         .closeButton {
             position: absolute;

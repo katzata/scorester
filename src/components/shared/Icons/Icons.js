@@ -1,6 +1,6 @@
 import styles from "./Icons.module.scss";
 
-export default function Icons({ current }) {
+export default function Icons({ current, size }) {
     const icons = {
         gameTimer: (
             <svg id="gameTimer" className={styles.timerIcon} width="1.2rem" height="1.2rem" xmlns="http://www.w3.org/2000/svg" viewBox="2 2 50 50">
@@ -46,6 +46,57 @@ export default function Icons({ current }) {
                 />
             </svg>
         ),
+        plus: (
+            <svg className={styles.plusIcon} xmlns="http://www.w3.org/2000/svg" width={ size ? size : "64px"} height={ size ? size : "64px"} viewBox="0,0,256,256">
+                <defs>
+                    <linearGradient x1="32" y1="5" x2="32" y2="59.259" gradientUnits="userSpaceOnUse" id="color-1p">
+                        <stop offset="0" stopColor="#5aff1a"></stop><stop offset="1" stopColor="#22ff71"></stop>
+                    </linearGradient><linearGradient x1="32" y1="9" x2="32" y2="55.024" gradientUnits="userSpaceOnUse" id="color-2p">
+                        <stop offset="0" stopColor="#b8ff6d"></stop><stop offset="1" stopColor="#abffbd"></stop>
+                    </linearGradient>
+                </defs>
+                <g fill="none" fillRule="nonzero" stroke="none" strokeWidth="1" strokeLinecap="butt" strokeLinejoin="miter" strokeMiterlimit="10" strokeDasharray="" strokeDashoffset="0" fontFamily="none" fontWeight="none" fontSize="none" textAnchor="none" style={{ mixBlendMode: "normal"}}>
+                    <g transform="scale(4,4)">
+                        <path d="M35,58h-6c-1.654,0 -3,-1.346 -3,-3v-17h-17c-1.654,0 -3,-1.346 -3,-3v-6c0,-1.654 1.346,-3 3,-3h17v-17c0,-1.654 1.346,-3 3,-3h6c1.654,0 3,1.346 3,3v17h17c1.654,0 3,1.346 3,3v6c0,1.654 -1.346,3 -3,3h-17v17c0,1.654 -1.346,3 -3,3zM9,28c-0.552,0 -1,0.448 -1,1v6c0,0.552 0.448,1 1,1h19v19c0,0.552 0.448,1 1,1h6c0.552,0 1,-0.448 1,-1v-19h19c0.552,0 1,-0.448 1,-1v-6c0,-0.552 -0.448,-1 -1,-1h-19v-19c0,-0.552 -0.448,-1 -1,-1h-6c-0.552,0 -1,0.448 -1,1v19z" fill="url(#color-1p)"></path><path d="M53,30h-19v-19c0,-0.552 -0.448,-1 -1,-1h-2c-0.552,0 -1,0.448 -1,1v19h-19c-0.552,0 -1,0.448 -1,1v2c0,0.552 0.448,1 1,1h19v19c0,0.552 0.448,1 1,1h2c0.552,0 1,-0.448 1,-1v-19h19c0.552,0 1,-0.448 1,-1v-2c0,-0.552 -0.448,-1 -1,-1z" fill="url(#color-2p)"></path>
+                    </g>
+                </g>
+            </svg>
+        ),
+        minus: (
+            <svg className={styles.minusIcon} xmlns="http://www.w3.org/2000/svg" width={ size ? size : "64px"} height={ size ? size : "64px"} viewBox="0,0,256,256">
+                <defs>
+                    <linearGradient x1="32" y1="24.5" x2="32" y2="39.054" gradientUnits="userSpaceOnUse" id="color-1m">
+                        <stop offset="0" stopColor="#ff1a1a"></stop><stop offset="1" stopColor="#ff6f22"></stop>
+                    </linearGradient>
+                    <linearGradient x1="32" y1="28" x2="32" y2="36.016" gradientUnits="userSpaceOnUse" id="color-2m">
+                        <stop offset="0" stopColor="#ff6d6d"></stop><stop offset="1" stopColor="#ffc1ab"></stop>
+                    </linearGradient>
+                </defs>
+                <g fill="none" fillRule="nonzero" stroke="none" strokeWidth="1" strokeLinecap="butt" strokeLinejoin="miter" strokeMiterlimit="10" strokeDasharray="" strokeDashoffset="0" fontFamily="none" fontWeight="none" fontSize="none" textAnchor="none" style={{ mixBlendMode: "normal"}}>
+                    <g transform="scale(4,4)">
+                        <path d="M58,38h-52c-1.654,0 -3,-1.346 -3,-3v-6c0,-1.654 1.346,-3 3,-3h52c1.654,0 3,1.346 3,3v6c0,1.654 -1.346,3 -3,3zM6,28c-0.552,0 -1,0.448 -1,1v6c0,0.552 0.448,1 1,1h52c0.552,0 1,-0.448 1,-1v-6c0,-0.552 -0.448,-1 -1,-1z" fill="url(#color-1m)"></path><path d="M57,33c0,0.552 -0.448,1 -1,1h-48c-0.552,0 -1,-0.448 -1,-1v-2c0,-0.552 0.448,-1 1,-1h48c0.552,0 1,0.448 1,1z" fill="url(#color-2m)"></path>
+                    </g>
+                </g>
+            </svg>
+        ),
+        check: (
+            <svg className={styles.checkIcon} xmlns="http://www.w3.org/2000/svg" width={ size ? size : "64px"} height={ size ? size : "64px"} viewBox="0,0,256,256">
+                <defs>
+                    <linearGradient x1="32" y1="12.664" x2="32" y2="52.422" gradientUnits="userSpaceOnUse" id="color-1c">
+                        <stop offset="0" stopColor="#1aff1c"></stop><stop offset="1" stopColor="#22ff8b"></stop>
+                    </linearGradient>
+                    <linearGradient x1="32.013" y1="16.83" x2="32.013" y2="47.526" gradientUnits="userSpaceOnUse" id="color-2c">
+                        <stop offset="0" stopColor="#8cff8a"></stop><stop offset="1" stopColor="#92ffbc"></stop>
+                    </linearGradient>
+                </defs>
+                <g fill="none" fillRule="nonzero" stroke="none" strokeWidth="1" strokeLinecap="butt" strokeLinejoin="miter" strokeMiterlimit="10" strokeDasharray="" strokeDashoffset="0" fontFamily="none" fontWeight="none" fontSize="none" textAnchor="none" style={{ mixBlendMode: "normal" }}>
+                    <g transform="scale(4,4)">
+                        <path d="M24.982,51c-1.273,0 -2.547,-0.475 -3.524,-1.429l-14.57,-14.207c-0.573,-0.558 -0.888,-1.303 -0.888,-2.096c0,-0.793 0.315,-1.538 0.889,-2.097l2.82,-2.75c1.166,-1.137 3.063,-1.137 4.228,0.001l10.259,10.003c0.395,0.385 1.058,0.38 1.446,-0.012l24.341,-24.526c1.147,-1.156 3.044,-1.186 4.228,-0.068l2.867,2.705c0.582,0.55 0.91,1.29 0.923,2.083c0.013,0.793 -0.291,1.542 -0.854,2.109l-28.582,28.798c-0.981,0.99 -2.282,1.486 -3.583,1.486zM11.822,29.564c-0.26,0 -0.52,0.097 -0.717,0.29l-2.82,2.75c-0.184,0.179 -0.285,0.414 -0.285,0.664c0,0.25 0.102,0.485 0.285,0.664l14.569,14.208c1.19,1.163 3.116,1.148 4.291,-0.034l28.581,-28.798c0.181,-0.182 0.277,-0.418 0.273,-0.668c-0.004,-0.25 -0.109,-0.485 -0.296,-0.661l-2.867,-2.705c-0.401,-0.381 -1.047,-0.369 -1.435,0.022l-24.34,24.527c-1.166,1.173 -3.079,1.189 -4.263,0.034l-10.258,-10.004c-0.197,-0.193 -0.457,-0.289 -0.718,-0.289z" fill="url(#color-1c)"></path>
+                        <path d="M24.977,46.609c-0.489,0 -0.98,-0.181 -1.368,-0.544l-13.291,-12.462l1.367,-1.459l13.292,12.461l27.316,-27.315l1.414,1.414l-27.316,27.315c-0.391,0.392 -0.902,0.59 -1.414,0.59z" fill="url(#color-2c)"></path>
+                    </g>
+                </g>
+            </svg>
+        )
     }
 
     if (current === "userTimer") {

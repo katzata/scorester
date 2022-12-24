@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styles from "./UserSettings.module.scss";
 import { fetchData } from "../../../../services/fetchService";
 import { logout } from "../../../../services/userService";
-import { getStogare } from "../../../../services/storageService";
+import { getStorage } from "../../../../services/storageService";
 
 import Icons from "../../../shared/Icons/Icons";
 import Auth from "../SettingFields/Auth/Auth";
@@ -35,7 +35,7 @@ export default function UserSettings({ isLogged, handleLoggedState }) {
     
     useEffect(() => {
         fetchData("settings/user.json").then(res => {
-            const localData = getStogare("scUserDetails");
+            const localData = getStorage("scUserDetails");
             const values = handleValues(res, localData);
 
             setCurrentValues(values);

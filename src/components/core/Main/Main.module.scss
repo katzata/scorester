@@ -3,6 +3,7 @@
 .main {
     @include main-components-style;
 
+    position: relative;
     flex-grow: 1;
     overflow-x: auto;
 

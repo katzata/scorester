@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import styles from "./Timers.module.scss";
 
-export default function Timers({ mainTimerVisible, individualTimersVisible }) {
+export default function Timers({ numberOfPlayers, mainTimerVisible, individualTimersVisible }) {
     const [mainTimer, setMainTimer] = useState([0, 0, 0]);
     const [individualTimers, setTimers] = useState([{ player: "p1", time: [0, 0, 0]}]);
     // const [currentTimerIndex, setCurrentTimerIndex] = useState(0);
@@ -12,14 +12,14 @@ export default function Timers({ mainTimerVisible, individualTimersVisible }) {
     //     setTimers();
     // };
 
-    // const handleNumberOfTimers = (currentPlayers) => {
-    //     let players = [];
+    const setIndividualTimers = (numberOfPlayers) => {
+        // let players = [...Array(numberOfPlayers).fill(0)].map((_, idx) => { player: "p1", time: [0, 0, 0]});
 
-    //     for (const player of currentPlayers) {
-    //         const playerExists = individualTimers.filter(el => el.name === player.name).length !== 0;
-    //         if (playerExists) players.push({ player: player.name, time: [0, 0, 0]});
-    //     };
-    // };
+        // for (const player of currentPlayers) {
+        //     const playerExists = individualTimers.filter(el => el.name === player.name).length !== 0;
+        //     if (playerExists) players.push({ player: player.name, time: [0, 0, 0]});
+        // };
+    };
 
     useEffect(() => {
         // console.log(individualTimers.length !== currentPlayers.lengt);
@@ -27,7 +27,7 @@ export default function Timers({ mainTimerVisible, individualTimersVisible }) {
     }, [/* currentPlayers, individualTimers.length */]);
 
     return <section className={styles.timersSection}>
-        {mainTimerVisible && <p className={styles.mainTimer}>{mainTimer.map(formatTimer).join(":")}</p>}
+        { mainTimerVisible && <p className={styles.mainTimer}>{mainTimer.map(formatTimer).join(":")}</p>  }
 
         { individualTimersVisible && <div className={styles.individualTimersContainer}>
             <div className={styles.timersRow}>

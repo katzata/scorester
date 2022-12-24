@@ -26,6 +26,18 @@
         "defaultValue": 0
     },
     {
+        "title": "Auto switch turns",
+        "type": "checkbox",
+        "id": "autoSwitchTurns",
+        "defaultValue": true
+    },
+    {
+        "title": "Allow negative values",
+        "type": "checkbox",
+        "id": "negativeValues",
+        "defaultValue": false
+    },
+    {
         "title": "Score can go below zero",
         "type": "checkbox",
         "id": "scoreBelowZero",
@@ -37,5 +49,11 @@
         "id": "scoreTarget",
         "min": 1,
         "defaultValue": 0
+    },
+    {
+        "title": "Editable score fields",
+        "type": "checkbox",
+        "id": "editableFields",
+        "defaultValue": false
     }
 ]

@@ -1,26 +1,35 @@
 import { convertJson } from "../utils/utils";
-
 /**
  * Initialise the local storage object.
- * @param { Object } presentData Either an object or an array of objects that contain a single key value pair (named key and value).
+ * If user data is already present it's value types get compared with the expected value types.
+ * If the present data value types conform to the expected template are left intact.
+ * @param {Object} presentData Either an object or an array of objects that contain a single key value pair (named key and value).
+ * @returns Either the default or the checked user data object.
  */
-export const initStorage = (presentData) => {
+export const initStorage = () => {
+    const presentData = getStorage("scUserDetails");
     const defaultData = {
         username: "",
         userSettings: { "keepRecord": false },
         gameSettings: {
-            "numberOfPlayers": 1,
+            "numberOfPlayers": "1",
+            "negativeValues": false,
             "scoreBelowZero": false,
             "scoreTarget": 0,
             "mainTimer": false,
             "turnDuration": 0,
-            "individualTimers": false
+            "autoSwitchTurns": false,
+            "individualTimers": false,
+            "editableFields": false
         }
     };
     const presentDataOk = presentData ? compareStorageData(presentData, defaultData) : false;
-    
+
     if (!presentDataOk) {
         setStorage({ scUserDetails: defaultData });
+        return defaultData;
+    } else {
+        return presentData;
     };
 };
 
@@ -43,7 +52,7 @@ export const setStorage = (storageData) => {
  * @param {Object || Array} storageKeys Either a string or an array of strings that represent localstorage keys.
  * @returns the value associated with the sepcific key (if it exists).
  */
-export const getStogare = (storageKeys) => {
+export const getStorage = (storageKeys) => {
     if (storageKeys instanceof Array) {
         const data = [];
 
@@ -70,26 +79,28 @@ export const clearStorage = () => {
 };
 
 const compareStorageData = (presentData, defaultData) => {
-    const localKeys = Object.keys(presentData);
-    defaultData = Object.entries(defaultData);
     let localStorageOk = true;
+    const localKeys = Object.keys(presentData);
+    const notOk = () => localStorageOk = false;
+    
+    defaultData = Object.entries(defaultData);
 
     if (localKeys.length === defaultData.length || (localKeys.length === defaultData.length + 1 && localKeys.includes("id"))) {
         for (const [key, value] of defaultData) {
             if (!presentData[key] || typeof presentData[key] !== typeof value) {
-                localStorageOk = false;
+                notOk();
                 break;
             };
-
+            
             for (const [subKey, subValue] of Object.entries(value)) {
                 if (typeof presentData[key][subKey] !== typeof subValue) {
-                    localStorageOk = false;
+                    notOk();
                     break;
                 };
             };
         };
     } else {
-        localStorageOk = false;
+        notOk();
     };
 
     return localStorageOk;

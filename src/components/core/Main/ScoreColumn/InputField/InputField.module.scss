@@ -1,0 +1,38 @@
+.scoreField {
+    position: relative;
+    width: 100%;
+    height: 22px;
+    margin: 9px 0;
+
+    >input {
+        width: 96%;
+        height: 100%;
+        margin: 0 2%;
+        background-color: transparent;
+        color: rgba(255, 255, 255, .88);
+        font-size: 13px;
+        text-align: right;
+        font-style: italic;
+        transition-duration: .2s;
+        box-shadow: inset 0 0 0px 0px #121212;
+        user-select: none;
+
+        &[disabled='false']:active {
+            background-color: #222222;
+            box-shadow: inset 0 0 3px 1px #121212;
+        }
+    }
+
+    >button {
+        position: absolute;
+        right: 0px;
+        top: 0;
+        width: 44px;
+        height: 24px;
+        background-color: transparent;
+
+        >svg {
+            pointer-events: none;
+        }
+    }
+}

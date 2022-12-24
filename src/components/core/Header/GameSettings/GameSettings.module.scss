@@ -1,6 +1,10 @@
 .gameSettings {
     width: 100%;
+    min-width: 200px;
     max-width: 320px;
+    padding: 24px;
+    background-color: rebeccapurple;
+    border-radius: 5px;
 
     .settingsSection {
         width: 100%;

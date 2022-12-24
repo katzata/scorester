@@ -6,25 +6,52 @@ import { checkIfLogged } from './services/userService';
 import Header from './components/core/Header/Header';
 import Main from './components/core/Main/Main';
 import Footer from './components/core/Footer/Footer';
-import { getStogare } from './services/storageService';
+import { initStorage } from './services/storageService';
+
+const localData = initStorage();
 
 function App() {
 	const [isLogged, setIsLogged] = useState(false);
 	const [numberOfPlayers, setNumberOfPlayers] = useState(1);
-	
-	useEffect(() => {
-		const { gameSettings } = getStogare("scUserDetails");
+	const [playerNames, setPlayerNames] = useState([]);
+	const [playerTurnIndex/* , setPlayerTurnIndex */] = useState(0);
 
-		if (gameSettings && gameSettings.numberOfPlayers) {
-			setNumberOfPlayers(Number(gameSettings.numberOfPlayers));
+	const handlePlayerData = () => {
+		if (localData && localData.gameSettings) {
+			const { username, gameSettings } = localData;
+			const playersCalc = Number(gameSettings.numberOfPlayers);
+			const names = [...Array(playersCalc).keys()].map(el => `Player ${el + 1}`);
+
+			if (username) {
+				names[0] = username;
+			};
+
+			setNumberOfPlayers(playersCalc);
+			setPlayerNames(names);
+		};
+	};
+
+	useEffect(() => {
+		if (!isLogged) {
+			checkIfLogged().then(res => {
+				if (res) {
+					setIsLogged(res);
+					handlePlayerData();
+				};
+			});
 		};
 
-		checkIfLogged().then(res => setIsLogged(res));
+		handlePlayerData();
 	}, [isLogged]);
 
 	return <>
-		<Header isLogged={isLogged} handleLoggedState={setIsLogged} setNumberOfPlayers={setNumberOfPlayers}/>
-		<Main numberOfPlayers={numberOfPlayers} />
+		<Header
+			isLogged={isLogged}
+			handleLoggedState={setIsLogged}
+			numberOfPlayers={numberOfPlayers}
+			setNumberOfPlayers={setNumberOfPlayers}
+		/>
+		<Main numberOfPlayers={numberOfPlayers} playerNames={playerNames} playerTurnIndex={playerTurnIndex}/>
 		<Footer isLogged={isLogged} />
 	</>;
 };

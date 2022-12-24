@@ -1,11 +1,12 @@
 import styles from "./Modal.module.scss";
 
-export default function Modal({ isVisible, children, visibilityHandler }) {
+export default function Modal({ isVisible, position, children, visibilityHandler }) {
     const scale = !isVisible ? 0 : 1;
 
     const visibilityStyles = {
+        position: isVisible ? position : "absolute",
         transitionDelay: !isVisible ? ".1s" : "0s",
-        zIndex: !isVisible ? -1 : 1
+        zIndex: !isVisible ? -1 : 10
     };
 
     return <div className={styles.modal} style={visibilityStyles}>

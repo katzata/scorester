@@ -1,6 +1,55 @@
 .scoreColumn {
     height: 100%;
-    min-width: 28%;
+    min-width: 22%;
     overflow-y: auto;
     box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, .5);
+
+    .columnInternal {
+        position: relative;
+        height: 100%;
+        display: grid;
+        grid-template-rows: auto 1fr auto;
+
+        .columnHeader,
+        .columnFooter {
+            width: 100%;
+            min-height: 50px;
+            padding: 5px 9px;
+            display: flex;
+            
+            .playerNameButton {
+                font-family: "Alumni Sans", sans-serif;
+                font-size: 17px;
+                line-height: 17px;
+                color: white;
+                background-color: transparent;
+            }
+        }
+
+        .columnHeader {
+            border-bottom: 1px solid rgba(255, 255, 255, .4);
+
+            >button {
+                display: inline;
+                margin: auto;
+                font-size: 18px;
+                line-height: 18px;
+            }
+        }
+        
+        .columnBody {
+            overflow-y: auto;
+        }
+        
+        .columnFooter {
+            border-top: 1px solid rgba(255, 255, 255, .4);
+            
+            >span {
+                margin: auto 0 auto auto;
+                font-size: 18px;
+                line-height: 18px;
+                text-align: right;
+            }
+        }
+    }
 }

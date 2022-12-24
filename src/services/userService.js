@@ -1,4 +1,4 @@
-import { setStorage, getStogare, clearStorage, initStorage } from "./storageService";
+import { setStorage, getStorage, clearStorage } from "./storageService";
 import { setRequestBody } from "../utils/utils";
 
 /**
@@ -93,7 +93,7 @@ export const logout = async (handleLoggedState) => {
  */
 export const changeSetting = (setting) => {
     const { type, id, dataset, checked, value } = setting;
-    const localData = getStogare("scUserDetails");
+    const localData = getStorage("scUserDetails");
     const isLogged = localData && localData.id;
 
     setOption({section: dataset.section, id, checked, value});
@@ -132,8 +132,7 @@ export const changeSetting = (setting) => {
  * @returns A boolean based on the fetched results.
  */
 export const checkIfLogged = async () => {
-    const userData = getStogare("scUserDetails") || {};
-    // let storageOk = false;
+    const userData = getStorage("scUserDetails") || {};
 
     if (userData.id) {
         const body = new URLSearchParams();
@@ -144,12 +143,10 @@ export const checkIfLogged = async () => {
 				setStorage({ key: "scUserDetails", value: res });
                 return true;
 			} else {
-                initStorage(userData);
                 return false;
 			};
         });
     } else {
-        initStorage(userData);
         return false;
     };
 };
@@ -174,8 +171,8 @@ async function doFetch({ route, body }) {
 
     return fetch(`${process.env.REACT_APP_REST + route}`, options)
         .then(res => {
+            // console.log("status", res.status);
             if (res.status >= 400 && res.status < 500) {
-                // console.log("status", res.status);
                 return res.json();
             } else {
                 return res.json();
@@ -183,7 +180,7 @@ async function doFetch({ route, body }) {
         })
         .catch(error => {
             // !!!ERROR!!!
-            console.warn("not json", error)
+            console.warn("not json!!!", error.message);
             return false
         })
         .then(res => {
