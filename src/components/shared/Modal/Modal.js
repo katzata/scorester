@@ -11,7 +11,9 @@ export default function Modal({ isVisible, position, children, visibilityHandler
 
     return <div className={styles.modal} style={visibilityStyles}>
         <div className={styles.modalInternal} style={{ transform: `scale(${scale}, ${scale})` }}>
-            <button className={styles.closeButton} onClick={() => visibilityHandler(false)}>
+            <button className={styles.closeButton} onClick={() => {
+                visibilityHandler(false)
+            }}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 50 50">
                     <path fill="white" stroke="white" d="M28.228,23.986L47.092,5.122c1.172-1.171,1.172-3.071,0-4.242c-1.172-1.172-3.07-1.172-4.242,0L23.986,19.744L5.121,0.88
                         c-1.172-1.172-3.07-1.172-4.242,0c-1.172,1.171-1.172,3.071,0,4.242l18.865,18.864L0.879,42.85c-1.172,1.171-1.172,3.071,0,4.242

@@ -26,7 +26,7 @@ function NumberInput({ title, id, section, value, min, changeHandler, disabled})
             min={Number(min)}
             placeholder={min ? min : 0}
             data-section={section}
-            value={value}
+            value={value || ""}
             onChange={handleInput}
         />
     </div>;

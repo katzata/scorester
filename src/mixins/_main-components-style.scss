@@ -1,11 +1,9 @@
 @mixin main-components-style {
     width: 100%;
-    // padding: 2px 6px;
     display: flex;
     color: white;
     font-family: 'Alumni Sans', sans-serif;
     box-shadow: inset 0 0 2px 0px rgba(255, 255, 255, .5);
 };
 
-//font-family: 'Alumni Sans', sans-serif;
-//font-family: 'Alumni Sans Pinstripe', sans-serif;
+$additional-height: 1.4312977099236641vh;

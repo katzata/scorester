@@ -1,8 +1,11 @@
+@use "../../../../mixins/main-components-style" as main-styles;
+
 .scoreColumn {
     height: 100%;
     min-width: 22%;
     overflow-y: auto;
-    box-shadow: inset 0 0 2px 1px rgba(255, 255, 255, .5);
+    box-shadow: inset 0 0 2px 0px rgba(255, 255, 255, .5);
+    border: 1px solid rgba(255, 255, 255, .1);
 
     .columnInternal {
         position: relative;
@@ -13,16 +16,12 @@
         .columnHeader,
         .columnFooter {
             width: 100%;
-            min-height: 50px;
-            padding: 5px 9px;
+            height: calc(36px + (main-styles.$additional-height / 2));
+            padding: 0 9px;
             display: flex;
             
-            .playerNameButton {
-                font-family: "Alumni Sans", sans-serif;
-                font-size: 17px;
-                line-height: 17px;
-                color: white;
-                background-color: transparent;
+            >div {
+                margin: auto 0;
             }
         }
 

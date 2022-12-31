@@ -5,7 +5,7 @@ import useClickAndHold from "../../../../../hooks/useClickAndHold";
 import Icons from "../../../../shared/Icons/Icons";
 import styles from "./InputField.module.scss";
 
-export default function InputField({ type, value, editToggle, setValueHandler }) {
+export default function InputField({ isPlaying, type, value, editToggle, setValueHandler }) {
     const [currentValue, setCurrentValue] = useState(value);
     const [isEditing, setIsEditing] = useState(false);
     const [holdTrigger, setIsHolding] = useClickAndHold();
@@ -23,10 +23,27 @@ export default function InputField({ type, value, editToggle, setValueHandler })
         zIndex: isEditing ? "0" : "-1"
     };
 
+    const handleHold = (holdState) => {
+        console.log(holdState);
+
+        if (isPlaying) {
+            setIsHolding(holdState);
+
+            if (!holdState && isEditing) {
+                console.log(isEditing);
+                inputRef.current.focus();
+                inputRef.current.select();
+            } else {
+                inputRef.current.blur();
+                inputRef.current.clear();
+            };
+        };
+    };
+
     const handleConfirm = () => {
         setValueHandler(currentValue);
         setIsEditing(false);
-        triggerEdit(false);
+        editToggle(false);
     };
 
     const triggerEdit = useCallback((state) => {
@@ -35,26 +52,23 @@ export default function InputField({ type, value, editToggle, setValueHandler })
 
     useEffect(() => {
         if (holdTrigger) {
+            // console.log("x");
             setIsEditing(true);
             triggerEdit(true);
         };
     }, [holdTrigger, triggerEdit]);
 
     return <div className={styles.scoreField}
-        onMouseDown={() => setIsHolding(true)}
-        onMouseUp={() => setIsHolding(false)}
-        onTouchStart={() => setIsHolding(true)}
-        onTouchEnd={() => {
-            inputRef.current.focus();
-            inputRef.current.select();
-            setIsHolding(false);
-        }}
+        onMouseDown={() => handleHold(true)}
+        onMouseUp={() => handleHold(false)}
+        onTouchStart={() => handleHold(true)}
+        onTouchEnd={() => handleHold(false)}
     >
         <input 
             ref={inputRef}
-            type={type || "number"}
+            type={type}
             style={inputStyles}
-            value={currentValue || value || ""}
+            value={currentValue}
             onChange={(e) => setCurrentValue(e.target.value)}
             disabled={!isEditing}
         />

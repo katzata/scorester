@@ -22,7 +22,7 @@ function Checkbox({title, id, section, value, changeHandler, disabled}) {
             data-section={section}
             style={loggedStyles}
             disabled={disabled}
-            checked={value}
+            checked={value || false}
             onChange={handleChange}
         />
     </div>;

@@ -6,36 +6,49 @@ import Modal from "../../shared/Modal/Modal";
 import UserSettings from "./UserSettings/UserSettings";
 import GameSettings from "./GameSettings/GameSettings";
 import Icons from "../../shared/Icons/Icons";
-import { getStorage } from "../../../services/storageService";
+// import { getStorage } from "../../../services/storageService";
 
-export default function Header({ isLogged, numberOfPlayers, handleLoggedState, setNumberOfPlayers }) {
+export default function Header({
+    isLogged,
+    isPlaying,
+    gamePaused,
+    playerTurnIndex,
+    numberOfPlayers,
+    handleLoggedState,
+    setNumberOfPlayers,
+    mainTimerVisible,
+    mainTimerToggle,
+    individualTimersVisible,
+    individualTimersToggle
+    }) {
     const [userSettingsVisible, setUserSettingsVisible] = useState(false);
     const [gameSettingsVisible, setGameSettingsVisible] = useState(false);
-    const [mainTimerVisible, setMainTimerVisible] = useState(false);
-    const [individualTimersVisible, setIndividualTimersVisible] = useState(false);
 
-    const timerHandlers = {
-        mainTimer: setMainTimerVisible,
-        individualTimers: setIndividualTimersVisible
+    const timerToggles = {
+        mainTimer: mainTimerToggle,
+        individualTimers: individualTimersToggle
     };
 
     useEffect(() => {
-        const localData = getStorage("scUserDetails");
-        
-        if (localData) {
-            const { mainTimer, individualTimers} = localData.gameSettings;
 
-            setMainTimerVisible(mainTimer);
-            setIndividualTimersVisible(individualTimers);
-        }
-    }, [isLogged]);
+    }, []);
 
     return <header>
-        <Timers numberOfPlayers={numberOfPlayers} mainTimerVisible={mainTimerVisible} individualTimersVisible={individualTimersVisible}/>
+        <div className={styles.timersWrapper}>
+            {(mainTimerVisible || individualTimersVisible) && <Timers
+                isPlaying={isPlaying}
+                gamePaused={gamePaused}
+                playerTurnIndex={playerTurnIndex}
+                numberOfPlayers={numberOfPlayers}
+                mainTimerVisible={mainTimerVisible}
+                individualTimersVisible={individualTimersVisible}
+            />}
+        </div>
 
         <h1 className={styles.headerTitle}>
-            <svg width="144" height="62" viewBox="0 0 144 62">
-                <text x="48%" y="58%" width="100%" fill="white" dominantBaseline="middle" textAnchor="middle">Scorester</text>
+            <svg width="146" height="62" viewBox="0 0 146 62">
+                <use href="#headerSvgText" stroke="rgb(180, 0, 0)" strokeWidth="3"></use>
+                <text id="headerSvgText" x="48%" y="58%" fill="white" dominantBaseline="middle" textAnchor="middle">Scorester</text>
             </svg>
         </h1>
 
@@ -56,7 +69,7 @@ export default function Header({ isLogged, numberOfPlayers, handleLoggedState, s
                 </button>
 
                 <Modal isVisible={gameSettingsVisible} position="fixed" visibilityHandler={setGameSettingsVisible} options={"gameSettings"}>
-                    <GameSettings isLogged={isLogged} handleLoggedState={handleLoggedState} setNumberOfPlayers={setNumberOfPlayers} timerHandlers={timerHandlers} />
+                    <GameSettings isLogged={isLogged} handleLoggedState={handleLoggedState} setNumberOfPlayers={setNumberOfPlayers} timerToggles={timerToggles} />
                 </Modal>
             </div>
         </div>

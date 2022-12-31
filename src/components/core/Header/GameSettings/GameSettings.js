@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import styles from "./GameSettings.module.scss";
 import { fetchData } from "../../../../services/fetchService";
-import { getStorage/* , setStorage */ } from "../../../../services/storageService";
+import { getStorage, setStorage } from "../../../../services/storageService";
 
 import Checkbox from "../SettingFields/Checkbox/Checkbox";
 import NumberInput from "../SettingFields/NumberInput/NumberInput";
 
-export default function GameSettings({ isLogged, setNumberOfPlayers, timerHandlers }) {
+export default function GameSettings({ isLogged, setNumberOfPlayers, timerToggles }) {
     const [availableSettings, setAvailableSettings] = useState(null);
     const [currentValues, setCurrentValues] = useState(null);
 
@@ -25,16 +25,21 @@ export default function GameSettings({ isLogged, setNumberOfPlayers, timerHandle
     };
 
     const changeValues = (setting, value) => {
-        const newValues = {...currentValues};
+        const localData = getStorage("scUserDetails");
+        const newValues = {...localData.gameSettings};
+        
+        console.log(newValues);
         newValues[setting] = value;
+        localData.gameSettings = newValues;
+        
+        setStorage({ key: "scUserDetails", value: localData });
         setCurrentValues(newValues);
-
         if (setting === "numberOfPlayers") {
             setNumberOfPlayers(value);
         };
 
         if (setting === "mainTimer" || setting === "individualTimers") {
-            timerHandlers[setting](value);
+            timerToggles[setting](value);
         };
     };
 
@@ -45,7 +50,7 @@ export default function GameSettings({ isLogged, setNumberOfPlayers, timerHandle
         fetchData("settings/game.json").then(res => {
             const localData = getStorage("scUserDetails");
             const values = handleValues(res, localData);
-
+            // console.log(values, res);
             setCurrentValues(values);
             setAvailableSettings(res);
         });

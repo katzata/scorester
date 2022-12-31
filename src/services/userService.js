@@ -31,6 +31,7 @@ export const register = async ({username, password, rePassword, handleLoggedStat
         
         doFetch({ route: "/register", body }).then(res => {
             // setStorage({ key: "scUserDetails", value: res });
+            
             handleLoggedState();
         });
     } else {
@@ -49,7 +50,7 @@ export const register = async ({username, password, rePassword, handleLoggedStat
  * @property {String} obj.password The user's password.
  * @property {Function} obj.callback The callback function handling the isLogged state.
  */
-export const login = async ({username, password, handleLoggedState}) => {
+export const login = async ({ username, password, handleLoggedState }) => {
     const body = new URLSearchParams();
     body.append("username", username);
     body.append("password", password);
@@ -66,7 +67,7 @@ export const login = async ({username, password, handleLoggedState}) => {
         };
 
         handleLoggedState(loggedIn);
-        return res;
+        // return res;
     });
 };
 

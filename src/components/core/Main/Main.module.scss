@@ -1,25 +1,15 @@
-@import "../../../mixins/main-components-style";
+@use "../../../mixins/main-components-style" as styles-mixin;
 
 .main {
-    @include main-components-style;
+    @include styles-mixin.main-components-style;
 
     position: relative;
     flex-grow: 1;
-    overflow-x: auto;
 
-    &::-webkit-scrollbar {
-        width: 12px;
-        height: 12px;
-    }
-
-    &::-webkit-scrollbar-track {
-        box-shadow: 0 0 2px 1px rgba(255, 255, 255, 0.3);
-        background-color: transparent;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        border: 3px solid rgba(0, 0, 0, .8);
-        background-color: rgba(255, 255, 255, .5);
-        border-radius: 6px;
+    .scoreColumnsContainer {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        overflow-x: auto;
     }
 }

@@ -1,29 +1,60 @@
-@import "../../../mixins/main-components-style";
+@use "../../../mixins/main-components-style" as styles-mixin;
 
 footer {
-    @include main-components-style;
+    @include styles-mixin.main-components-style;
     
-    height: 86px;
-}
-
-.startButton {
-    position: relative;
+    height: calc(72px + styles-mixin.$additional-height);
     width: 100%;
-    height: 100%;
-    background-color: transparent;
-    border-radius: 2px;
-    
-    svg {
+    position: relative;
+
+    .startButton,
+    .pauseButton {
+        height: 100%;
+        border-radius: 3px;
+        transition-duration: .1s;
+        box-shadow: inset 0 0 3px 0px rgba(0, 0, 0, 1);
+        transform: scale(1, 1);
+
+        .buttonBg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            transition-duration: .4s;
+            z-index: -1;
+        }
+    }
+
+    .startButton:active,
+    .pauseButton:active {
+        box-shadow: inset 0 0 3px 0px rgba(0, 0, 0, .6);
+    }
+
+    .pauseButton {
         position: absolute;
-        left: 0;
+        right: 0;
         top: 0;
+        width: 0%;
+        background-color: #FFD000;
+    }
+
+    svg {
         width: 100%;
         height: 100%;
+        display: block;
+        object-fit: contain;
+
+        use {
+            transition-duration: .1s;
+        }
 
         text {
-            font-family: 'Alumni Sans', sans-serif;
-            font-weight: 600;
-            font-size: 52px;
+            font-family: "Pacifico", cursive;
+            font-size: 30px;
+            font-weight: 100;
+            letter-spacing: normal;
+            transition-duration: .4s;
             user-select: none;
         }
     }
