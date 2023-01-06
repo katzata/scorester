@@ -26,3 +26,47 @@ export function setRequestBody(data) {
 
     return body;
 };
+
+// const currentlyFetching = [];
+
+/**
+ * Do a fetch request.
+ * @param {Object} obj An object containing the query options to execute the fetch.
+ * @param {String} obj.route A string containing the path for url.
+ * @param {URLSearchParams || null} obj.body (OPTIONAL) An object containing a user query which will be sent to the server.
+ * @returns The properly formated server response (json), or false(boolean) in case of an error.
+ */
+export async function doFetch({ route, body }) {
+    const options = {
+        credentials: "include",
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+        }
+    };
+
+    if (body) options["body"] = body;
+
+    return fetch(`${process.env.REACT_APP_REST + route}`, options)
+        .then(res => {
+            // console.log("status", res.status);
+            if (res.status >= 400 && res.status < 500) {
+                return res.json();
+            } else {
+                return res.json();
+            };
+        })
+        .catch(error => {
+            // !!!ERROR!!!
+            console.warn("not json!!!", error.message);
+            return false
+        })
+        .then(res => {
+            return res;
+        })
+        .catch(error => {
+            // !!!ERROR!!!
+            console.warn(error)
+            return false
+        });
+};

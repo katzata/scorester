@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./ScoreColumn.module.scss";
-import { getStorage, setStorage } from "../../../../services/storageService";
+// import { getStorage, setStorage } from "../../../../services/storageService";
 
 import InputField from "./InputField/InputField";
 
@@ -77,7 +77,7 @@ export default function ScoreColumn({
     };
 
     useEffect(() => {
-        // console.log(player);
+        // console.log(isPlaying);
     }, []);
 
     return <section className={styles.scoreColumn} style={columnStyles} onClick={() => inputModalVisibilityHandler(true)}>

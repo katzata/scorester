@@ -2,12 +2,16 @@ import { useEffect, useState } from "react";
 import styles from "./Timers.module.scss";
 
 import SvgTimer from "../../../shared/SvgTimer/SvgTimer";
-import { getStorage, setStorage } from "../../../../services/storageService";
+import { getStorage, saveToStorage } from "../../../../services/storageService";
 
 export default function Timers({ isPlaying, gamePaused, playerTurnIndex, numberOfPlayers, mainTimerVisible, individualTimersVisible }) {
-    const [mainTimer, setMainTimer] = useState([0, 0, 0]);
-    const [individualTimers, setIndividualTimers] = useState([...Array(numberOfPlayers).fill([0, 0, 0])]);
+    const gameData = getStorage("scGameDetails") || {};
+    const [mainTimer, setMainTimer] = useState(gameData.mainTimer || [0, 0, 0]);
+    const [individualTimers, setIndividualTimers] = useState(gameData.individualTimers || [...Array(numberOfPlayers).fill([0, 0, 0])]);
 
+    /**
+     * Handle all available timers (main and individual), and save them in the local storage object.
+     */
     const handleTimers = () => {
         if (mainTimerVisible && !gamePaused) {
             handleMainTimer();
@@ -16,15 +20,21 @@ export default function Timers({ isPlaying, gamePaused, playerTurnIndex, numberO
         if (individualTimersVisible && !gamePaused) {
             handleIndividualTimers();
         };
-
-        handleSaveToStorage();
+        // console.log({ mainTimer, individualTimers }, localStorage);
+        saveToStorage("scGameDetails", { mainTimer, individualTimers });
     };
     
+    /**
+     * Increases the main timer and sets the mainTimer hook.
+     */
     const handleMainTimer = () => {
         const newTimer = handleTimerIncrease(mainTimer);
         setMainTimer(newTimer);
     };
 
+    /**
+     * Increases a specific individual timer based on the playerTurnIndex and sets the individualTimers hook.
+     */
     const handleIndividualTimers = () => {
         const newIndividualTime = handleTimerIncrease(individualTimers[playerTurnIndex]);
         const newTimers = [...individualTimers];
@@ -33,6 +43,11 @@ export default function Timers({ isPlaying, gamePaused, playerTurnIndex, numberO
         setIndividualTimers(newTimers);
     };
 
+    /**
+     * Increase the specified timer each second.
+     * @param {Array.<number>} timer An array of three numbers.
+     * @returns An updated timer array;
+     */
     const handleTimerIncrease = (timer) => {
         if (timer[2] + 1 < 60) {
             timer[2]++;
@@ -51,14 +66,9 @@ export default function Timers({ isPlaying, gamePaused, playerTurnIndex, numberO
         return [...timer];
     };
 
-    const handleSaveToStorage = () => {
-        const gameData = getStorage("scGameDetails");
-        gameData.mainTimer = mainTimer;
-        gameData.individualTimers = individualTimers;
-
-        setStorage({ key: "scGameDetails", value: gameData});
-    };
-
+    /**
+     * Reset all the available timers.
+     */
     const resetTimers = () => {
         setMainTimer([0, 0, 0]);
 
@@ -68,13 +78,6 @@ export default function Timers({ isPlaying, gamePaused, playerTurnIndex, numberO
     };
 
     useEffect(() => {
-        const gameData = getStorage("scGameDetails");
-
-        if (gameData) {
-            setIndividualTimers(gameData.individualTimers);
-            // console.log(gameData.individualTimers);
-        };
-
         if (isPlaying && (mainTimerVisible || individualTimersVisible)) {
             let holdCheckInterval = setInterval(handleTimers, 1000);
             return () => clearInterval(holdCheckInterval);
@@ -103,7 +106,7 @@ export default function Timers({ isPlaying, gamePaused, playerTurnIndex, numberO
                         digits={timer}
                         width="70"
                         height="100%"
-                        style={{ transform: `translateX(-${offset}%)` }}
+                        style={{ transform: `translateY(${offset}%)` }}
                         key={`individual${idx}`}
                     />
                 })}

@@ -13,6 +13,7 @@ footer {
         border-radius: 3px;
         transition-duration: .1s;
         box-shadow: inset 0 0 3px 0px rgba(0, 0, 0, 1);
+        overflow: hidden;
         transform: scale(1, 1);
 
         .buttonBg {
@@ -26,9 +27,9 @@ footer {
         }
     }
 
-    .startButton:active,
-    .pauseButton:active {
-        box-shadow: inset 0 0 3px 0px rgba(0, 0, 0, .6);
+    .startButton:active > svg,
+    .pauseButton:active > svg {
+        box-shadow: inset 0 0 4px 1px rgba(0, 0, 0, .8);
     }
 
     .pauseButton {
@@ -36,14 +37,16 @@ footer {
         right: 0;
         top: 0;
         width: 0%;
-        background-color: #FFD000;
     }
-
+    
     svg {
+        background-color: #FFD000;
         width: 100%;
         height: 100%;
         display: block;
         object-fit: contain;
+        box-shadow: inset 0 0 3px 0px rgba(0, 0, 0, 1);
+        transition-duration: .3s;
 
         use {
             transition-duration: .1s;
@@ -54,7 +57,7 @@ footer {
             font-size: 30px;
             font-weight: 100;
             letter-spacing: normal;
-            transition-duration: .4s;
+            transition-duration: .3s;
             user-select: none;
         }
     }

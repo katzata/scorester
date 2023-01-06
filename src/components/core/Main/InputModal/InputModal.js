@@ -3,7 +3,7 @@ import styles from "./InputModal.module.scss";
 
 import Modal from "../../../shared/Modal/Modal";
 import Icons from "../../../shared/Icons/Icons";
-import { getStorage, setStorage } from "../../../../services/storageService";
+import { getStorage/* , setStorage */ } from "../../../../services/storageService";
 
 export default function InputModal({ isVisible, visibilityHandler, player, addPlayerScores, zIndex, playerTurnIndex, playerTurnIndexHandler }) {
     const [inputValue, setInputValue] = useState(0);
@@ -15,10 +15,10 @@ export default function InputModal({ isVisible, visibilityHandler, player, addPl
      * Calls the playerTurnIndexHandler in order to change the playerTurnIndex.
      */
     const handleScoreInput = () => {
-        const gameDetails = getStorage("scGameDetails");
+        // const gameDetails = getStorage("scGameDetails");
 
-        gameDetails.scores[playerTurnIndex].scores.push(Number(inputValue) || 0);
-        setStorage({ key: "scGameDetails", value: gameDetails});
+        // gameDetails.scores[playerTurnIndex].scores.push(Number(inputValue) || 0);
+        // setStorage({ key: "scGameDetails", value: gameDetails});
         addPlayerScores(inputValue);
     };
 

@@ -1,26 +1,6 @@
 import { convertJson } from "../utils/utils";
 
 /**
- * Initialise the scUserDetails local storage object.
- * If user data is already present it's value types get compared with the expected value types.
- * If the present data value types conform to the expected template are left intact.
- * @param {Object} presentData Either an object or an array of objects that contain a single key value pair (named key and value).
- * @returns Either the default or the checked user data object.
- */
-export const initUserDetails = () => {
-    const presentData = getStorage("scUserDetails");
-    const userDetails = handleUserDetails(presentData);
-
-    if (presentData !== userDetails) {
-        console.log(presentData, userDetails);
-        setStorage({ key: "scUserDetails", value: userDetails });
-        return userDetails;
-    } else {
-        return presentData;
-    };
-};
-
-/**
  * Sets key value pair/s in local storage.
  * @param {Object || Array} storageData Either an object or an array of objects that contain a single key value pair (named key and value).
  */
@@ -66,61 +46,59 @@ export const clearStorage = () => {
 };
 
 /**
- * A function that takes in a the present user data, then makes a validity check in order to return the proper values.
- * @param {Object} presentData The currently present user details object from local storage.
- * @returns Either the present data object if it passes the validity check, or the default user data object.
- */
-const handleUserDetails = (presentData) => {
-    const defaultData = {
-        username: "",
-        userSettings: { "keepRecord": false },
-        gameSettings: {
-            "numberOfPlayers": 1,
-            "mainTimer": false,
-            "individualTimers": false,
-            "turnDuration": 0,
-            "autoSwitchTurns": false,
-            "negativeValues": false,
-            "scoreBelowZero": false,
-            "scoreTarget": 0,
-            "editableFields": false
-        }
-    };
+	 * Update the local storage data object (scUserDetails/scGameDetails).
+	 * @param {String} key The key respresenting the necessary details object within the local storage.
+	 * @param {Object} data The key value pairs represent the data that will be changed in the local storage object.
+     * If the value is a nested value (will be an array) an index and value keys should be provided in order to change the proper element.
+     * E.G. { dataKey: { index: 0, value: "x" }}
+	 */
+export const saveToStorage = (key, data) => {
+    const localData = getStorage(key) || {};
 
-    return presentData && compareStorageData(presentData, defaultData) ? presentData : defaultData;
-};
-
-/**
- * Compares the present user details obejct found in localStorage against the default user object.
- * Compares the key names and their respective value types.
- * @param {Object} presentData The present user details.
- * @param {Object} defaultData The default user details object.
- * @returns A boolean reoresenting the validitty of the present data object.
- */
-const compareStorageData = (presentData, defaultData) => {
-    let localStorageOk = true;
-    const localKeys = presentData ? Object.keys(presentData) : {};
-    const notOk = () => localStorageOk = false;
-    
-    defaultData = Object.entries(defaultData);
-
-    if (localKeys.length === defaultData.length || (localKeys.length === defaultData.length + 1 && localKeys.includes("id"))) {
-        for (const [key, value] of defaultData) {
-            if ((!presentData[key] && key !== "username") || typeof presentData[key] !== typeof value) {
-                notOk();
-                break;
-            };
-            
-            for (const [subKey, subValue] of Object.entries(value)) {
-                if (typeof presentData[key][subKey] !== typeof subValue) {
-                    notOk();
-                    break;
-                };
+    for (const [dataKey, state] of Object.entries(data)) {
+        if (localData[dataKey] !== undefined) {
+            if (state.index) {
+                localData[dataKey][state.index] = state.value;
+            } else {
+                localData[dataKey] = state;
             };
         };
-    } else {
-        notOk();
     };
 
-    return localStorageOk;
+    setStorage({ key: key, value: localData });
 };
+
+// /**
+//  * Compares the present user details obejct found in localStorage against the default user object.
+//  * Compares the key names and their respective value types.
+//  * @param {Object} presentData The present user details.
+//  * @param {Object} defaultData The default user details object.
+//  * @returns A boolean reoresenting the validitty of the present data object.
+//  */
+// const compareStorageData = (presentData, defaultData) => {
+//     let localStorageOk = true;
+//     const localKeys = presentData ? Object.keys(presentData) : {};
+//     const notOk = () => localStorageOk = false;
+    
+//     defaultData = Object.entries(defaultData);
+
+//     if (localKeys.length === defaultData.length || (localKeys.length === defaultData.length + 1 && localKeys.includes("id"))) {
+//         for (const [key, value] of defaultData) {
+//             if ((!presentData[key] && key !== "username") || typeof presentData[key] !== typeof value) {
+//                 notOk();
+//                 break;
+//             };
+            
+//             for (const [subKey, subValue] of Object.entries(value)) {
+//                 if (typeof presentData[key][subKey] !== typeof subValue) {
+//                     notOk();
+//                     break;
+//                 };
+//             };
+//         };
+//     } else {
+//         notOk();
+//     };
+
+//     return localStorageOk;
+// };

@@ -1,5 +1,5 @@
 import { setStorage, getStorage, clearStorage } from "./storageService";
-import { setRequestBody } from "../utils/utils";
+import { doFetch, setRequestBody } from "../utils/utils";
 
 /**
  * A list of all the option queries that are being currently fetched.
@@ -13,10 +13,10 @@ const fetching = [];
  * Checks if the username exists in the database and if not, it creates a new database entry.
  * Sets the localStorage user data.
  * @param {Object} obj An object containing the user input and a callback function.
- * @property {String} obj.username The user's username.
- * @property {String} obj.password The user's password.
- * @property {String} obj.rePassword The user's rePassword.
- * @property {Function} obj.handleLoggedState The handleLoggedState function handling the isLogged state.
+ * @param {String} obj.username The user's username.
+ * @param {String} obj.password The user's password.
+ * @param {String} obj.rePassword The user's rePassword.
+ * @param {Function} obj.handleLoggedState The handleLoggedState function handling the isLogged state.
  */
 export const register = async ({username, password, rePassword, handleLoggedState}) => {
     const usernameCheck = checkInput({ type: "username", value: username });
@@ -44,11 +44,10 @@ export const register = async ({username, password, rePassword, handleLoggedStat
  * Handles the user login.
  * Validates the user input and shows and error if it's not properly formated.
  * Checks if the username exists in the database and compares the input password and stored password.
- * Sets the localStorage user data.
  * @param {Object} obj An object containing the user input and a callback function.
- * @property {String} obj.username The user's username.
- * @property {String} obj.password The user's password.
- * @property {Function} obj.callback The callback function handling the isLogged state.
+ * @param {String} obj.username The user's username.
+ * @param {String} obj.password The user's password.
+ * @param {Function} obj.callback The callback function handling the isLogged state.
  */
 export const login = async ({ username, password, handleLoggedState }) => {
     const body = new URLSearchParams();
@@ -57,17 +56,17 @@ export const login = async ({ username, password, handleLoggedState }) => {
 
     return doFetch({ route: "/login", body }).then(res => {
         let loggedIn = false;
+        let response = {};
 
         if (res.id) {
-            setStorage({ key: "scUserDetails", value: res });
             loggedIn = true;
+            response = res;
         } else {
             // !!!ERROR!!!
             console.warn(res.errors);
         };
 
-        handleLoggedState(loggedIn);
-        // return res;
+        handleLoggedState(loggedIn, response );
     });
 };
 
@@ -92,7 +91,7 @@ export const logout = async (handleLoggedState) => {
  * !!! In case the connection fails it carries on updating the localStorage object !!!
  * @param {Event} e The triggered event object from which to extract the necessary keys.
  */
-export const changeSetting = (setting) => {
+export const changeUserSetting = (setting) => {
     const { type, id, dataset, checked, value } = setting;
     const localData = getStorage("scUserDetails");
     const isLogged = localData && localData.id;
@@ -115,7 +114,7 @@ export const changeSetting = (setting) => {
             doFetch({route, body}).then(res => {
                 if (res.error) {
                     // !!!ERROR!!!
-                    console.log("A backend problem has arised. Proceeding with local storage only");
+                    console.log("A backend problem has arisen. Proceeding with local storage only");
                 };
                 
                 saveLocaly();
@@ -141,8 +140,8 @@ export const checkIfLogged = async () => {
 
         return doFetch({ route: "/checkIfLogged", body }).then(res => {
             if (res && res.id && res.username && res.userSettings && res.gameSettings) {
-				setStorage({ key: "scUserDetails", value: res });
-                return true;
+				// setStorage({ key: "scUserDetails", value: res });
+                return res;
 			} else {
                 return false;
 			};
@@ -153,52 +152,116 @@ export const checkIfLogged = async () => {
 };
 
 /**
- * Do a fetch request.
- * @param {Object} obj An object containing the query options to execute the fetch.
- * @property {String} obj.route A string containing the path for url.
- * @property {URLSearchParams || null} obj.body An object containing a user query which will be sent to the server.
- * @returns The properly formated server response (json), or false(boolean) in case of a server error.
+ * Initialise the scUserDetails local storage object.
+ * If user data is already present it's value types get compared with the expected value types.
+ * If the present data value types conform to the expected template are left intact.
+ * @param {Object} presentData Either an object or an array of objects that contain a single key value pair (named key and value).
+ * @returns Either the default or the checked user data object.
  */
-async function doFetch({ route, body }) {
-    const options = {
-        credentials: "include",
-        method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
+export const initUserDetails = (presentData) => {
+    const defaultData = {
+        username: "",
+        userSettings: { "keepRecord": false },
+        gameSettings: {
+            "numberOfPlayers": 1,
+            "mainTimer": false,
+            "individualTimers": false,
+            "turnDuration": 0,
+            "autoSwitchTurns": false,
+            "negativeValues": false,
+            "scoreBelowZero": false,
+            "scoreTarget": 0,
+            "editableFields": false
         }
     };
+    // console.log(compareObjectData(presentData, defaultData), presentData);
+    return compareObjectData(presentData, defaultData) ? presentData : defaultData;
+};
 
-    if (body) options["body"] = body;
+// /**
+//  * Do a fetch request.
+//  * @param {Object} obj An object containing the query options to execute the fetch.
+//  * @param {String} obj.route A string containing the path for url.
+//  * @param {URLSearchParams || null} obj.body (OPTIONAL) An object containing a user query which will be sent to the server.
+//  * @returns The properly formated server response (json), or false(boolean) in case of an error.
+//  */
+// async function doFetch({ route, body }) {
+//     const options = {
+//         credentials: "include",
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/x-www-form-urlencoded",
+//         }
+//     };
 
-    return fetch(`${process.env.REACT_APP_REST + route}`, options)
-        .then(res => {
-            // console.log("status", res.status);
-            if (res.status >= 400 && res.status < 500) {
-                return res.json();
-            } else {
-                return res.json();
+//     if (body) options["body"] = body;
+
+//     return fetch(`${process.env.REACT_APP_REST + route}`, options)
+//         .then(res => {
+//             // console.log("status", res.status);
+//             if (res.status >= 400 && res.status < 500) {
+//                 return res.json();
+//             } else {
+//                 return res.json();
+//             };
+//         })
+//         .catch(error => {
+//             // !!!ERROR!!!
+//             console.warn("not json!!!", error.message);
+//             return false
+//         })
+//         .then(res => {
+//             return res;
+//         })
+//         .catch(error => {
+//             // !!!ERROR!!!
+//             console.warn(error)
+//             return false
+//         });
+// };
+
+/**
+ * Compares the data type of two objects.
+ * !!! Supports nesting at a depth of one level (further depth will not be needed).
+ * E.G. { a: [1,2...] }.
+ * @param {Object.<any>} presentData An object containing any type of key value pairs.
+ * @param {Object.<any>} defaultData An object containing any type of key value pairs.
+ * @returns 
+ */
+const compareObjectData = (presentData, defaultData) => {
+    let dataOk = true;
+    const presentKeys = presentData ? Object.keys(presentData) : {};
+    const notOk = () => dataOk = false;
+    
+    defaultData = Object.entries(defaultData);
+
+    if (presentKeys.length === defaultData.length || (presentKeys.length === defaultData.length + 1 && presentKeys.includes("id"))) {
+        for (const [key, value] of defaultData) {
+            if ((presentData[key] === undefined && key !== "id") || typeof presentData[key] !== typeof value) {
+                notOk();
+                break;
             };
-        })
-        .catch(error => {
-            // !!!ERROR!!!
-            console.warn("not json!!!", error.message);
-            return false
-        })
-        .then(res => {
-            return res;
-        })
-        .catch(error => {
-            // !!!ERROR!!!
-            console.warn(error)
-            return false
-        });
+            
+            for (const [subKey, subValue] of Object.entries(value)) {
+                if (typeof presentData[key][subKey] !== typeof subValue) {
+                    console.log("xx", presentData[key][subKey], subValue);
+                    notOk();
+                    break;
+                };
+            };
+        };
+    } else {
+        notOk();
+    };
+
+    return dataOk;
 };
 
 /**
  * Checks the validity of the user input.
  * @param {Object} obj An object containing the type and the value of the input that will be checked.
- * @property {String} obj.type A string containing the type of input (username, password, rePassword).
- * @property {Value} obj.type A string containing the user input (username, password, rePassword).
+ * @param {String} obj.type A string containing the type of input (username, password, rePassword).
+ * @param {Value} obj.type A string containing the user input (username, password, rePassword).
  * @returns True if the input passes the RegEx check or false, and triggers an error message.
  */
 function checkInput({ type, value }) {

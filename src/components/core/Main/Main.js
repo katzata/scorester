@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { /* useCallback,  */useEffect, useState } from "react";
 import styles from "./Main.module.scss";
 
-import { getStorage } from "../../../services/storageService";
+import { getStorage, saveToStorage } from "../../../services/storageService";
 
 import InputModal from "./InputModal/InputModal";
 import ScoreColumn from "./ScoreColumn/ScoreColumn";
@@ -9,18 +9,26 @@ import ScoreColumn from "./ScoreColumn/ScoreColumn";
 /**
  * Component containing the player score columns.
  * One of the three main components besides the Header and Footer.
+ * 
  * @param {Object} props
+ * @param {Boolean} props.isPlaying
+ * @param {Number} props.numberOfPlayers
+ * @param {Array.<String>} props.playerNames
+ * @param {Function} props.setPlayerName
+ * @param {Number} props.playerTurnIndex
+ * @param {Function} props.playerTurnIndexHandler
+ * 
+ * @component
+ * @param {Boolean} props.isPlaying The current playing state.
  * @param {Number} props.numberOfPlayers The total number of current players.
  * @param {Array.<String>} props.playerNames An array containing the current player names.
  * @param {Function} props.setPlayerName A callback function that handles player name editing.
  * @param {Number} props.playerTurnIndex A number indicating whose turn is it.
- * 
- * @component
+ * @param {Function} props.playerTurnIndexHandler A callback that handles the player turn index change.
  */
 export default function Main({ isPlaying, numberOfPlayers, playerNames, setPlayerName, playerTurnIndex, playerTurnIndexHandler }) {
-    const gameDetails = getStorage("scGameDetails");
-    const scores = () => gameDetails && gameDetails.scores ? gameDetails.scores.map(player => player.scores) : [];
-    const [playerScores, setPlayerScores] = useState(scores());
+    const [playerScores, setPlayerScores] = useState([...Array(numberOfPlayers).fill([])]);
+    // console.log(playerScores, [...Array(numberOfPlayers).fill([])]);
     const [inputModalVisible, setInputModalVisible] = useState(false);
     const [isEditingInput, setIsEditingInput] = useState(false);
 
@@ -34,20 +42,30 @@ export default function Main({ isPlaying, numberOfPlayers, playerNames, setPlaye
         };
     };
 
+    /**
+     * Add a new score to the current player score column.
+     * @param {Number} score A new player score.
+     */
     const addPlayerScores = (score) => {
-        const newScores = [...playerScores];
-        newScores[playerTurnIndex].push(score);
-
+        const gameDetails = getStorage("scGameDetails") || {};
+        const newScores = [...gameDetails.scores];
+        newScores[playerTurnIndex].scores.push(score);
+        
+        saveToStorage("scGameDetails", { scores: newScores });
         setPlayerScores(newScores);
-        handleModalVisibility(false);
-        playerTurnIndexHandler();
+        // handleModalVisibility(false);
+        // playerTurnIndexHandler();
     };
 
+    // const handleScores = useCallback((scoresLength) => {
+    //     setPlayerScores([...Array(scoresLength).fill([])]);
+    // }, []);
+
     useEffect(() => {
-        // console.log(isEditingInput);
-        // console.log(isEditingInput);
-        // console.log(playerNames);
-    }, []);
+        // const gameDetails = getStorage("scGameDetails") || {};
+        // console.log(playerScores);
+        // handleScores(numberOfPlayers);
+    }, [numberOfPlayers]);
 
     return <main className={styles.main}>
         <InputModal
@@ -79,21 +97,3 @@ export default function Main({ isPlaying, numberOfPlayers, playerNames, setPlaye
         </section>
     </main>;
 };
-
-
-/*
- * @example
- * const numberOfPlayers = 1 || 2 || 3...
- * const playerNames = ["Player 1", "Player 2", "Player 3"...]
- * const setPlayerName = () => {}
- * const playerTurnIndex = 1 || 2 || 3...
- * 
- * return (
- *   <Main
- *      numberOfPlayers={numberOfPlayers}
- *      playerNames={playerNames}
- *      setPlayerName={setPlayerName}
- *      playerTurnIndex={playerTurnIndex}
- *    />
- * )
-*/

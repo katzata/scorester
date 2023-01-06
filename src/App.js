@@ -1,25 +1,37 @@
 import { useCallback, useEffect, useState } from 'react';
 import './App.css';
 
-import { checkIfLogged } from './services/userService';
+import { setStorage, getStorage/* , saveToStorage */ } from './services/storageService';
+import { checkIfLogged, initUserDetails } from './services/userService';
 
 import Header from './components/core/Header/Header';
 import Main from './components/core/Main/Main';
 import Footer from './components/core/Footer/Footer';
-import { initUserDetails, setStorage, getStorage } from './services/storageService';
 
+const initialGameData = getStorage("scGameDetails") || {};
+
+/**
+ * The root component that handles all the shared app states.
+ * @returns The three main components (Header, Main, Footer).
+ */
 export default function App() {
 	const [isLogged, setIsLogged] = useState(false);
-	const [isPlaying, setIsPlaying] = useState(false);
-	const [gamePaused, setGamePaused] = useState(false);
+	const [isPlaying, setIsPlaying] = useState(initialGameData.isPlaying || false);
+	const [gamePaused, setGamePaused] = useState(initialGameData.gamePaused || false);
 	const [numberOfPlayers, setNumberOfPlayers] = useState(null);
-	const [playerNames, setPlayerNames] = useState([]);
-	const [playerTurnIndex, setPlayerTurnIndex] = useState(0);
-	const [mainTimerVisible, setMainTimerVisible] = useState(false);
-    const [individualTimersVisible, setIndividualTimersVisible] = useState(false);
-	
-	const handlePlayerData = () => {
-		const userDetails = initUserDetails();
+	const [playerNames, setPlayerNames] = useState((initialGameData.scores && initialGameData.scores.map(el => el.name)) || []);
+	const [playerTurnIndex, setPlayerTurnIndex] = useState(initialGameData.playerTurnIndex || 0);
+	const [mainTimerVisible, setMainTimerVisible] = useState(initialGameData.mainTimerVisible || false);
+    const [individualTimersVisible, setIndividualTimersVisible] = useState(initialGameData.individualTimersVisible || false);
+
+	/**
+	 * Initializes the player details object.
+	 * Sets both the "scUserDetails" and "scGameDetails" objects in local storage
+	 * @param {Object} playerData An object containing userDetials which will be validated.
+	 * @param {Boolean} skipInit If set to true skips the user details initialization and passes the received playerData directly to the local storage.
+	 */
+	const initPlayerData = (playerData, skipInit) => {
+		const userDetails = !skipInit ? initUserDetails(playerData) : playerData;
 		const gameDetails = getStorage("scGameDetails") || {};
 
 		if (userDetails && userDetails.gameSettings) {
@@ -37,27 +49,27 @@ export default function App() {
 			setMainTimerVisible(gameSettings.mainTimer);
 			setIndividualTimersVisible(gameSettings.individualTimers);
 			
-			if (gameDetails) {
+			if (gameDetails && gameDetails.playerTurnIndex) {
 				setPlayerTurnIndex(gameDetails.playerTurnIndex);
 			};
+
 		};
+
+		setStorage({ key: "scUserDetails", value: userDetails });
 	};
 
-	const handleGameData = (state) => {
-		const localData = getStorage("scUserDetails");
-
+	const initGameData = (state) => {
 		if (gamePaused) {
 			setGamePaused(false);
 		};
 
 		if (state) {
-			const { individualTimers } = localData.gameSettings;
 			const gameDetails = {
 				isPlaying: state,
 				gamePaused: false,
 				playerTurnIndex: 0,
-				timer: [0, 0, 0],
-				individualTimers: individualTimers ? [...Array(numberOfPlayers).fill([0, 0, 0])] : [],
+				mainTimer: [0, 0, 0],
+				individualTimers: [...Array(numberOfPlayers).fill([0, 0, 0])],
 				scores: [...Array(numberOfPlayers).keys()].map(el => ({ name: playerNames[el], scores: [] }))
 			};
 
@@ -67,26 +79,18 @@ export default function App() {
 
 	const handleIsPlayingState = (state) => {
 		setIsPlaying(state);
-		handleGameData(state);
+		initGameData(state);
 	};
 
-	const mainTimerToggle = (state) => {
-		setMainTimerVisible(state);
-	};
-
-	const individualTimersToggle = (state) => {
-		setIndividualTimersVisible(state);
-	};
-
-	const handleLoggedState = useCallback((state) => {
-		setIsLogged(state);
-		handlePlayerData();
+	const handleLoggedState = useCallback((loggedState, playerData) => {
+		setIsLogged(loggedState);
+		initPlayerData(playerData || getStorage("scUserDetails"), loggedState);
 	}, [])
 
 	const handlePlayerNameEdit = (index, newName) => {
 		const localData = getStorage("scGameDetails");
 		const newPlayerNames = [...playerNames];
-		console.log(localData["scores"]);
+
 		localData["scores"][index].name = newName
 		newPlayerNames[index] = newName;
 
@@ -95,13 +99,18 @@ export default function App() {
 	};
 
 	const handlePlayerTurnIndex = () => {
-		const turnIndex = playerTurnIndex + 1;
+		const turnIndex = playerTurnIndex + 1 < numberOfPlayers ? playerTurnIndex + 1 : 0;
+		const localData = getStorage("scGameDetails");
+		localData.playerTurnIndex = turnIndex;
+
+		setStorage({ key: "scGameDetails", value: localData });
 		setPlayerTurnIndex(turnIndex < numberOfPlayers ? turnIndex : 0);
 	};
 
 	useEffect(() => {
-		checkIfLogged().then(handleLoggedState);
-	}, [handleLoggedState]);
+		// const userData = getStorage("scUserDetails") || {};
+		checkIfLogged(initialGameData && initialGameData.id).then(handleLoggedState);
+	}, [handleLoggedState, gamePaused]);
 
 	return <>
 		<Header
@@ -114,9 +123,9 @@ export default function App() {
 			numberOfPlayers={numberOfPlayers}
 			setNumberOfPlayers={setNumberOfPlayers}
 			mainTimerVisible={mainTimerVisible}
-			mainTimerToggle={mainTimerToggle}
+			mainTimerToggle={setMainTimerVisible}
 			individualTimersVisible={individualTimersVisible}
-			individualTimersToggle={individualTimersToggle}
+			individualTimersToggle={setIndividualTimersVisible}
 		/>
 
 		<Main
@@ -133,8 +142,8 @@ export default function App() {
 			isLogged={isLogged}
 			isPlaying={isPlaying}
 			gamePaused={gamePaused}
-			setGamePaused={setGamePaused}
 			setIsPlaying={handleIsPlayingState}
+			setGamePaused={setGamePaused}
 			mainTimerVisible={mainTimerVisible}
 			individualTimersVisible={individualTimersVisible}
 		/>

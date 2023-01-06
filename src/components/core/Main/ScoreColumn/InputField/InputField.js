@@ -24,18 +24,14 @@ export default function InputField({ isPlaying, type, value, editToggle, setValu
     };
 
     const handleHold = (holdState) => {
-        console.log(holdState);
+        // console.log(holdState);
 
         if (isPlaying) {
             setIsHolding(holdState);
-
-            if (!holdState && isEditing) {
-                console.log(isEditing);
-                inputRef.current.focus();
+            console.log(currentValue, value);
+            if (!holdState && isEditing && currentValue === value) {
                 inputRef.current.select();
-            } else {
-                inputRef.current.blur();
-                inputRef.current.clear();
+                inputRef.current.focus();
             };
         };
     };
@@ -44,6 +40,7 @@ export default function InputField({ isPlaying, type, value, editToggle, setValu
         setValueHandler(currentValue);
         setIsEditing(false);
         editToggle(false);
+
     };
 
     const triggerEdit = useCallback((state) => {
@@ -52,7 +49,6 @@ export default function InputField({ isPlaying, type, value, editToggle, setValu
 
     useEffect(() => {
         if (holdTrigger) {
-            // console.log("x");
             setIsEditing(true);
             triggerEdit(true);
         };
@@ -71,6 +67,10 @@ export default function InputField({ isPlaying, type, value, editToggle, setValu
             value={currentValue}
             onChange={(e) => setCurrentValue(e.target.value)}
             disabled={!isEditing}
+            onMouseDown={() => handleHold(true)}
+            onMouseUp={() => handleHold(false)}
+            onTouchStart={() => handleHold(true)}
+            onTouchEnd={() => handleHold(false)}
         />
 
         <button className={styles.confirmEditButton} style={buttonStyles} onClick={handleConfirm}>

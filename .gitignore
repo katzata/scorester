@@ -1,4 +1,8 @@
 /node_modules
 /build
 
+# Temporary and base (original/initial) assets that may or may not make it to the final build.
+/assetsTemp
+
+# env file...
 .env-cmdrc.json
