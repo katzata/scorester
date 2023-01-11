@@ -1,11 +1,5 @@
-import { setStorage, getStorage, clearStorage } from "./storageService";
-import { doFetch, setRequestBody } from "../utils/utils";
-
-/**
- * A list of all the option queries that are being currently fetched.
- * For preventing multiple (simultaneous) queries for the same option.
- */
-const fetching = [];
+import { getStorage, clearStorage } from "./storageService";
+import { doFetch } from "../utils/utils";
 
 /**
  * Handles the user registration.
@@ -85,48 +79,6 @@ export const logout = async (handleLoggedState) => {
 };
 
 /**
- * Change a user or a game setting.
- * Tryes to connect to the database in order to store the option changes.
- * Updates the localStorade object to reflect the latest changes.
- * !!! In case the connection fails it carries on updating the localStorage object !!!
- * @param {Event} e The triggered event object from which to extract the necessary keys.
- */
-export const changeUserSetting = (setting) => {
-    const { type, id, dataset, checked, value } = setting;
-    const localData = getStorage("scUserDetails");
-    const isLogged = localData && localData.id;
-
-    setOption({section: dataset.section, id, checked, value});
-
-    function setOption({section, id, checked, value}) {
-        const route = `/${section.replace("_s", "S")}`;
-        const currentValue = type === "checkbox" ? checked : value;
-
-        const saveLocaly = () => {
-            localData[route.slice(1)][id] = currentValue;
-            setStorage({ key: "scUserDetails", value: localData });
-        };
-
-        if (isLogged && !fetching.includes(id)) {
-            const body = setRequestBody(Object.fromEntries([[id, currentValue]]));
-            fetching.push(id);
-            
-            doFetch({route, body}).then(res => {
-                if (res.error) {
-                    // !!!ERROR!!!
-                    console.log("A backend problem has arisen. Proceeding with local storage only");
-                };
-                
-                saveLocaly();
-                fetching.splice(id);
-            });
-        } else {
-            saveLocaly();
-        };
-    };
-};
-
-/**
  * Checks if the user is currently logged in.
  * Sends a request to the server containing the current user id (taken from localStorage).
  * @returns A boolean based on the fetched results.
@@ -177,48 +129,6 @@ export const initUserDetails = (presentData) => {
     // console.log(compareObjectData(presentData, defaultData), presentData);
     return compareObjectData(presentData, defaultData) ? presentData : defaultData;
 };
-
-// /**
-//  * Do a fetch request.
-//  * @param {Object} obj An object containing the query options to execute the fetch.
-//  * @param {String} obj.route A string containing the path for url.
-//  * @param {URLSearchParams || null} obj.body (OPTIONAL) An object containing a user query which will be sent to the server.
-//  * @returns The properly formated server response (json), or false(boolean) in case of an error.
-//  */
-// async function doFetch({ route, body }) {
-//     const options = {
-//         credentials: "include",
-//         method: "POST",
-//         headers: {
-//             "Content-Type": "application/x-www-form-urlencoded",
-//         }
-//     };
-
-//     if (body) options["body"] = body;
-
-//     return fetch(`${process.env.REACT_APP_REST + route}`, options)
-//         .then(res => {
-//             // console.log("status", res.status);
-//             if (res.status >= 400 && res.status < 500) {
-//                 return res.json();
-//             } else {
-//                 return res.json();
-//             };
-//         })
-//         .catch(error => {
-//             // !!!ERROR!!!
-//             console.warn("not json!!!", error.message);
-//             return false
-//         })
-//         .then(res => {
-//             return res;
-//         })
-//         .catch(error => {
-//             // !!!ERROR!!!
-//             console.warn(error)
-//             return false
-//         });
-// };
 
 /**
  * Compares the data type of two objects.

@@ -1,4 +1,4 @@
-import { /* useCallback,  */useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styles from "./Main.module.scss";
 
 import { getStorage, saveToStorage } from "../../../services/storageService";
@@ -27,8 +27,8 @@ import ScoreColumn from "./ScoreColumn/ScoreColumn";
  * @param {Function} props.playerTurnIndexHandler A callback that handles the player turn index change.
  */
 export default function Main({ isPlaying, numberOfPlayers, playerNames, setPlayerName, playerTurnIndex, playerTurnIndexHandler }) {
-    const [playerScores, setPlayerScores] = useState([...Array(numberOfPlayers).fill([])]);
-    // console.log(playerScores, [...Array(numberOfPlayers).fill([])]);
+    const initialDetails = getStorage("scGameDetails") || {};
+    const [playerScores, setPlayerScores] = useState((initialDetails.scores && initialDetails.scores.map(el => el.scores)) || [...Array(numberOfPlayers).fill([])]);
     const [inputModalVisible, setInputModalVisible] = useState(false);
     const [isEditingInput, setIsEditingInput] = useState(false);
 
@@ -47,25 +47,24 @@ export default function Main({ isPlaying, numberOfPlayers, playerNames, setPlaye
      * @param {Number} score A new player score.
      */
     const addPlayerScores = (score) => {
-        const gameDetails = getStorage("scGameDetails") || {};
-        const newScores = [...gameDetails.scores];
-        newScores[playerTurnIndex].scores.push(score);
-        
-        saveToStorage("scGameDetails", { scores: newScores });
-        setPlayerScores(newScores);
-        // handleModalVisibility(false);
-        // playerTurnIndexHandler();
+        const gameScores = getStorage("scGameDetails").scores;
+        gameScores[playerTurnIndex].scores.push(score);
+
+        saveToStorage("scGameDetails", { scores: gameScores });
+        setPlayerScores(gameScores.map(el => el.scores));
+        handleModalVisibility(false);
+        playerTurnIndexHandler();
     };
 
-    // const handleScores = useCallback((scoresLength) => {
-    //     setPlayerScores([...Array(scoresLength).fill([])]);
-    // }, []);
+    const handleScores = useCallback(() => {
+        if (!isPlaying) {
+            setPlayerScores([...Array(numberOfPlayers).fill([])]);
+        };
+    }, [isPlaying]);
 
     useEffect(() => {
-        // const gameDetails = getStorage("scGameDetails") || {};
-        // console.log(playerScores);
-        // handleScores(numberOfPlayers);
-    }, [numberOfPlayers]);
+        handleScores();
+    }, [isPlaying, handleScores]);
 
     return <main className={styles.main}>
         <InputModal
@@ -75,7 +74,6 @@ export default function Main({ isPlaying, numberOfPlayers, playerNames, setPlaye
             addPlayerScores={addPlayerScores}
             zIndex={numberOfPlayers}
             playerTurnIndex={playerTurnIndex}
-            playerTurnIndexHandler={playerTurnIndexHandler}
         />
 
         <section className={styles.scoreColumnsContainer}>

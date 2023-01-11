@@ -1,4 +1,33 @@
 # Scorester
 
-A score keeping app for board games, card games, dice games, etc.
-Users will be able to login to keep a record of all finished games. A record will be kept if a game has at least 1 not empty field, and more than 0 point total.
+### A score keeping app for board games, card games, dice games, etc.
+
+Written in React.js with very few dependencies.
+
+Works online as well as offline. Being online is needed when changing settings within the app in order to store them to the database, and to keep a summary of all finished games (if selected).
+In case there is no connection the app shows an offline indicator and silently moves forward.
+The player chooses the number of players (can be changed during a game session) and the app automatically generates a player column containing a preset player name "Player 1|2|3..." (if a previous game session exists it takes the corresponding name from there). As long as the user does not clear the browser data all states (isLoged, isPLaying, etc.) will persist after refreshing the page or closing the browser.
+</br>
+
+### Available user settings
+
+- keep a record of your finished games.
+</br></br>
+
+### Available game settings
+
+- number of players (input)
+- game timer (toggle)
+- individual timers (toggle)
+- timed turns duration (input) ***
+- auto switch turns (toggle)
+- allow negative values (toggle) ***
+- score can go below zero (toggle)
+- target score (input)
+- editable score fields (toggle)
+
+Technical documentation can be found within the components themselves.
+
+***
+Settings marked with *** are under consideration and may not make it to the final build.
+***

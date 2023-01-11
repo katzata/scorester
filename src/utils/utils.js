@@ -27,8 +27,6 @@ export function setRequestBody(data) {
     return body;
 };
 
-// const currentlyFetching = [];
-
 /**
  * Do a fetch request.
  * @param {Object} obj An object containing the query options to execute the fetch.
@@ -49,7 +47,6 @@ export async function doFetch({ route, body }) {
 
     return fetch(`${process.env.REACT_APP_REST + route}`, options)
         .then(res => {
-            // console.log("status", res.status);
             if (res.status >= 400 && res.status < 500) {
                 return res.json();
             } else {
@@ -61,9 +58,7 @@ export async function doFetch({ route, body }) {
             console.warn("not json!!!", error.message);
             return false
         })
-        .then(res => {
-            return res;
-        })
+        .then(res => res)
         .catch(error => {
             // !!!ERROR!!!
             console.warn(error)

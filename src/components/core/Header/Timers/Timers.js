@@ -20,7 +20,7 @@ export default function Timers({ isPlaying, gamePaused, playerTurnIndex, numberO
         if (individualTimersVisible && !gamePaused) {
             handleIndividualTimers();
         };
-        // console.log({ mainTimer, individualTimers }, localStorage);
+        // console.log(playerTurnIndex);
         saveToStorage("scGameDetails", { mainTimer, individualTimers });
     };
     
@@ -86,7 +86,7 @@ export default function Timers({ isPlaying, gamePaused, playerTurnIndex, numberO
         if (!isPlaying) {
             resetTimers();
         };
-    }, [isPlaying, gamePaused, mainTimerVisible, individualTimersVisible]);
+    }, [isPlaying, gamePaused, numberOfPlayers, mainTimerVisible, individualTimersVisible, playerTurnIndex]);
 
     return <section className={styles.timersSection}>
         { mainTimerVisible && <SvgTimer id="main" digits={mainTimer}/> }
@@ -99,14 +99,17 @@ export default function Timers({ isPlaying, gamePaused, playerTurnIndex, numberO
 
             <div className={styles.individualTimers}>
                 {individualTimers && individualTimers.map((timer, idx) => {
-                    const offset = idx * 100;
+                    const basePosition = idx * 100;
+                    const offset = playerTurnIndex * 100;
+                    const offsetToggle = playerTurnIndex <= idx + 1;
+                    const position = offsetToggle ? basePosition - offset : basePosition + 100;
                     
                     return <SvgTimer
                         id={`individual${idx}`}
                         digits={timer}
                         width="70"
                         height="100%"
-                        style={{ transform: `translateY(${offset}%)` }}
+                        style={{ transform: `translateY(${position}%)`, zIndex: offsetToggle ? "0" : "-1" }}
                         key={`individual${idx}`}
                     />
                 })}

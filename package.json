@@ -34,7 +34,7 @@
     "build-ver": "node handleAppVersion.js && env-cmd -e build react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "push-quick": "git add . && git commit -m \"Minor changes commit.\" && git push"
+    "push-q": "git add . && git commit -m \"Minor changes commit.\" && git push"
   },
   "eslintConfig": {
     "extends": [

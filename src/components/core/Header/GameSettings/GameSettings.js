@@ -11,6 +11,7 @@ import NumberInput from "../SettingFields/NumberInput/NumberInput";
 export default function GameSettings({ isLogged, setNumberOfPlayers, timerToggles }) {
     const [availableSettings, setAvailableSettings] = useState(null);
     const [currentValues, setCurrentValues] = useState(null);
+    const [currentlyFetching, setCurrentlyFetching] = useState([]);
 
     /**
      * Changes a specific setting value updating the component state and the local storage object.
@@ -32,8 +33,9 @@ export default function GameSettings({ isLogged, setNumberOfPlayers, timerToggle
         newValues[id] = type === "number" ? Number(settingValue) : settingValue;
         localData.gameSettings = newValues;
 
-        if (isLogged) {
-            await changeSettingInDB(setting).then(res => console.log(res));
+        if (isLogged && !currentlyFetching.includes(id)) {
+            setCurrentlyFetching([id, ...currentlyFetching]);
+            await changeSettingInDB(setting).then(() => setCurrentlyFetching([...currentlyFetching].splice(id, 1)));
         };
         
         saveToStorage("scUserDetails", { gameSettings: newValues } );

@@ -18,7 +18,7 @@ export default function App() {
 	const [isLogged, setIsLogged] = useState(false);
 	const [isPlaying, setIsPlaying] = useState(initialGameData.isPlaying || false);
 	const [gamePaused, setGamePaused] = useState(initialGameData.gamePaused || false);
-	const [numberOfPlayers, setNumberOfPlayers] = useState(null);
+	const [numberOfPlayers, setNumberOfPlayers] = useState(0);
 	const [playerNames, setPlayerNames] = useState((initialGameData.scores && initialGameData.scores.map(el => el.name)) || []);
 	const [playerTurnIndex, setPlayerTurnIndex] = useState(initialGameData.playerTurnIndex || 0);
 	const [mainTimerVisible, setMainTimerVisible] = useState(initialGameData.mainTimerVisible || false);
@@ -58,7 +58,11 @@ export default function App() {
 		setStorage({ key: "scUserDetails", value: userDetails });
 	};
 
-	const initGameData = (state) => {
+	/**
+	 * 
+	 * @param {Boolean} state The isPlaying state
+	 */
+	const resetGameData = (state) => {
 		if (gamePaused) {
 			setGamePaused(false);
 		};
@@ -74,12 +78,18 @@ export default function App() {
 			};
 
 			setStorage({ key: "scGameDetails", value: gameDetails });
+		} else {
+			handlePlayerTurnIndex(0);
 		};
 	};
 
+	/**
+	 * Set the isPlaying state with the passed parameter. 
+	 * @param {Boolean} state The isPlayng state.
+	 */
 	const handleIsPlayingState = (state) => {
 		setIsPlaying(state);
-		initGameData(state);
+		resetGameData(state);
 	};
 
 	const handleLoggedState = useCallback((loggedState, playerData) => {
@@ -87,6 +97,12 @@ export default function App() {
 		initPlayerData(playerData || getStorage("scUserDetails"), loggedState);
 	}, [])
 
+	/**
+	 * Edit a player name field.
+	 * Sets the state hook (playerNames) and saves to local storage.
+	 * @param {Number} index The index indicating which player name to edit.
+	 * @param {String} newName The new name value.
+	 */
 	const handlePlayerNameEdit = (index, newName) => {
 		const localData = getStorage("scGameDetails");
 		const newPlayerNames = [...playerNames];
@@ -98,17 +114,17 @@ export default function App() {
 		setStorage({ key: "scGameDetails", value: localData });
 	};
 
-	const handlePlayerTurnIndex = () => {
+	const handlePlayerTurnIndex = (index) => {
 		const turnIndex = playerTurnIndex + 1 < numberOfPlayers ? playerTurnIndex + 1 : 0;
+		const indexFinal = index !== undefined ? index : turnIndex;
 		const localData = getStorage("scGameDetails");
-		localData.playerTurnIndex = turnIndex;
+		localData.playerTurnIndex = indexFinal;
 
 		setStorage({ key: "scGameDetails", value: localData });
-		setPlayerTurnIndex(turnIndex < numberOfPlayers ? turnIndex : 0);
+		setPlayerTurnIndex(indexFinal);
 	};
 
 	useEffect(() => {
-		// const userData = getStorage("scUserDetails") || {};
 		checkIfLogged(initialGameData && initialGameData.id).then(handleLoggedState);
 	}, [handleLoggedState, gamePaused]);
 

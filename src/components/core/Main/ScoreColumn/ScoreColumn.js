@@ -77,7 +77,7 @@ export default function ScoreColumn({
     };
 
     useEffect(() => {
-        // console.log(isPlaying);
+
     }, []);
 
     return <section className={styles.scoreColumn} style={columnStyles} onClick={() => inputModalVisibilityHandler(true)}>
@@ -93,7 +93,7 @@ export default function ScoreColumn({
             </div>
             
             <div id="columnBody" className={styles.columnBody}>
-                {playerScores && playerScores.map((el, idx) => <InputField
+                {playerScores && playerScores.length > 0 && playerScores.map((el, idx) => <InputField
                     type="number"
                     value={el}
                     editToggle={(state) => handleEditToggle({ idx, state })}
@@ -103,7 +103,7 @@ export default function ScoreColumn({
             </div>
 
             <div id="columnFooter" className={styles.columnFooter}>
-                <span className={styles.columnTotal}>{currentScores && currentScores[0] && currentScores.reduce((a, b) => a + b)}</span>
+                <span className={styles.columnTotal}>{playerScores && playerScores[0] !== undefined && playerScores.reduce((a, b) => Number(a) + Number(b))}</span>
             </div>
         </div>
     </section>;
