@@ -60,7 +60,7 @@ export default function Main({ isPlaying, numberOfPlayers, playerNames, setPlaye
         if (!isPlaying) {
             setPlayerScores([...Array(numberOfPlayers).fill([])]);
         };
-    }, [isPlaying]);
+    }, [isPlaying, numberOfPlayers]);
 
     useEffect(() => {
         handleScores();

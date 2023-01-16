@@ -1,0 +1,19 @@
+@use "../../../../mixins/fonts";
+
+$summary-title-font-size: 32px;
+$summary-title-line-height: 32px;
+$summary-title-font-weight: 400;
+
+.statsSection {
+    padding: 8px;
+    background-color: rgba(0, 0, 0, .3);
+
+    h3 {
+        margin-bottom: 16px;
+        font-size: $summary-title-font-size;
+        line-height: $summary-title-line-height;
+        font-family: fonts.$primary-font;
+        font-weight: $summary-title-font-weight;
+        text-align: center;
+    }
+}

@@ -1,10 +1,22 @@
 import styles from "./SvgTimer.module.scss";
 
+/**
+ * Component displaying a properly formated svg clock.
+ * 
+ * @param {Object} props
+ * @param {String} props.id
+ * @param {Array.<number>} props.digits
+ * @param {Object} props.style
+ * 
+ * @component
+ * @param {String} props.id Used to set the individual gradient id.
+ * @param {Array.<number>} props.digits The three digits that a digital clock consists of.
+ * @param {Object} props.style Used to add additional styles to the component.
+ */
 export default function SvgTimer({ id, digits, style }) {
-
     const formatTimer = (time) => time < 10 ? `0${time}` : time;
 
-    return <svg className={styles.svgTimer} height="60px" viewBox="0 0 192 60" style={{pointerEvents: "none", ...style}}>
+    return <svg className={styles.svgTimer} height="60px" viewBox="0 0 210 60" style={{pointerEvents: "none", ...style}}>
         <defs>
             <linearGradient id={`${id}gradient`} x1="0" x2="0" y1="0" y2="1">
                 <stop offset="0%" stopColor="rgba(255, 255, 255, 1)" />
@@ -20,7 +32,7 @@ export default function SvgTimer({ id, digits, style }) {
                 dominantBaseline="hanging"
                 textAnchor="middle"
                 fill={`url(#${id}gradient)`}
-                fontSize="74"
+                fontSize={ style && style.fontSize ? style.fontSize : "74"}
                 key={`mainDigit${idx}`}
             >
                 {idx > 0 && <text x="50%" y="-8" transform={`translate(${dividersOffset[idx - 1]})`}>:</text>}

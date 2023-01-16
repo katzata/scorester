@@ -7,6 +7,7 @@ import { checkIfLogged, initUserDetails } from './services/userService';
 import Header from './components/core/Header/Header';
 import Main from './components/core/Main/Main';
 import Footer from './components/core/Footer/Footer';
+import EndGameModal from './components/core/EndGameModal/EndGameModal';
 
 const initialGameData = getStorage("scGameDetails") || {};
 
@@ -23,6 +24,7 @@ export default function App() {
 	const [playerTurnIndex, setPlayerTurnIndex] = useState(initialGameData.playerTurnIndex || 0);
 	const [mainTimerVisible, setMainTimerVisible] = useState(initialGameData.mainTimerVisible || false);
     const [individualTimersVisible, setIndividualTimersVisible] = useState(initialGameData.individualTimersVisible || false);
+	const [endgameModalVisible, setEndgameModalVisible] = useState(false);
 
 	/**
 	 * Initializes the player details object.
@@ -67,20 +69,18 @@ export default function App() {
 			setGamePaused(false);
 		};
 
-		if (state) {
-			const gameDetails = {
-				isPlaying: state,
-				gamePaused: false,
-				playerTurnIndex: 0,
-				mainTimer: [0, 0, 0],
-				individualTimers: [...Array(numberOfPlayers).fill([0, 0, 0])],
-				scores: [...Array(numberOfPlayers).keys()].map(el => ({ name: playerNames[el], scores: [] }))
-			};
-
-			setStorage({ key: "scGameDetails", value: gameDetails });
-		} else {
-			handlePlayerTurnIndex(0);
+		const gameDetails = {
+			isPlaying: state,
+			gamePaused: false,
+			playerTurnIndex: 0,
+			mainTimer: [0, 0, 0],
+			individualTimers: [...Array(numberOfPlayers).fill([0, 0, 0])],
+			scores: [...Array(numberOfPlayers).keys()].map(el => ({ name: playerNames[el], scores: [] }))
 		};
+
+		setStorage({ key: "scGameDetails", value: gameDetails });
+		console.log("x", JSON.parse(localStorage.scGameDetails));
+		handlePlayerTurnIndex(0);
 	};
 
 	/**
@@ -88,10 +88,20 @@ export default function App() {
 	 * @param {Boolean} state The isPlayng state.
 	 */
 	const handleIsPlayingState = (state) => {
+		if (!state) {
+			handleEndgameModal(true);
+		} else {
+			resetGameData(state);
+		};
+		
 		setIsPlaying(state);
-		resetGameData(state);
 	};
 
+	/**
+	 * Set the user logged state hook.
+	 * Initialize player data.
+	 * @useCallback
+	 */
 	const handleLoggedState = useCallback((loggedState, playerData) => {
 		setIsLogged(loggedState);
 		initPlayerData(playerData || getStorage("scUserDetails"), loggedState);
@@ -122,6 +132,14 @@ export default function App() {
 
 		setStorage({ key: "scGameDetails", value: localData });
 		setPlayerTurnIndex(indexFinal);
+	};
+
+	const handleEndgameModal = (state) => {
+		setEndgameModalVisible(state);
+
+		if (!state) {
+			resetGameData(state);
+		};
 	};
 
 	useEffect(() => {
@@ -163,5 +181,12 @@ export default function App() {
 			mainTimerVisible={mainTimerVisible}
 			individualTimersVisible={individualTimersVisible}
 		/>
+
+		{endgameModalVisible && <EndGameModal
+			isVisible={endgameModalVisible}
+			visibilityHandler={handleEndgameModal}
+			mainTimerVisible={mainTimerVisible}
+			individualTimersVisible={individualTimersVisible}
+		/>}
 	</>;
 };

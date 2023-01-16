@@ -1,0 +1,192 @@
+@use "../../../mixins/fonts";
+@use "../../../mixins/colors";
+
+$summary-title-font-size: 32px;
+$summary-title-line-height: 32px;
+$summary-title-font-weight: 400;
+
+.endGameModal {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100%;
+    
+    .scoreDetails {
+        width: 92vw;
+        max-width: 500px;
+        max-height: 92vh;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        box-shadow: inset 0 0 2px 0px black;
+        border-radius: 6px;
+        text-shadow: 0 1px 1px rgba(0, 0, 0, .6);
+
+        h3 {
+            font-style: italic;
+        }
+
+        >svg {
+            padding: .5vh 0 calc(.5vh + 10px);
+            margin: 0 auto;
+            font-family: fonts.$primary-font;
+            font-size: 65px;
+            line-height: 50px;
+            font-weight: normal;
+        }
+
+        .scoreDetailsInternal {
+            padding: 1%;
+            overflow: auto;
+            
+            .scoreDetailsTop {
+                width: 100%;
+                display: flex;
+
+                >div>h3 {
+                    text-shadow: 0 0 4px red;
+                }
+
+                .winnerName {
+                    margin-bottom: 6px;
+                    font-size: 25px;
+                    line-height: 25px;
+                    text-align: center;
+                }
+
+                >div {
+                    width: 50%;
+
+                    &:nth-child(1) {
+                        border-right: 1px solid white;
+
+                        h3 {
+                            padding-right: 2px;
+                        }
+                    }
+
+                    &:nth-child(2) {
+                        padding-left: 10px;
+                    }
+                }
+            }
+    
+            h4 {
+                font-family: fonts.$secondary-font;
+            }
+        }
+    
+        .playerStats {
+            display: flex;
+
+            >div {
+                flex-grow: 1;
+                text-align: center;
+
+                >h3 {
+                    font-size: 26px;
+                }
+
+                >h4 {
+                    font-size: 22px;
+                    line-height: 22px;
+                    margin-bottom: 4px;
+                }
+
+                >P {
+                    font-size: 18px;
+                    
+                    >span {
+                        font-size: 16px;
+                    }
+                }
+
+                >svg {
+                    width: 100%;
+                    height: 19px;
+                    margin: 0 auto;
+                }
+            }
+        }
+    
+        .ranking {
+            width: 100%;
+            min-height: 137px;
+            margin: 30px auto 0;
+            overflow: hidden;
+            box-shadow: inset 0 0 8px 4px colors.$modal-bg;
+    
+            .rankingRow {
+                padding: 4px 2px 2px;
+                margin: 10px;
+                display: flex;
+                flex-wrap: wrap;
+                font-size: 20px;
+                line-height: 20px;
+                letter-spacing: 1px;
+                border-bottom: 1px solid rgba(255, 255, 255, .6);
+
+                &:nth-child(1) {
+                    background: radial-gradient(farthest-corner at 0% 100%, rgba(240, 178, 4, .6), rgba(0, 0, 0, 0) 70%);
+                    border-bottom: 1px solid rgba(240, 178, 4, .6);
+                }
+
+                &:nth-child(2) {
+                    background: radial-gradient(farthest-corner at 0% 100%, rgba(192, 192, 192, .6), rgba(0, 0, 0, 0) 70%);
+                    border-bottom: 1px solid rgba(192, 192, 192, .6);
+                }
+
+                &:nth-child(3) {
+                    background: radial-gradient(farthest-corner at 0% 100%, rgba(205, 127, 50, .6), rgba(0, 0, 0, 0) 70%);
+                    border-bottom: 1px solid rgba(205, 127, 50, .6);
+                }
+    
+                >span {
+                    font-weight: 600;
+        
+                    &:last-child {
+                        width: 100%;
+                        text-align: center;
+    
+                        >span {
+                            margin-left: 2px;
+                            font-size: 13px;
+                            font-weight: 500;
+                        }
+                    }
+                }
+    
+                .positionColumn {
+                    width: 20px;
+                    margin-right: 1%;
+                    text-align: center;
+                    font-weight: 200;
+                }
+    
+                .nameColumn {
+                    flex-grow: 1;
+                }
+    
+                .pointsColumn {
+                    width: 94px;
+                    text-align: center;
+                }
+    
+                >svg {
+                    width: auto;
+                    height: 15px;
+                    margin: auto 0 0;
+                    font-weight: 100;
+                    font-style: italic;
+    
+                    text {
+                        stroke: rgba(255, 255, 255, .6);
+                        stroke-width: 1;
+                    }
+                }
+            }
+        }
+        
+    }
+}

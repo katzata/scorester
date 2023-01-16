@@ -1,5 +1,20 @@
 import styles from "./Modal.module.scss";
 
+/**
+ * Modal component.
+ * 
+ * @param {Object} props
+ * @param {Boolean} props.isVisible
+ * @param {String} props.position
+ * @param {Array} props.children
+ * @param {CallableFunction} props.visibilityHandler
+ * 
+ * @component
+ * @param {Boolean} props.isVisible Used to set the modal visibility.
+ * @param {String} props.position Defines the type of positioning that will be applyed (absolute, fixed...).
+ * @param {Array} props.children The default react children array.
+ * @param {CallableFunction} props.visibilityHandler A callback that closes the modal.
+ */
 export default function Modal({ isVisible, position, children, visibilityHandler }) {
     const scale = !isVisible ? 0 : 1;
 

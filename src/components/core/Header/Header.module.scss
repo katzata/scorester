@@ -5,17 +5,14 @@ header {
     @include styles-mixin.main-components-style;
 
     height: calc(47px + styles-mixin.$additional-height);
-    display: grid;
-    grid-template-columns: 110px 1fr 110px;
+    display: flex;
+
     grid-template-rows: calc(47px + styles-mixin.$additional-height);
     justify-items: center;
-
-    .timersWrapper {
-        width: 100%;
-    }
     
     .headerTitle {
         height: 100%;
+        flex-grow: 1;
     
         >svg {
             width: 100%;
@@ -28,20 +25,23 @@ header {
                 font-size: 32px;
                 line-height: 32px;
                 font-weight: 100;
-                letter-spacing: normal;
             }
         }
     }
+
+    .timersWrapper,
+    .buttonsContainer {
+        width: 12%;
+        height: 100%;
+        min-width: 90px;
+        max-width: 108px;
+    }
     
     .buttonsContainer {
-        width: 100%;
-        height: 100%;
-        margin-left: auto;
         display: block;
         
         .buttonWrapper {
             width: 50%;
-            margin: 0;
             height: 100%;
             display: inline-flex;
         

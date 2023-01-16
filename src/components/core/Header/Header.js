@@ -6,7 +6,7 @@ import Modal from "../../shared/Modal/Modal";
 import UserSettings from "./UserSettings/UserSettings";
 import GameSettings from "./GameSettings/GameSettings";
 import Icons from "../../shared/Icons/Icons";
-// import { getStorage } from "../../../services/storageService";
+import SvgOutlinedText from "../../shared/SvgOutlinedText/SvgOutlinedText";
 
 export default function Header({
     isLogged,
@@ -46,10 +46,7 @@ export default function Header({
         </div>
 
         <h1 className={styles.headerTitle}>
-            <svg width="146" height="62" viewBox="0 0 146 62">
-                <use href="#headerSvgText" stroke="rgb(180, 0, 0)" strokeWidth="3"></use>
-                <text id="headerSvgText" x="48%" y="58%" fill="white" dominantBaseline="middle" textAnchor="middle">Scorester</text>
-            </svg>
+            <SvgOutlinedText text="Scorester" width="146" height="62"/>
         </h1>
 
         <div className={styles.buttonsContainer}>

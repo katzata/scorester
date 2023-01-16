@@ -1,0 +1,35 @@
+@use "../../../../mixins/fonts";
+
+.statRow {
+    width: 100%;
+    margin-bottom: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 19px;
+    font-family: fonts.$secondary-font;
+    line-height: 19px;
+
+    >h4 {
+        width: 80px;
+        margin: auto auto auto 0;
+        font-weight: 600;
+    }
+
+    >p,
+    >svg {
+        width: 70px;
+        margin: auto 0;
+        text-align: center;
+    }
+
+    >svg {
+        height: 19px;
+    }
+}
+
+@media screen and (max-width: 394px) {
+    .statRow >p {
+        text-align: left;
+        padding-left: 5px;
+    }
+}

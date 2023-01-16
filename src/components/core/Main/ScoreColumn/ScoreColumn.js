@@ -77,7 +77,7 @@ export default function ScoreColumn({
     };
 
     useEffect(() => {
-
+        // console.log("x", currentScores);
     }, []);
 
     return <section className={styles.scoreColumn} style={columnStyles} onClick={() => inputModalVisibilityHandler(true)}>

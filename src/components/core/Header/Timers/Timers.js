@@ -1,18 +1,56 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import styles from "./Timers.module.scss";
 
 import SvgTimer from "../../../shared/SvgTimer/SvgTimer";
 import { getStorage, saveToStorage } from "../../../../services/storageService";
 
+/**
+ * Component displaying all possible timers (main timer, individual timers).
+ * 
+ * @param {Object} props
+ * @param {Boolean} props.isPlaying
+ * @param {Boolean} props.gamePaused
+ * @param {Number} props.playerTurnIndex
+ * @param {Number} props.numberOfPlayers
+ * @param {Boolean} props.mainTimerVisible
+ * @param {Boolean} props.individualTimersVisible
+ * 
+ * @component
+ * @param {Boolean} props.isPlaying The current playing state.
+ * @param {Boolean} props.gamePaused Indcates wether the game is paused or not.
+ * @param {Number} props.playerTurnIndex Indicates the current player turn.
+ * @param {Number} props.numberOfPlayers Indicates the current number of players.
+ * @param {Boolean} props.mainTimerVisible Indicates the main timer visibility.
+ * @param {Boolean} props.individualTimersVisible Indicates the individual timers visibility.
+ */
 export default function Timers({ isPlaying, gamePaused, playerTurnIndex, numberOfPlayers, mainTimerVisible, individualTimersVisible }) {
     const gameData = getStorage("scGameDetails") || {};
     const [mainTimer, setMainTimer] = useState(gameData.mainTimer || [0, 0, 0]);
     const [individualTimers, setIndividualTimers] = useState(gameData.individualTimers || [...Array(numberOfPlayers).fill([0, 0, 0])]);
+    
+    /**
+     * Increases the main timer and sets the mainTimer hook.
+     */
+    const handleMainTimer = useCallback(() => {
+        const newTimer = handleTimerIncrease(mainTimer);
+        setMainTimer(newTimer);
+    }, [mainTimer]);
+
+    /**
+     * Increases a specific individual timer based on the playerTurnIndex and sets the individualTimers hook.
+     */
+    const handleIndividualTimers = useCallback(() => {
+        const newIndividualTime = handleTimerIncrease(individualTimers[playerTurnIndex]);
+        const newTimers = [...individualTimers];
+
+        newTimers[playerTurnIndex] = newIndividualTime;
+        setIndividualTimers(newTimers);
+    }, [individualTimers, playerTurnIndex]);
 
     /**
      * Handle all available timers (main and individual), and save them in the local storage object.
      */
-    const handleTimers = () => {
+    const handleTimers = useCallback(() => {
         if (mainTimerVisible && !gamePaused) {
             handleMainTimer();
         };
@@ -20,28 +58,9 @@ export default function Timers({ isPlaying, gamePaused, playerTurnIndex, numberO
         if (individualTimersVisible && !gamePaused) {
             handleIndividualTimers();
         };
-        // console.log(playerTurnIndex);
+
         saveToStorage("scGameDetails", { mainTimer, individualTimers });
-    };
-    
-    /**
-     * Increases the main timer and sets the mainTimer hook.
-     */
-    const handleMainTimer = () => {
-        const newTimer = handleTimerIncrease(mainTimer);
-        setMainTimer(newTimer);
-    };
-
-    /**
-     * Increases a specific individual timer based on the playerTurnIndex and sets the individualTimers hook.
-     */
-    const handleIndividualTimers = () => {
-        const newIndividualTime = handleTimerIncrease(individualTimers[playerTurnIndex]);
-        const newTimers = [...individualTimers];
-
-        newTimers[playerTurnIndex] = newIndividualTime;
-        setIndividualTimers(newTimers);
-    };
+    }, [gamePaused, handleIndividualTimers, handleMainTimer, individualTimers, individualTimersVisible, mainTimer, mainTimerVisible]);
 
     /**
      * Increase the specified timer each second.
@@ -69,13 +88,15 @@ export default function Timers({ isPlaying, gamePaused, playerTurnIndex, numberO
     /**
      * Reset all the available timers.
      */
-    const resetTimers = () => {
-        setMainTimer([0, 0, 0]);
+    const resetTimers = useCallback(() => {
+        if (mainTimer[0] !== 0 || mainTimer[1] !== 0 || mainTimer[2] !== 0) {
+            setMainTimer([0, 0, 0]);
 
-        if (individualTimers.length > 0) {
-            setIndividualTimers([...individualTimers.map(() => [0, 0, 0])]);
+            if (individualTimers.length > 0) {
+                setIndividualTimers([...individualTimers.map(() => [0, 0, 0])]);
+            };
         };
-    };
+    }, [mainTimer, individualTimers]);
 
     useEffect(() => {
         if (isPlaying && (mainTimerVisible || individualTimersVisible)) {
@@ -86,7 +107,7 @@ export default function Timers({ isPlaying, gamePaused, playerTurnIndex, numberO
         if (!isPlaying) {
             resetTimers();
         };
-    }, [isPlaying, gamePaused, numberOfPlayers, mainTimerVisible, individualTimersVisible, playerTurnIndex]);
+    }, [isPlaying, gamePaused, numberOfPlayers, mainTimerVisible, individualTimersVisible, playerTurnIndex, handleTimers, resetTimers]);
 
     return <section className={styles.timersSection}>
         { mainTimerVisible && <SvgTimer id="main" digits={mainTimer}/> }
