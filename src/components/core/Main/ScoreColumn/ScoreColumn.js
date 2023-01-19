@@ -40,16 +40,13 @@ export default function ScoreColumn({
                 setEditingIndex(idx);
             };
 
-            setIsEditingInput(true);
         } else {
-            if (!state) {
-                if (idx) {
-                    setEditingIndex(null);
-                };
-
-                setIsEditingInput(false);
+            if (!state && idx) {
+                setEditingIndex(null);
             };
         };
+        
+        setIsEditingInput(state);
     };
 
     /**

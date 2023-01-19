@@ -7,7 +7,7 @@ import SvgTimer from "../../shared/SvgTimer/SvgTimer";
 import StatRow from "./StatRow/StatRow";
 import StatsSection from "./StatsSection/StatsSection";
 import SvgOutlinedText from "../../shared/SvgOutlinedText/SvgOutlinedText";
-
+import RankRow from "./RankRow/RankRow";
 
 /**
  * Component handling the endgame summary.
@@ -35,9 +35,9 @@ export default function EndGameModal({ isVisible, visibilityHandler, mainTimerVi
             data.scores[i].scores = [0];
         };
         
+        data.scores[i].scoreTotal = data.scores[i].scores.reduce((a, b) => a + (b || 0))
         totalTurns += increment;
         data.scores[i].turns = increment;
-        data.scores[i].scoreTotal = data.scores[i].scores.reduce((a, b) => a + (b || 0))
         data.scores[i].highestScore = Math.max(...data.scores[i].scores);
 
         if (individualTimersVisible) {
@@ -57,7 +57,7 @@ export default function EndGameModal({ isVisible, visibilityHandler, mainTimerVi
 
     const gameStats = [
         ["Game points", mainTimerVisible && <p>{scores.map(el => el.scoreTotal).reduce((a, b) => a + b)}</p>],
-        ["Game time", individualTimersVisible && <SvgTimer id={"individual-resW"} digits={mainTimer}/>],
+        ["Game time", individualTimersVisible && <SvgTimer id={"individual-resG"} digits={mainTimer}/>],
         ["Turns", <p>{totalTurns}</p> ]
     ];
     
@@ -86,7 +86,7 @@ export default function EndGameModal({ isVisible, visibilityHandler, mainTimerVi
                             {handleStats(winnerStats)}
                         </StatsSection>
 
-                        <StatsSection title="Game Stats">
+                        <StatsSection title="Game stats">
                             <h4 className={styles.winnerName}>Totals</h4>
                             
                             {handleStats(gameStats)}
@@ -106,19 +106,13 @@ export default function EndGameModal({ isVisible, visibilityHandler, mainTimerVi
                     </div>
                     
                     <div className={styles.ranking}>
-                        {scores && scores.map((player, idx) => {
-                            return <p className={styles.rankingRow} key={`results${idx}`}>
-                                <span className={styles.positionColumn}>{idx + 1}.</span>
-                                <span className={styles.nameColumn}>{player.name}</span>
-
-                                <span className={styles.pointsColumn}>
-                                    {formatScores(player.scores)}
-                                    <span>pts.</span>
-                                </span>
-
-                                {individualTimersVisible && <SvgTimer id={`individual-res${idx}`} digits={player.timer}/>}
-                            </p>;
-                        })}
+                        {scores && scores.map((player, idx) => <RankRow
+                            position={idx + 1}
+                            playerName={player.name}
+                            score={player.scores}
+                            timer={player.timer}
+                            key={`results${idx + 1}`}
+                        />)}
                     </div>
                 </div>
             </div>

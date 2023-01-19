@@ -1,5 +1,6 @@
 /node_modules
 /build
+/cypress
 
 # Temporary and base (original/initial) assets that may or may not make it to the final build.
 /assetsTemp

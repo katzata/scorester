@@ -1,15 +1,13 @@
 @use "../../../mixins/fonts";
 @use "../../../mixins/colors";
 
-$summary-title-font-size: 32px;
-$summary-title-line-height: 32px;
 $summary-title-font-weight: 400;
 
 .endGameModal {
     position: absolute;
     left: 0;
     top: 0;
-    width: 100vw;
+    width: 100%;
     height: 100%;
     
     .scoreDetails {
@@ -25,8 +23,14 @@ $summary-title-font-weight: 400;
 
         h3 {
             font-style: italic;
+            text-shadow: 0 0 4px red;
         }
 
+        h4 {
+            font-family: fonts.$secondary-font;
+        }
+
+        
         >svg {
             padding: .5vh 0 calc(.5vh + 10px);
             margin: 0 auto;
@@ -35,7 +39,7 @@ $summary-title-font-weight: 400;
             line-height: 50px;
             font-weight: normal;
         }
-
+        
         .scoreDetailsInternal {
             padding: 1%;
             overflow: auto;
@@ -43,16 +47,16 @@ $summary-title-font-weight: 400;
             .scoreDetailsTop {
                 width: 100%;
                 display: flex;
-
-                >div>h3 {
-                    text-shadow: 0 0 4px red;
-                }
-
+                
                 .winnerName {
                     margin-bottom: 6px;
                     font-size: 25px;
                     line-height: 25px;
                     text-align: center;
+                }
+                
+                p {
+                    color: rgba(255, 255, 255, .75);
                 }
 
                 >div {
@@ -70,10 +74,6 @@ $summary-title-font-weight: 400;
                         padding-left: 10px;
                     }
                 }
-            }
-    
-            h4 {
-                font-family: fonts.$secondary-font;
             }
         }
     
@@ -95,6 +95,7 @@ $summary-title-font-weight: 400;
                 }
 
                 >P {
+                    font-family: fonts.$secondary-font;
                     font-size: 18px;
                     
                     >span {
@@ -116,76 +117,6 @@ $summary-title-font-weight: 400;
             margin: 30px auto 0;
             overflow: hidden;
             box-shadow: inset 0 0 8px 4px colors.$modal-bg;
-    
-            .rankingRow {
-                padding: 4px 2px 2px;
-                margin: 10px;
-                display: flex;
-                flex-wrap: wrap;
-                font-size: 20px;
-                line-height: 20px;
-                letter-spacing: 1px;
-                border-bottom: 1px solid rgba(255, 255, 255, .6);
-
-                &:nth-child(1) {
-                    background: radial-gradient(farthest-corner at 0% 100%, rgba(240, 178, 4, .6), rgba(0, 0, 0, 0) 70%);
-                    border-bottom: 1px solid rgba(240, 178, 4, .6);
-                }
-
-                &:nth-child(2) {
-                    background: radial-gradient(farthest-corner at 0% 100%, rgba(192, 192, 192, .6), rgba(0, 0, 0, 0) 70%);
-                    border-bottom: 1px solid rgba(192, 192, 192, .6);
-                }
-
-                &:nth-child(3) {
-                    background: radial-gradient(farthest-corner at 0% 100%, rgba(205, 127, 50, .6), rgba(0, 0, 0, 0) 70%);
-                    border-bottom: 1px solid rgba(205, 127, 50, .6);
-                }
-    
-                >span {
-                    font-weight: 600;
-        
-                    &:last-child {
-                        width: 100%;
-                        text-align: center;
-    
-                        >span {
-                            margin-left: 2px;
-                            font-size: 13px;
-                            font-weight: 500;
-                        }
-                    }
-                }
-    
-                .positionColumn {
-                    width: 20px;
-                    margin-right: 1%;
-                    text-align: center;
-                    font-weight: 200;
-                }
-    
-                .nameColumn {
-                    flex-grow: 1;
-                }
-    
-                .pointsColumn {
-                    width: 94px;
-                    text-align: center;
-                }
-    
-                >svg {
-                    width: auto;
-                    height: 15px;
-                    margin: auto 0 0;
-                    font-weight: 100;
-                    font-style: italic;
-    
-                    text {
-                        stroke: rgba(255, 255, 255, .6);
-                        stroke-width: 1;
-                    }
-                }
-            }
         }
         
     }

@@ -24,11 +24,8 @@ export default function InputField({ isPlaying, type, value, editToggle, setValu
     };
 
     const handleHold = (holdState) => {
-        // console.log(holdState);
-
         if (isPlaying) {
             setIsHolding(holdState);
-            console.log(currentValue, value);
             if (!holdState && isEditing && currentValue === value) {
                 inputRef.current.select();
                 inputRef.current.focus();

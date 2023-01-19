@@ -5,11 +5,12 @@
     margin-bottom: 5px;
     display: flex;
     flex-wrap: wrap;
-    font-size: 19px;
     font-family: fonts.$secondary-font;
+    font-size: 19px;
     line-height: 19px;
 
-    >h4 {
+    >h5 {
+        font-size: inherit;
         width: 80px;
         margin: auto auto auto 0;
         font-weight: 600;

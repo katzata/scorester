@@ -1,0 +1,70 @@
+@use "../../../../mixins/fonts";
+
+.rankingRow {
+    padding: 4px 2px 2px;
+    margin: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    font-family: fonts.$secondary-font;
+    font-size: 20px;
+    line-height: 20px;
+    letter-spacing: 1px;
+    border-bottom: 1px solid rgba(255, 255, 255, .6);
+
+    &:nth-child(1) {
+        background: radial-gradient(farthest-corner at 0% 100%, rgba(240, 178, 4, .6), rgba(0, 0, 0, 0) 70%);
+        border-bottom: 1px solid rgba(240, 178, 4, .6);
+    }
+
+    &:nth-child(2) {
+        background: radial-gradient(farthest-corner at 0% 100%, rgba(192, 192, 192, .6), rgba(0, 0, 0, 0) 70%);
+        border-bottom: 1px solid rgba(192, 192, 192, .6);
+    }
+
+    &:nth-child(3) {
+        background: radial-gradient(farthest-corner at 0% 100%, rgba(205, 127, 50, .6), rgba(0, 0, 0, 0) 70%);
+        border-bottom: 1px solid rgba(205, 127, 50, .6);
+    }
+
+    >span {
+        font-weight: 600;
+
+        &:last-child {
+            width: 100%;
+            text-align: center;
+        }
+
+        >span {
+            font-size: 14px;
+        }
+    }
+
+    .positionColumn {
+        width: 20px;
+        margin-right: 1%;
+        text-align: center;
+        font-weight: 200;
+    }
+
+    .nameColumn {
+        flex-grow: 1;
+    }
+
+    .pointsColumn {
+        width: 94px;
+        text-align: center;
+    }
+
+    >svg {
+        width: auto;
+        height: 15px;
+        margin: auto 0 4px;
+        font-weight: 100;
+        font-style: italic;
+
+        text {
+            stroke: rgba(255, 255, 255, .6);
+            stroke-width: 1;
+        }
+    }
+}

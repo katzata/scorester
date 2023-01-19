@@ -2,15 +2,15 @@ import { useEffect, useState } from "react";
 import styles from "./GameSettings.module.scss";
 
 import { changeSettingInDB } from "../../../../services/gameService";
-import { fetchData } from "../../../../services/fetchService";
 import { getStorage, saveToStorage } from "../../../../services/storageService";
 
 import Checkbox from "../SettingFields/Checkbox/Checkbox";
 import NumberInput from "../SettingFields/NumberInput/NumberInput";
+import useFetch from "../../../../hooks/useFetch";
 
 export default function GameSettings({ isLogged, setNumberOfPlayers, timerToggles }) {
-    const [availableSettings, setAvailableSettings] = useState(null);
-    const [currentValues, setCurrentValues] = useState(null);
+    const [settings, error, loading] = useFetch("settings/game.json");
+    const [currentFieldValues, setCurrentFieldValues] = useState({});
     const [currentlyFetching, setCurrentlyFetching] = useState([]);
 
     /**
@@ -26,7 +26,7 @@ export default function GameSettings({ isLogged, setNumberOfPlayers, timerToggle
      */
     const changeValues = async (setting) => {
         const { type, id, checked, value } = setting;
-        const localData = getStorage("scUserDetails");
+        const localData = getStorage("scUserDetails") || {};
         const newValues = {...localData.gameSettings};
         const settingValue = type === "checkbox" ? checked : value;
 
@@ -37,9 +37,9 @@ export default function GameSettings({ isLogged, setNumberOfPlayers, timerToggle
             setCurrentlyFetching([id, ...currentlyFetching]);
             await changeSettingInDB(setting).then(() => setCurrentlyFetching([...currentlyFetching].splice(id, 1)));
         };
-        
+
         saveToStorage("scUserDetails", { gameSettings: newValues } );
-        setCurrentValues(newValues);
+        setCurrentFieldValues(newValues);
         handleSpecificSettings(id, settingValue);
     };
 
@@ -59,49 +59,58 @@ export default function GameSettings({ isLogged, setNumberOfPlayers, timerToggle
     };
 
     /**
-     * Compare the currently available settings with the present settings object if available.
-     * @param {Array<object>} settings The currently available settings and their respective values
-     * @param {Object|undefined} localData The local storage data object if present.
-     * @returns Either the value from the local storage object, or the default settings object.
+     * Merge the currently available settings with the present settings object if available.
+     * @param {Array<object>} settings The currently available settings and their respective values.
+     * @returns An array containing the merged settings.
      */
-    const compareValues = (settings, localData) => {
-        const values = {};
+    function mergeValues(settings) {
+        const storageData = getStorage("scUserDetails");
+        const currentValues = {};
 
-        if (localData && localData.gameSettings) {
-            const { gameSettings } = localData;
+        if (storageData && storageData.gameSettings) {
+            const gameSettings = storageData.gameSettings;
 
-            for (const { id, defaultValue } of settings) {
-                values[id] = gameSettings[id] ? gameSettings[id] : defaultValue;
+            for (let i = 0; i < settings.length; i++) {
+                const { id, defaultValue } = settings[i];
+                const isNotDefault = typeof gameSettings[id] === typeof defaultValue && gameSettings[id] !== defaultValue;
+                
+                Object.defineProperty(currentValues, id, {
+                    value: isNotDefault ? gameSettings[id] : defaultValue
+                });
             };
         };
 
-        return values;
+        return currentValues;
     };
 
     useEffect(() => {
-        fetchData("settings/game.json").then(res => {
-            const localData = getStorage("scUserDetails");
-            const values = compareValues(res, localData);
-
-            setCurrentValues(values);
-            setAvailableSettings(res);
-        });
-    }, [isLogged]);
+        if (settings) {
+            setCurrentFieldValues(mergeValues(settings));
+        };
+    }, [isLogged, settings]);
 
     return <div className={styles.gameSettings}>
         <h3>Game settings</h3>
 
         <div className={styles.settingsSection}>
-            {availableSettings && availableSettings.map(el =>  {
+            {settings && settings.map(el =>  {
                 const { type, title, id, min, disabled } = el;
+
                 const section = "game_settings";
                 const availableFields = {
-                    checkbox: <Checkbox title={title} id={id} section={section} value={currentValues[id]} changeHandler={changeValues} disabled={disabled} key={title} />,
-                    numberInput: <NumberInput title={title} id={id} section={section} min={min} value={currentValues[id]} changeHandler={changeValues} disabled={disabled} key={title} />
+                    checkbox: <Checkbox title={title} id={id} section={section} value={currentFieldValues[id]} changeHandler={changeValues} disabled={disabled} key={title} />,
+                    numberInput: <NumberInput title={title} id={id} section={section} min={min} value={currentFieldValues[id]} changeHandler={changeValues} disabled={disabled} key={title} />
                 };
 
-                return availableFields[type];
+                return availableFields[type] && availableFields[type];
             })}
+
+            {loading && <p>Something serious is </p>}
+
+            {error && <>
+                <h1>json fetch error :</h1>
+                <span>error</span>
+            </>}
         </div>
     </div>;
 };

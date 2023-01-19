@@ -37,6 +37,7 @@ export default function Main({ isPlaying, numberOfPlayers, playerNames, setPlaye
      * @param {Boolean} state The expected modal visibility state.
      */
     const handleModalVisibility = (state) => {
+        console.log(isEditingInput, state);
         if (isPlaying && !isEditingInput) {
             setInputModalVisible(state);
         };

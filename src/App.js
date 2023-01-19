@@ -38,7 +38,7 @@ export default function App() {
 
 		if (userDetails && userDetails.gameSettings) {
 			const { username, gameSettings } = userDetails;
-			const playersCalc = Number(gameSettings.numberOfPlayers);
+			const playersCalc = Number(gameSettings.numberOfPlayers) || 1;
 			const nameOptions = (idx) => (gameDetails.scores && gameDetails.scores[idx] && gameDetails.scores[idx].name) || `Player ${idx + 1}`;
 			const names = [...Array(playersCalc).keys()].map(nameOptions);
 
@@ -54,7 +54,6 @@ export default function App() {
 			if (gameDetails && gameDetails.playerTurnIndex) {
 				setPlayerTurnIndex(gameDetails.playerTurnIndex);
 			};
-
 		};
 
 		setStorage({ key: "scUserDetails", value: userDetails });
@@ -79,7 +78,6 @@ export default function App() {
 		};
 
 		setStorage({ key: "scGameDetails", value: gameDetails });
-		console.log("x", JSON.parse(localStorage.scGameDetails));
 		handlePlayerTurnIndex(0);
 	};
 
@@ -105,7 +103,7 @@ export default function App() {
 	const handleLoggedState = useCallback((loggedState, playerData) => {
 		setIsLogged(loggedState);
 		initPlayerData(playerData || getStorage("scUserDetails"), loggedState);
-	}, [])
+	}, []);
 
 	/**
 	 * Edit a player name field.
