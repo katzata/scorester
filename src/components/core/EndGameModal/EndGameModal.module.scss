@@ -32,6 +32,7 @@ $summary-title-font-weight: 400;
 
         
         >svg {
+            min-height: 80px;
             padding: .5vh 0 calc(.5vh + 10px);
             margin: 0 auto;
             font-family: fonts.$primary-font;

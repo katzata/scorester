@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 /**
- * A custom hook that 
+ * A hook that handles hold functionality.
  * @returns An array containing the hold trigger (holdTrigger), the holding toggle (setIsHolding) and the possibility to set a custom delay (setDelay).
  */
 export default function useClickAndHold() {

@@ -1,13 +1,18 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState, useContext } from 'react';
 import './App.css';
 
 import { setStorage, getStorage/* , saveToStorage */ } from './services/storageService';
-import { checkIfLogged, initUserDetails } from './services/userService';
+import { /* checkIfLogged,  */initUserDetails } from './services/userService';
+import ErrorBoundary from './components/core/ErrorBoundary/ErrorBoundary';
+
+import UserContext, { UserProvider } from './contexts/UserContext';
+import GameContext, { GameProvider } from './contexts/GameContext';
 
 import Header from './components/core/Header/Header';
 import Main from './components/core/Main/Main';
 import Footer from './components/core/Footer/Footer';
 import EndGameModal from './components/core/EndGameModal/EndGameModal';
+// import useFetch from './hooks/useFetch';
 
 const initialGameData = getStorage("scGameDetails") || {};
 
@@ -25,6 +30,9 @@ export default function App() {
 	const [mainTimerVisible, setMainTimerVisible] = useState(initialGameData.mainTimerVisible || false);
     const [individualTimersVisible, setIndividualTimersVisible] = useState(initialGameData.individualTimersVisible || false);
 	const [endgameModalVisible, setEndgameModalVisible] = useState(false);
+
+	const userContext = useContext(UserContext);
+	const gameContext = useContext(GameContext);
 
 	/**
 	 * Initializes the player details object.
@@ -141,50 +149,56 @@ export default function App() {
 	};
 
 	useEffect(() => {
-		checkIfLogged(initialGameData && initialGameData.id).then(handleLoggedState);
-	}, [handleLoggedState, gamePaused]);
+		// console.log(initialGameData);
+		// checkIfLogged(initialGameData && initialGameData.id).then(handleLoggedState);
+		initPlayerData(getStorage("scUserDetails"), false);
+	}, []);
 
 	return <>
-		<Header
-			isLogged={isLogged}
-			isPlaying={isPlaying}
-			gamePaused={gamePaused}
-			playerNames={playerNames}
-			playerTurnIndex={playerTurnIndex}
-			handleLoggedState={handleLoggedState}
-			numberOfPlayers={numberOfPlayers}
-			setNumberOfPlayers={setNumberOfPlayers}
-			mainTimerVisible={mainTimerVisible}
-			mainTimerToggle={setMainTimerVisible}
-			individualTimersVisible={individualTimersVisible}
-			individualTimersToggle={setIndividualTimersVisible}
-		/>
+		<ErrorBoundary>
+			<UserProvider>
+				<GameProvider>
+					<Header
+						gamePaused={gamePaused}
+						playerNames={playerNames}
+						playerTurnIndex={playerTurnIndex}
+						handleLoggedState={handleLoggedState}
+						numberOfPlayers={numberOfPlayers}
+						setNumberOfPlayers={setNumberOfPlayers}
+						mainTimerVisible={mainTimerVisible}
+						mainTimerToggle={setMainTimerVisible}
+						individualTimersVisible={individualTimersVisible}
+						individualTimersToggle={setIndividualTimersVisible}
+					/>
 
-		<Main
-			isPlaying={isPlaying}
-			gamePaused={gamePaused}
-			numberOfPlayers={numberOfPlayers}
-			playerNames={playerNames}
-			setPlayerName={handlePlayerNameEdit}
-			playerTurnIndex={playerTurnIndex}
-			playerTurnIndexHandler={handlePlayerTurnIndex}
-		/>
+					<Main
+						isPlaying={isPlaying}
+						gamePaused={gamePaused}
+						numberOfPlayers={numberOfPlayers}
+						playerNames={playerNames}
+						setPlayerName={handlePlayerNameEdit}
+						playerTurnIndex={playerTurnIndex}
+						playerTurnIndexHandler={handlePlayerTurnIndex}
+					/>
 
-		<Footer
-			isLogged={isLogged}
-			isPlaying={isPlaying}
-			gamePaused={gamePaused}
-			setIsPlaying={handleIsPlayingState}
-			setGamePaused={setGamePaused}
-			mainTimerVisible={mainTimerVisible}
-			individualTimersVisible={individualTimersVisible}
-		/>
+					<Footer
+						isLogged={isLogged}
+						isPlaying={isPlaying}
+						gamePaused={gamePaused}
+						setIsPlaying={handleIsPlayingState}
+						setGamePaused={setGamePaused}
+						mainTimerVisible={mainTimerVisible}
+						individualTimersVisible={individualTimersVisible}
+					/>
 
-		{endgameModalVisible && <EndGameModal
-			isVisible={endgameModalVisible}
-			visibilityHandler={handleEndgameModal}
-			mainTimerVisible={mainTimerVisible}
-			individualTimersVisible={individualTimersVisible}
-		/>}
+					{endgameModalVisible && <EndGameModal
+						isVisible={endgameModalVisible}
+						visibilityHandler={handleEndgameModal}
+						mainTimerVisible={mainTimerVisible}
+						individualTimersVisible={individualTimersVisible}
+					/>}
+				</GameProvider>
+			</UserProvider>
+		</ErrorBoundary>
 	</>;
 };

@@ -92,7 +92,7 @@ export const checkIfLogged = async () => {
 
         return doFetch({ route: "/checkIfLogged", body }).then(res => {
             if (res && res.id && res.username && res.userSettings && res.gameSettings) {
-				// setStorage({ key: "scUserDetails", value: res });
+                // setStorage({ key: "scUserDetails", value: res });
                 return res;
 			} else {
                 return false;
@@ -132,11 +132,11 @@ export const initUserDetails = (presentData) => {
 
 /**
  * Compares the data type of two objects.
- * !!! Supports nesting at a depth of one level (further depth will not be needed).
+ * !!! Supports nesting at a depth of one level (further depth not be needed).
  * E.G. { a: [1,2...] }.
  * @param {Object.<any>} presentData An object containing any type of key value pairs.
  * @param {Object.<any>} defaultData An object containing any type of key value pairs.
- * @returns 
+ * @returns {Boolean} Indicates wether the data is ok or not.
  */
 const compareObjectData = (presentData, defaultData) => {
     let dataOk = true;

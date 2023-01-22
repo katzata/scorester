@@ -1,14 +1,19 @@
-import { useState } from "react";
+import {/*  useEffect,  */useState, useContext } from "react";
 import styles from "./Auth.module.scss";
+import UserContext/* , { UserProvider } */ from "../../../../../contexts/UserContext";
 
-import { register, login/* , logout, changeSetting  */} from "../../../../../services/userService";
+import { register/* , logout, changeSetting  */} from "../../../../../services/userService";
+import useFetch from "../../../../../hooks/useFetch";
 // import { getStogare } from "../../../../../services/storageService";
 
 function Auth({ title, handleLoggedState }) {
+    const userContext = useContext(UserContext);
+    // const { isLogged } = userContext;
+    // console.log(userContext);
+
+    const [data, error, loading, fetchData] = useFetch("");
     const [username, setUsername] = useState("asd");
     const [password, setPassword] = useState("asdasd");
-    // const [username, setUsername] = useState("");
-    // const [password, setPassword] = useState("");
     const [rePassword, setRePassword] = useState("");
     const [isRegistering, setIsRegistering] = useState(false);
     
@@ -17,6 +22,28 @@ function Auth({ title, handleLoggedState }) {
     const toggleFormType = (e) => {
         e.preventDefault();
         setIsRegistering(!isRegistering);
+    };
+
+    const login = async ({ username, password }) => {
+        const body = new URLSearchParams();
+        body.append("username", username);
+        body.append("password", password);
+        // console.log("x");
+        fetchData("/").then(res => userContext.login(res));
+        // return doFetch({ route: "/login", body }).then(res => {
+        //     let loggedIn = false;
+        //     let response = {};
+    
+        //     if (res.id) {
+        //         loggedIn = true;
+        //         response = res;
+        //     } else {
+        //         // !!!ERROR!!!
+        //         console.warn(res.errors);
+        //     };
+    
+        //     handleLoggedState(loggedIn, response );
+        // });
     };
 
     const handleSubmit = (e) => {
@@ -29,6 +56,10 @@ function Auth({ title, handleLoggedState }) {
     };
 
     const inputStyle = { width: isRegistering ? "94%" : "48%" };
+
+    // useEffect(() => {
+    //     console.log(data);
+    // }, [data])
     
     return <>
         <form className={styles.loginForm} onSubmit={(e) => handleSubmit(e, handleLoggedState)}>

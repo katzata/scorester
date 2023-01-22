@@ -20,7 +20,6 @@ export default function ScoreColumn({
         
     const isCurrentlyPlaying = playerTurnIndex === index;
     const columnStyles = {
-        width: `${100 / (numberOfPlayers || 1)}%`,
         backgroundColor: isCurrentlyPlaying ? "#121212" : "transparent",
         userSelect: isCurrentlyPlaying ? "auto" : "none"
     };

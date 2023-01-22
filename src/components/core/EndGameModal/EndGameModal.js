@@ -35,7 +35,7 @@ export default function EndGameModal({ isVisible, visibilityHandler, mainTimerVi
             data.scores[i].scores = [0];
         };
         
-        data.scores[i].scoreTotal = data.scores[i].scores.reduce((a, b) => a + (b || 0))
+        data.scores[i].scoreTotal = data.scores[i].scores.reduce((a, b) => a + (b || 0));
         totalTurns += increment;
         data.scores[i].turns = increment;
         data.scores[i].highestScore = Math.max(...data.scores[i].scores);
@@ -47,7 +47,7 @@ export default function EndGameModal({ isVisible, visibilityHandler, mainTimerVi
 
     scores = scores.sort((a, b) => b.scoreTotal - a.scoreTotal);
     highestScored = [...scores].sort((a, b) => b.highestScore - a.highestScore)[0];
-    lowestTime = [...scores].sort((a, b) => a.timer.reduce((a, b) => a + b) - b.timer.reduce((a, b) => a + b))[0]
+    lowestTime = [...scores].sort((a, b) => a.timer.reduce((a, b) => a + b) - b.timer.reduce((a, b) => a + b))[0];
 
     const winnerStats = [
         ["Points", <p>{formatScores(scores[0].scores)}</p>],
@@ -109,7 +109,7 @@ export default function EndGameModal({ isVisible, visibilityHandler, mainTimerVi
                         {scores && scores.map((player, idx) => <RankRow
                             position={idx + 1}
                             playerName={player.name}
-                            score={player.scores}
+                            score={player.scoreTotal}
                             timer={player.timer}
                             key={`results${idx + 1}`}
                         />)}
