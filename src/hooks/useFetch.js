@@ -31,7 +31,7 @@ const useFetch = (endpoint, body, local) => {
 
 		if (body) options["body"] = body;
 
-		// console.log(url);
+		console.log(url);
 		return fetch(url, !local ? options : null)
 			.then((res) => res.json())
 			.then((data) => {

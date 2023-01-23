@@ -2,16 +2,21 @@ import { useContext } from "react";
 import styles from "./Footer.module.scss";
 
 import GameContext from "../../../contexts/GameContext";
-import { saveToStorage } from "../../../services/storageService";
+// import { saveToStorage } from "../../../services/storageService";
 
-export default function Footer({ setIsPlaying, setGamePaused, mainTimerVisible, individualTimersVisible }) {
+export default function Footer({ mainTimerVisible, individualTimersVisible }) {
     const gameContext = useContext(GameContext);
     const { isPlaying, gamePaused } = gameContext.gameData;
     const timersPresent = mainTimerVisible || individualTimersVisible;
 
     const handleIsPlayingToggle = () => {
         const playingState = gameContext.gameData.isPlaying;
-        gameContext.setData({ isPlaying: !playingState });
+        const data = {
+            isPlaying: !playingState,
+            gamePaused: !playingState ? false : gamePaused
+        };
+
+        gameContext.setData(data);
     };
 
     const handlePauseToggle = () => {

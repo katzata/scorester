@@ -36,7 +36,7 @@
     "test": "jest --watch",
     "cy": "npx cypress open",
     "eject": "react-scripts eject",
-    "push-q": "git add . && git commit -m \"Minor changes commit.\" && git push"
+    "pushQ": "git add . && git commit -m \"Minor changes commit.\" && git push"
   },
   "eslintConfig": {
     "extends": [

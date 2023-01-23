@@ -19,9 +19,11 @@ export function GameProvider({ children, numberOfPlayers }) {
     const [gameData, setGameData] = useState(compareObjectData(storageData, defaultData) ? storageData : defaultData);
 
     const setData = (data) => {
-        const [key, value] = Object.entries(data)[0];
         const newData = { ...gameData };
-        newData[key] = value;
+
+        for (const [key, value] of Object.entries(data)) {
+            newData[key] = value;
+        };
 
         saveToStorage("scGameDetails", newData);
         setGameData(newData);
