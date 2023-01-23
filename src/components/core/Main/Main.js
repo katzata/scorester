@@ -1,34 +1,28 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import styles from "./Main.module.scss";
+
+import UserContext from "../../../contexts/UserContext";
+import GameContext from "../../../contexts/GameContext";
 
 import { getStorage, saveToStorage } from "../../../services/storageService";
 
 import InputModal from "./InputModal/InputModal";
 import ScoreColumn from "./ScoreColumn/ScoreColumn";
 
+const initialGameData = getStorage("scGameDetails") || {};
+
 /**
  * Component containing the player score columns.
- * One of the three main components besides the Header and Footer.
- * 
- * @param {Object} props
- * @param {Boolean} props.isPlaying
- * @param {Number} props.numberOfPlayers
- * @param {Array.<String>} props.playerNames
- * @param {Function} props.setPlayerName
- * @param {Number} props.playerTurnIndex
- * @param {Function} props.playerTurnIndexHandler
- * 
- * @component
- * @param {Boolean} props.isPlaying The current playing state.
- * @param {Number} props.numberOfPlayers The total number of current players.
- * @param {Array.<String>} props.playerNames An array containing the current player names.
- * @param {Function} props.setPlayerName A callback function that handles player name editing.
- * @param {Number} props.playerTurnIndex A number indicating whose turn is it.
- * @param {Function} props.playerTurnIndexHandler A callback that handles the player turn index change.
+ * One of the four main components besides the Header, Footer and the EndGameModal.
  */
-export default function Main({ isPlaying, numberOfPlayers, playerNames, setPlayerName, playerTurnIndex, playerTurnIndexHandler }) {
-    const initialDetails = getStorage("scGameDetails") || {};
-    const [playerScores, setPlayerScores] = useState((initialDetails.scores && initialDetails.scores.map(el => el.scores)) || [...Array(numberOfPlayers).fill([])]);
+export default function Main() {
+    const userContext = useContext(UserContext);
+    const gameContext = useContext(GameContext);
+    const { numberOfPlayers } = userContext.userData.gameSettings;
+    const { isPlaying, scores, playerTurnIndex } = gameContext.gameData;
+
+    const [playerNames, setPlayerNames] = useState(scores.map(el => el.name));
+    const [playerScores, setPlayerScores] = useState(scores.map(el => el.scores));
     const [inputModalVisible, setInputModalVisible] = useState(false);
     const [isEditingInput, setIsEditingInput] = useState(false);
 
@@ -53,7 +47,6 @@ export default function Main({ isPlaying, numberOfPlayers, playerNames, setPlaye
         saveToStorage("scGameDetails", { scores: gameScores });
         setPlayerScores(gameScores.map(el => el.scores));
         handleModalVisibility(false);
-        playerTurnIndexHandler();
     };
 
     const handleScores = useCallback(() => {
@@ -61,6 +54,23 @@ export default function Main({ isPlaying, numberOfPlayers, playerNames, setPlaye
             setPlayerScores([...Array(numberOfPlayers).fill([])]);
         };
     }, [isPlaying, numberOfPlayers]);
+
+    /**
+	 * Edit a player name field.
+	 * Sets the state hook (playerNames) and saves to local storage.
+	 * @param {Number} index The index indicating which player name to edit.
+	 * @param {String} newName The new name value.
+	 */
+	const handlePlayerNameEdit = (index, newName) => {
+		const localData = getStorage("scGameDetails");
+		const newPlayerNames = [...playerNames];
+
+		localData["scores"][index].name = newName
+		newPlayerNames[index] = newName;
+
+		setPlayerNames(newPlayerNames);
+        saveToStorage("scGameDetails", localData);
+	};
 
     useEffect(() => {
         handleScores();
@@ -86,7 +96,7 @@ export default function Main({ isPlaying, numberOfPlayers, playerNames, setPlaye
                     playerScores={playerScores[idx]}
                     addPlayerScores={(score) => addPlayerScores(idx, score)}
                     numberOfPlayers={numberOfPlayers}
-                    setPlayerName={setPlayerName}
+                    setPlayerName={handlePlayerNameEdit}
                     setIsEditingInput={setIsEditingInput}
                     inputModalVisibilityHandler={() => handleModalVisibility(true)}
                     key={`col${idx}`}

@@ -1,7 +1,7 @@
-import { useState/* , useContext */ } from "react";
+import { useState, useContext } from "react";
 import styles from "./Header.module.scss";
 
-// import UserContext from "../../../contexts/UserContext";
+import UserContext from "../../../contexts/UserContext";
 
 import Timers from "./Timers/Timers";
 import Modal from "../../shared/Modal/Modal";
@@ -10,50 +10,15 @@ import GameSettings from "./GameSettings/GameSettings";
 import Icons from "../../shared/Icons/Icons";
 import SvgOutlinedText from "../../shared/SvgOutlinedText/SvgOutlinedText";
 
-/**
- * 
- * @param {Object} props
- * @param {Boolean} props.isLogged
- * @param {Boolean} props.isPlaying
- * @param {Boolean} props.gamePaused
- * @param {Number} props.playerTurnIndex
- * @param {Number} props.numberOfPlayers
- * @param {Function} props.handleLoggedState
- * @param {Function} props.setNumberOfPlayers
- * @param {Boolean} props.mainTimerVisible
- * @param {Function} props.mainTimerToggle
- * @param {Boolean} props.individualTimersVisible
- * @param {Function} props.individualTimersToggle
- */
-export default function Header({
-    isPlaying,
-    gamePaused,
-    playerTurnIndex,
-    numberOfPlayers,
-    handleLoggedState,
-    setNumberOfPlayers,
-    mainTimerVisible,
-    mainTimerToggle,
-    individualTimersVisible,
-    individualTimersToggle
-    }) {
+export default function Header({ handleLoggedState }) {
+    const userContext = useContext(UserContext);
+    const { mainTimer, individualTimers } = userContext.userData.gameSettings;
     const [userSettingsVisible, setUserSettingsVisible] = useState(false);
     const [gameSettingsVisible, setGameSettingsVisible] = useState(false);
-    const timerToggles = {
-        mainTimer: mainTimerToggle,
-        individualTimers: individualTimersToggle
-    };
-    
+
     return <header>
         <div className={styles.timersWrapper}>
-            {/* {(mainTimerVisible || individualTimersVisible) && <Timers
-                isPlaying={isPlaying}
-                gamePaused={gamePaused}
-                playerTurnIndex={playerTurnIndex}
-                numberOfPlayers={numberOfPlayers}
-                mainTimerVisible={mainTimerVisible}
-                individualTimersVisible={individualTimersVisible}
-            />} */}
+            {(mainTimer || individualTimers) && <Timers/>}
         </div>
 
         <SvgOutlinedText text="Scorester" width="146" height="62"/>
@@ -75,7 +40,7 @@ export default function Header({
                 </button>
 
                 <Modal isVisible={gameSettingsVisible} position="fixed" visibilityHandler={setGameSettingsVisible} options={"gameSettings"}>
-                    <GameSettings handleLoggedState={handleLoggedState} setNumberOfPlayers={setNumberOfPlayers} timerToggles={timerToggles} />
+                    <GameSettings />
                 </Modal>
             </div>
         </div>

@@ -6,16 +6,18 @@ import { getStorage, saveToStorage } from "../../../../services/storageService";
 import useFetch from "../../../../hooks/useFetch";
 
 import UserContext from "../../../../contexts/UserContext";
+// import GameContext from "../../../../contexts/UserContext";
 
 import Checkbox from "../SettingFields/Checkbox/Checkbox";
 import NumberInput from "../SettingFields/NumberInput/NumberInput";
 import LoadingText from "../../../shared/LoadingText/LoadingText";
 
-export default function GameSettings({ isLogged, setNumberOfPlayers, timerToggles }) {
-    const currentValues = useContext(UserContext);
+export default function GameSettings({ isLogged }) {
+    const userContext = useContext(UserContext);
+    // const gameContext = useContext(GameContext);
     
     const [settings, error, loading] = useFetch("settings/game.json", null, true);
-    const [currentFieldValues, setCurrentFieldValues] = useState(currentValues.gameSettings);
+    const [currentFieldValues, setCurrentFieldValues] = useState(userContext.userData.gameSettings);
     const [currentlyFetching, setCurrentlyFetching] = useState([]);
 
     /**
@@ -44,25 +46,9 @@ export default function GameSettings({ isLogged, setNumberOfPlayers, timerToggle
             await changeSettingInDB(setting).then(() => setCurrentlyFetching([...currentlyFetching].splice(id, 1)));
         };
 
+        userContext.setData({ gameSettings: newValues });
         saveToStorage("scUserDetails", { gameSettings: newValues } );
         setCurrentFieldValues(newValues);
-        handleSpecificSettings(id, settingValue);
-    };
-
-
-    /**
-     * Sets additional state toggles/fields for sepcific settings.
-     * @param {String} id The setting id that is currently being edited.
-     * @param {String|Number|Boolean} value Value taken from the input component (will be primitives).
-     */
-    const handleSpecificSettings = (id, value) => {
-        if (id === "numberOfPlayers") {
-            setNumberOfPlayers(value);
-        };
-
-        if (id === "mainTimer" || id === "individualTimers") {
-            timerToggles[id](value);
-        };
     };
 
     // /**

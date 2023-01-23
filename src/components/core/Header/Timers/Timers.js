@@ -25,15 +25,15 @@ import { /* getStorage,  */saveToStorage } from "../../../../services/storageSer
  * @props gameSettings.mainTimer - Indicates the main timer visibility.
  * @props gameSettings.individualTimers - Indicates the individual timers visibility.
  */
-export default function Timers(/* { gameSettings.mainTimer, gameSettings.individualTimers } */) {
+export default function Timers() {
     const userContext = useContext(UserContext);
     const gameContext = useContext(GameContext);
-    const { gameSettings } = userContext;
-    const { isPlaying, gamePaused, playerTurnIndex } = gameContext;
+    const { gameSettings } = userContext.userData;
+    const { isPlaying, gamePaused, playerTurnIndex } = gameContext.gameData;
 
-    const [mainTimer, setMainTimer] = useState(gameContext.mainTimer);
-    const [individualTimers, setIndividualTimers] = useState(gameContext.individualTimers);
-    
+    const [mainTimer, setMainTimer] = useState(gameContext.gameData.mainTimer);
+    const [individualTimers, setIndividualTimers] = useState(gameContext.gameData.individualTimers);
+
     /**
      * Increases the main timer and sets the mainTimer hook.
      */

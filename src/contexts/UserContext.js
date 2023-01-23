@@ -1,7 +1,7 @@
 import { createContext, useState } from "react";
 import { getStorage } from "../services/storageService";
 import { compareObjectData } from "../utils/utils";
-// import useFetch from "../hooks/useFetch";
+import { saveToStorage } from "../services/storageService";
 
 const UserContext = createContext();
 
@@ -22,16 +22,19 @@ export function UserProvider({ children }) {
             editableFields: false
         }
     };
-
     const [userData, setUserData] = useState(compareObjectData(storageData, defaultData) ? storageData : defaultData);
     const setData = (data) => {
-        console.log(data);
-        // setUserData();
+        const newData = { ...userData };
+
+        for (const [key, value] of Object.entries(data)) {
+            newData[key] = value;
+        };
+
+        saveToStorage("scUserDetails", newData);
+        setUserData(newData);
     };
 
-    // const userData = compareObjectData(storageData, defaultData) ? storageData : defaultData;
-
-    return <UserContext.Provider value={{ ...userData, setData }} numberOfPlayers={userData.gameSettings.numberOfPlayers}>
+    return <UserContext.Provider value={{ userData, setData }}>
         {children}
     </UserContext.Provider>;
 };
