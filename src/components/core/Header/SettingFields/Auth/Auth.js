@@ -1,6 +1,6 @@
 import {/*  useEffect,  */useState, useContext } from "react";
 import styles from "./Auth.module.scss";
-import UserContext/* , { UserProvider } */ from "../../../../../contexts/UserContext";
+import UserContext from "../../../../../contexts/UserContext";
 
 import { register/* , logout, changeSetting  */} from "../../../../../services/userService";
 import useFetch from "../../../../../hooks/useFetch";
@@ -28,7 +28,7 @@ function Auth({ title, handleLoggedState }) {
         const body = new URLSearchParams();
         body.append("username", username);
         body.append("password", password);
-        // console.log("x");
+
         fetchData("/").then(res => userContext.login(res));
         // return doFetch({ route: "/login", body }).then(res => {
         //     let loggedIn = false;

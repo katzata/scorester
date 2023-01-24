@@ -12,14 +12,22 @@ export default function Footer({ endGameModalVisibilityHandler }) {
 
     const timersPresent = mainTimer || individualTimers;
 
+    /**
+     * Start ghe gaem if the isPlaying context toggle is false.
+     * If the isPlaying context toggle is true, show the endGameModal component.
+     */
     const handleIsPlayingToggle = () => {
         if (!isPlaying) {
             gameContext.dispatch({ type: "start_game" });
         } else {
+            gameContext.dispatch({ type: "pause_game" });
             endGameModalVisibilityHandler(true);
         };
     };
 
+    /**
+     * Pause and unpause the game.
+     */
     const handlePauseToggle = () => {
         gameContext.dispatch({ type: !gamePaused ? "pause_game" : "resume_game" });
     };

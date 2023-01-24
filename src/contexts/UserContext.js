@@ -30,7 +30,7 @@ export function UserProvider({ children }) {
         for (const [key, value] of Object.entries(data)) {
             newData[key] = value;
         };
-
+        console.log(newData);
         setStorage({ key:"scUserDetails", value: newData});
         setUserData(newData);
     };

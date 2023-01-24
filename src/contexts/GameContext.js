@@ -1,4 +1,4 @@
-import { createContext, useEffect, /* useState, */ useReducer } from "react";
+import { createContext, useReducer } from "react";
 import { getStorage, setStorage } from "../services/storageService";
 import { mergeObjectData } from "../utils/utils";
 
@@ -11,13 +11,32 @@ export function GameProvider({ children }) {
         isPlaying: isPlaying !== undefined ? isPlaying : false,
         gamePaused: gamePaused !== undefined ? gamePaused : false,
         playerTurnIndex: playerTurnIndex !== undefined ? playerTurnIndex : 0,
-        mainTimer: mainTimer !== undefined ? mainTimer : [0, 0, 0],
+        mainTimer: mainTimer !== undefined ? mainTimer : 0,
         scores: scores !== undefined ? scores : [...Array(1).keys()].map(el => ({ name: `Player ${el + 1}`, scores: [] })),
-        individualTimers:  individualTimers !== undefined ? individualTimers : [...Array(1).fill([0, 0, 0])]
+        individualTimers:  individualTimers !== undefined ? individualTimers : [...Array(1).fill(0)]
     };
     
     const [gameData, dispatch] = useReducer(reducer, mergeObjectData(storageData, defaultData));
 
+    /**
+     * Sets the current context state accourding to the provided actions.
+     * Saves to local storage the updated state.
+     * @param {Object.<any>} state The current state.
+     * @param {Object} action The current action (may have payload).
+     * @actions
+     * - start_game
+     * - stop_game
+     * - pause_game
+     * - resume_game
+     * - score - paylode Number
+     * - player_name - paylode String
+     * - number_of_players - paylode Number
+     * @returns The updated state object.
+     * !!!
+     * Returning the state at the end makes updating the state and storage with the same data object.
+     * But that also makes the switch scope a bit tricky (break instead of return).
+     * !!!
+     */
     function reducer(state, action) {
         let newData = { ...state };
 
@@ -28,6 +47,16 @@ export function GameProvider({ children }) {
             case "stop_game":
                 newData.isPlaying = false;
                 newData.gamePaused = false;
+
+                if (newData.mainTimer !== 0) {
+                    newData.mainTimer = 0;
+                };
+
+                for (let i = 0; i < newData.scores.length; i++) {
+                    newData.scores[i].scores = [];
+                    newData.individualTimers[i] = 0;
+                };
+
                 break;
             case "pause_game":
                 newData.gamePaused = true;
@@ -47,47 +76,32 @@ export function GameProvider({ children }) {
             case "number_of_players":
                 while (newData.scores.length !== action.payload) {
                     if (newData.scores.length <= action.payload) {
-                        console.log(newData.individualTimers);
-                        newData.individualTimers.push([0, 0, 0]);
+                        newData.individualTimers.push(0);
                         newData.scores.push({ name: `Player ${newData.scores.length + 1}`, scores: [] });
-                        console.log(newData.individualTimers);
                     } else {
                         newData.scores.pop();
                         newData.individualTimers.pop();
                     };
                 };
                 break;
+            case "timers_update":
+                const { mainTimerVisible, individualTimersVisible } = action.payload;
+
+                if (mainTimerVisible) {
+                    newData.mainTimer += 1;
+                };
+
+                if (individualTimersVisible) {
+                    newData.individualTimers[playerTurnIndex] += 1;
+                };
+                break;
             default:
                 return state;
         };
-        // console.log(newData.individualTimers);
+
         setStorage({ key:"scGameDetails", value: newData});
         return newData;
     };
-
-    /**
-     * Set the context data.
-     * @param {Object} data Object containing key value pairs corresponding to the settings that will be updated.
-     */
-    // function setData(data) {
-    //     const newData = { ...gameData };
-
-    //     for (const [key, value] of Object.entries(data)) {
-    //         newData[key] = value;
-    //         dispatch()
-    //     };
-
-    //     setStorage({ key:"scGameDetails", value: newData});
-    //     setGameData(newData);
-
-    //     return {
-    //         start: dispatch("start_game")
-    //     };
-    // };
-
-    useEffect(() => {
-        console.log("asd");
-    }, []);
 
     const value = { gameData, dispatch };
     return <GameContext.Provider value={value}>

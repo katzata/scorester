@@ -14,7 +14,10 @@ import styles from "./SvgTimer.module.scss";
  * @param {Object} props.style Used to add additional styles to the component.
  */
 export default function SvgTimer({ id, digits, style }) {
-    const formatTimer = (time) => time < 10 ? `0${time}` : time;
+    const formatTimer = (time) => Number(time) < 10 ? `0${time}` : time;
+    const hours = Math.floor(digits / 3600);
+    const minutes = Math.floor(digits / 60);
+    const seconds = digits - minutes * 60;
 
     return <svg className={styles.svgTimer} height="60px" viewBox="0 0 210 60" style={{pointerEvents: "none", ...style}}>
         <defs>
@@ -24,7 +27,7 @@ export default function SvgTimer({ id, digits, style }) {
             </linearGradient>
         </defs>
 
-        {digits && digits.map((time, idx) => {
+        {[hours, minutes, seconds].map((time, idx) => {
             const digitsOffset = [-68, 0, 68];
             const dividersOffset = [-34, 34];
 
@@ -36,7 +39,6 @@ export default function SvgTimer({ id, digits, style }) {
                 key={`mainDigit${idx}`}
             >
                 {idx > 0 && <text x="50%" y="-8" transform={`translate(${dividersOffset[idx - 1]})`}>:</text>}
-
                 <text x="50%" y="0%" transform={`translate(${digitsOffset[idx]})`}>
                     {formatTimer(time)}
                 </text>

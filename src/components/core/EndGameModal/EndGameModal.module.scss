@@ -9,6 +9,12 @@ $summary-title-font-weight: 400;
     top: 0;
     width: 100%;
     height: 100%;
+
+    
+
+    >svg {
+        width: auto;
+    }
     
     .scoreDetails {
         width: 92vw;
@@ -20,6 +26,23 @@ $summary-title-font-weight: 400;
         box-shadow: inset 0 0 2px 0px black;
         border-radius: 6px;
         text-shadow: 0 1px 1px rgba(0, 0, 0, .6);
+
+        .topContainer {
+            width: 100%;
+            display: flex;
+
+            .topButton {
+                width: 40px;
+                height: 40px;
+                background-color: transparent;
+                border: 1px solid red;
+            }
+
+            >svg {
+                height: 100%;
+                flex-grow: 1;
+            }
+        }
 
         h3 {
             font-style: italic;

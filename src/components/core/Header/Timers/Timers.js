@@ -1,11 +1,10 @@
-import { useCallback, useEffect, useState, useContext } from "react";
+import { useCallback, useEffect, useContext } from "react";
 import styles from "./Timers.module.scss";
 
 import UserContext from "../../../../contexts/UserContext";
 import GameContext from "../../../../contexts/GameContext";
 
 import SvgTimer from "../../../shared/SvgTimer/SvgTimer";
-import { /* getStorage,  */saveToStorage } from "../../../../services/storageService";
 
 /**
  * Component displaying all possible timers (main timer, individual timers).
@@ -29,90 +28,26 @@ export default function Timers() {
     const userContext = useContext(UserContext);
     const gameContext = useContext(GameContext);
     const { gameSettings } = userContext.userData;
-    const { isPlaying, gamePaused, playerTurnIndex } = gameContext.gameData;
-
-    const [mainTimer, setMainTimer] = useState(gameContext.gameData.mainTimer);
-    const [individualTimers, setIndividualTimers] = useState(gameContext.gameData.individualTimers);
+    const { isPlaying, gamePaused, playerTurnIndex, mainTimer, individualTimers } = gameContext.gameData;
 
     /**
-     * Increases the main timer and sets the mainTimer hook.
-     */
-    const handleMainTimer = useCallback(() => {
-        if (gameSettings.mainTimer && !gamePaused) {
-            const newTimer = handleTimerIncrease(mainTimer);
-            saveToStorage("scGameDetails", { mainTimer: newTimer });
-            setMainTimer(newTimer);
-        };
-    }, [gamePaused, mainTimer, gameSettings.mainTimer]);
-
-    /**
-     * Increases a specific individual timer based on the playerTurnIndex and sets the individualTimers hook.
-     */
-    const handleIndividualTimers = useCallback(() => {
-        if (gameSettings.individualTimers && !gamePaused) {
-            const newIndividualTime = handleTimerIncrease(individualTimers[playerTurnIndex]);
-            const newTimers = [...individualTimers];
-
-            newTimers[playerTurnIndex] = newIndividualTime;
-            saveToStorage("scGameDetails", { individualTimers: newTimers });
-            setIndividualTimers(newTimers);
-        };
-    }, [gamePaused, individualTimers, playerTurnIndex, gameSettings.individualTimers]);
-
-    /**
-     * Handle all available timers (main and individual), and save them in the local storage object.
+     * Handle all available timers (main and individual).
      */
     const handleTimers = useCallback(() => {
-        handleMainTimer();
-        handleIndividualTimers();
-    }, [handleIndividualTimers, handleMainTimer]);
-
-    /**
-     * Increase the specified timer each second.
-     * @param {Array.<number>} timer An array of three numbers.
-     * @returns An updated timer array;
-     */
-    const handleTimerIncrease = (timer) => {
-        if (timer[2] + 1 < 60) {
-            timer[2]++;
-        } else {
-            timer[1]++;
-            timer[2] = 0;
-
-            if (timer[1] + 1 < 60) {
-                timer[1]++;
-            } else {
-                timer[0]++;
-                timer[1] = 0;
-            };
+        const mainTimerVisible = gameSettings.mainTimer;
+        const individualTimersVisible = gameSettings.individualTimers;
+        
+        if (mainTimerVisible || individualTimersVisible) {
+            gameContext.dispatch({ type: "timers_update", payload: { mainTimerVisible, individualTimersVisible } });
         };
-
-        return [...timer];
-    };
-
-    /**
-     * Reset all the available timers.
-     */
-    const resetTimers = useCallback(() => {
-        if (mainTimer[0] !== 0 || mainTimer[1] !== 0 || mainTimer[2] !== 0) {
-            setMainTimer([0, 0, 0]);
-
-            if (individualTimers.length > 0) {
-                setIndividualTimers([...individualTimers.map(() => [0, 0, 0])]);
-            };
-        };
-    }, [mainTimer, individualTimers]);
+    }, [gameContext, gameSettings.mainTimer, gameSettings.individualTimers]);
 
     useEffect(() => {
-        if (isPlaying && (gameSettings.mainTimer || gameSettings.individualTimers)) {
-            let holdCheckInterval = setInterval(handleTimers, 1000);
-            return () => clearInterval(holdCheckInterval);
+        if (isPlaying && !gamePaused) {
+            let timersInterval = setInterval(handleTimers, 1000);
+            return () => clearInterval(timersInterval);
         };
-
-        if (!isPlaying) {
-            resetTimers();
-        };
-    }, [isPlaying, gameSettings.mainTimer, gameSettings.individualTimers, handleTimers, resetTimers]);
+    }, [isPlaying, gamePaused, handleTimers]);
 
     return <section className={styles.timersSection}>
         { gameSettings.mainTimer && <SvgTimer id="main" digits={mainTimer}/> }
@@ -129,7 +64,7 @@ export default function Timers() {
                     const offset = playerTurnIndex * 100;
                     const offsetToggle = playerTurnIndex <= idx + 1;
                     const position = offsetToggle ? basePosition - offset : basePosition + 100;
-                    
+
                     return <SvgTimer
                         id={`individual${idx}`}
                         digits={timer}
