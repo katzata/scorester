@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import styles from "./Main.module.scss";
 
 import UserContext from "../../../contexts/UserContext";
@@ -8,8 +8,6 @@ import { getStorage, saveToStorage } from "../../../services/storageService";
 
 import InputModal from "./InputModal/InputModal";
 import ScoreColumn from "./ScoreColumn/ScoreColumn";
-
-const initialGameData = getStorage("scGameDetails") || {};
 
 /**
  * Component containing the player score columns.
@@ -21,8 +19,6 @@ export default function Main() {
     const { numberOfPlayers } = userContext.userData.gameSettings;
     const { isPlaying, scores, playerTurnIndex } = gameContext.gameData;
 
-    const [playerNames, setPlayerNames] = useState(scores.map(el => el.name));
-    const [playerScores, setPlayerScores] = useState(scores.map(el => el.scores));
     const [inputModalVisible, setInputModalVisible] = useState(false);
     const [isEditingInput, setIsEditingInput] = useState(false);
 
@@ -37,25 +33,6 @@ export default function Main() {
     };
 
     /**
-     * Add a new score to the current player score column.
-     * @param {Number} score A new player score.
-     */
-    const addPlayerScores = (score) => {
-        const gameScores = getStorage("scGameDetails").scores;
-        gameScores[playerTurnIndex].scores.push(score);
-
-        saveToStorage("scGameDetails", { scores: gameScores });
-        setPlayerScores(gameScores.map(el => el.scores));
-        handleModalVisibility(false);
-    };
-
-    const handleScores = useCallback(() => {
-        if (!isPlaying) {
-            setPlayerScores([...Array(numberOfPlayers).fill([])]);
-        };
-    }, [isPlaying, numberOfPlayers]);
-
-    /**
 	 * Edit a player name field.
 	 * Sets the state hook (playerNames) and saves to local storage.
 	 * @param {Number} index The index indicating which player name to edit.
@@ -63,38 +40,30 @@ export default function Main() {
 	 */
 	const handlePlayerNameEdit = (index, newName) => {
 		const localData = getStorage("scGameDetails");
-		const newPlayerNames = [...playerNames];
+		const newPlayerNames = [...scores.map(el => el.name)];
 
 		localData["scores"][index].name = newName
 		newPlayerNames[index] = newName;
 
-		setPlayerNames(newPlayerNames);
         saveToStorage("scGameDetails", localData);
+        gameContext.dispatch({ type: "player_name", payload: [index, newName] });
 	};
-
-    useEffect(() => {
-        handleScores();
-    }, [isPlaying, handleScores]);
 
     return <main className={styles.main}>
         <InputModal
             isVisible={inputModalVisible}
             visibilityHandler={handleModalVisibility}
-            player={playerNames[playerTurnIndex]}
-            addPlayerScores={addPlayerScores}
+            player={scores[playerTurnIndex].name}
             zIndex={numberOfPlayers}
             playerTurnIndex={playerTurnIndex}
         />
 
         <section className={styles.scoreColumnsContainer}>
-            {[...Array(numberOfPlayers).keys()].map((idx) => {
+            {scores && scores.map((data, idx) => {
                 return <ScoreColumn
-                    isPlaying={isPlaying}
                     index={idx}
-                    player={playerNames[idx] || `Player ${idx + 1}`}
-                    playerTurnIndex={playerTurnIndex}
-                    playerScores={playerScores[idx]}
-                    addPlayerScores={(score) => addPlayerScores(idx, score)}
+                    player={data.name}
+                    playerScores={data.scores}
                     numberOfPlayers={numberOfPlayers}
                     setPlayerName={handlePlayerNameEdit}
                     setIsEditingInput={setIsEditingInput}

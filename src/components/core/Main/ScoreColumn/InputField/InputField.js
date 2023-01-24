@@ -1,11 +1,17 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useContext } from "react";
+
+// import UserContext from "../../../../../contexts/UserContext";
+import GameContext from "../../../../../contexts/GameContext";
 
 import useClickAndHold from "../../../../../hooks/useClickAndHold";
 
 import Icons from "../../../../shared/Icons/Icons";
 import styles from "./InputField.module.scss";
 
-export default function InputField({ isPlaying, type, value, editToggle, setValueHandler }) {
+export default function InputField({ type, value, editToggle, setValueHandler }) {
+    // const userContext = useContext(UserContext).userData;
+    const { isPlaying } = useContext(GameContext).gameData;
+
     const [currentValue, setCurrentValue] = useState(value);
     const [isEditing, setIsEditing] = useState(false);
     const [holdTrigger, setIsHolding] = useClickAndHold();
@@ -13,7 +19,7 @@ export default function InputField({ isPlaying, type, value, editToggle, setValu
     const inputRef = useRef(null);
 
     const inputStyles = {
-        paddingRight: isEditing ? "44px" : "0",
+        width: isEditing ? "calc(96% - 44px)" : "96%",
         userSelect: isEditing ? "auto" : "none"
     };
 
@@ -26,6 +32,7 @@ export default function InputField({ isPlaying, type, value, editToggle, setValu
     const handleHold = (holdState) => {
         if (isPlaying) {
             setIsHolding(holdState);
+
             if (!holdState && isEditing && currentValue === value) {
                 inputRef.current.select();
                 inputRef.current.focus();

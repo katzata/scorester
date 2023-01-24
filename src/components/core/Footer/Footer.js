@@ -4,26 +4,24 @@ import styles from "./Footer.module.scss";
 import GameContext from "../../../contexts/GameContext";
 import UserContext from "../../../contexts/UserContext";
 
-export default function Footer() {
+export default function Footer({ endGameModalVisibilityHandler }) {
     const userContext = useContext(UserContext);
     const gameContext = useContext(GameContext);
     const { mainTimer, individualTimers } = userContext.userData.gameSettings;
     const { isPlaying, gamePaused } = gameContext.gameData;
+
     const timersPresent = mainTimer || individualTimers;
 
     const handleIsPlayingToggle = () => {
-        const playingState = gameContext.gameData.isPlaying;
-        const data = {
-            isPlaying: !playingState,
-            gamePaused: !playingState ? false : gamePaused
+        if (!isPlaying) {
+            gameContext.dispatch({ type: "start_game" });
+        } else {
+            endGameModalVisibilityHandler(true);
         };
-
-        gameContext.setData(data);
     };
 
     const handlePauseToggle = () => {
-        const pausedState = gameContext.gameData.gamePaused;
-        gameContext.setData({ gamePaused: !pausedState });
+        gameContext.dispatch({ type: !gamePaused ? "pause_game" : "resume_game" });
     };
 
     return <footer>

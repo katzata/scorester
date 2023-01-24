@@ -1,7 +1,6 @@
 import { createContext, useState } from "react";
-import { getStorage } from "../services/storageService";
-import { compareObjectData } from "../utils/utils";
-import { saveToStorage } from "../services/storageService";
+import { getStorage, setStorage } from "../services/storageService";
+import { mergeObjectData } from "../utils/utils";
 
 const UserContext = createContext();
 
@@ -22,7 +21,9 @@ export function UserProvider({ children }) {
             editableFields: false
         }
     };
-    const [userData, setUserData] = useState(compareObjectData(storageData, defaultData) ? storageData : defaultData);
+    
+    const [userData, setUserData] = useState(mergeObjectData(storageData, defaultData));
+
     const setData = (data) => {
         const newData = { ...userData };
 
@@ -30,11 +31,12 @@ export function UserProvider({ children }) {
             newData[key] = value;
         };
 
-        saveToStorage("scUserDetails", newData);
+        setStorage({ key:"scUserDetails", value: newData});
         setUserData(newData);
     };
 
-    return <UserContext.Provider value={{ userData, setData }}>
+    const value = { userData, setData };
+    return <UserContext.Provider value={value}>
         {children}
     </UserContext.Provider>;
 };

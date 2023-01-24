@@ -47,7 +47,7 @@ export default function EndGameModal({ isVisible, visibilityHandler, mainTimerVi
 
     scores = scores.sort((a, b) => b.scoreTotal - a.scoreTotal);
     highestScored = [...scores].sort((a, b) => b.highestScore - a.highestScore)[0];
-    lowestTime = [...scores].sort((a, b) => a.timer.reduce((a, b) => a + b) - b.timer.reduce((a, b) => a + b))[0];
+    // lowestTime = [...scores].sort((a, b) => a.timer.reduce((a, b) => a + b) - b.timer.reduce((a, b) => a + b))[0];
 
     const winnerStats = [
         ["Points", <p>{formatScores(scores[0].scores)}</p>],

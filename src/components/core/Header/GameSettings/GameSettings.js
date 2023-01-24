@@ -6,7 +6,7 @@ import { getStorage, saveToStorage } from "../../../../services/storageService";
 import useFetch from "../../../../hooks/useFetch";
 
 import UserContext from "../../../../contexts/UserContext";
-// import GameContext from "../../../../contexts/UserContext";
+import GameContext from "../../../../contexts/GameContext";
 
 import Checkbox from "../SettingFields/Checkbox/Checkbox";
 import NumberInput from "../SettingFields/NumberInput/NumberInput";
@@ -14,7 +14,7 @@ import LoadingText from "../../../shared/LoadingText/LoadingText";
 
 export default function GameSettings({ isLogged }) {
     const userContext = useContext(UserContext);
-    // const gameContext = useContext(GameContext);
+    const gameContext = useContext(GameContext);
     
     const [settings, error, loading] = useFetch("settings/game.json", null, true);
     const [currentFieldValues, setCurrentFieldValues] = useState(userContext.userData.gameSettings);
@@ -46,9 +46,16 @@ export default function GameSettings({ isLogged }) {
             await changeSettingInDB(setting).then(() => setCurrentlyFetching([...currentlyFetching].splice(id, 1)));
         };
 
-        userContext.setData({ gameSettings: newValues });
         saveToStorage("scUserDetails", { gameSettings: newValues } );
+        userContext.setData({ gameSettings: newValues });
+        handleGameContext(id, value);
         setCurrentFieldValues(newValues);
+    };
+
+    const handleGameContext = (id, value) => {
+        if (id === "numberOfPlayers") {
+            gameContext.dispatch({ type: "number_of_players", payload: value });
+        };
     };
 
     // /**

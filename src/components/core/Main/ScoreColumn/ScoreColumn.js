@@ -1,20 +1,20 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styles from "./ScoreColumn.module.scss";
+import GameContext from "../../../../contexts/GameContext";
 // import { getStorage, setStorage } from "../../../../services/storageService";
 
 import InputField from "./InputField/InputField";
 
 export default function ScoreColumn({
-    isPlaying,
     index,
     player,
     playerScores,
     setPlayerName,
-    numberOfPlayers,
-    playerTurnIndex,
     setIsEditingInput,
     inputModalVisibilityHandler
     }) {
+    const { playerTurnIndex } = useContext(GameContext).gameData;
+
     const [currentScores, setCurrentScores] = useState(playerScores);
     const [editingIndex, setEditingIndex] = useState(null);
         
@@ -38,7 +38,6 @@ export default function ScoreColumn({
             if (idx) {
                 setEditingIndex(idx);
             };
-
         } else {
             if (!state && idx) {
                 setEditingIndex(null);
@@ -80,7 +79,6 @@ export default function ScoreColumn({
         <div className={styles.columnInternal}>
             <div id="columnHeader" className={styles.columnHeader}>
                 <InputField
-                    isPlaying={isPlaying}
                     type="text"
                     value={player}
                     editToggle={(state) => handleEditToggle({ state })}

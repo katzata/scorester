@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useState, useContext } from 'react';
+import { /* useCallback,  */useEffect, useState/* , useContext  */} from 'react';
 import './App.css';
 
-import { setStorage, getStorage/* , saveToStorage */ } from './services/storageService';
-import { /* checkIfLogged,  */initUserDetails } from './services/userService';
+import { getStorage/* , saveToStorage */ } from './services/storageService';
+// import { /* checkIfLogged,  */initUserDetails } from './services/userService';
 import ErrorBoundary from './components/core/ErrorBoundary/ErrorBoundary';
 
 import { UserProvider } from './contexts/UserContext';
@@ -32,80 +32,80 @@ export default function App() {
 	 * @param {Object} playerData An object containing userDetials which will be validated.
 	 * @param {Boolean} skipInit If set to true skips the user details initialization and passes the received playerData directly to the local storage.
 	 */
-	const initPlayerData = (playerData, skipInit) => {
-		// const userDetails = !skipInit ? initUserDetails(playerData) : playerData;
-		// const gameDetails = getStorage("scGameDetails") || {};
+	// const initPlayerData = (playerData, skipInit) => {
+	// 	// const userDetails = !skipInit ? initUserDetails(playerData) : playerData;
+	// 	// const gameDetails = getStorage("scGameDetails") || {};
 
-		// if (userDetails && userDetails.gameSettings) {
-		// 	const { username, gameSettings } = userDetails;
-		// 	const playersCalc = Number(gameSettings.numberOfPlayers) || 1;
-		// 	const nameOptions = (idx) => (gameDetails.scores && gameDetails.scores[idx] && gameDetails.scores[idx].name) || `Player ${idx + 1}`;
-		// 	const names = [...Array(playersCalc).keys()].map(nameOptions);
+	// 	// if (userDetails && userDetails.gameSettings) {
+	// 	// 	const { username, gameSettings } = userDetails;
+	// 	// 	const playersCalc = Number(gameSettings.numberOfPlayers) || 1;
+	// 	// 	const nameOptions = (idx) => (gameDetails.scores && gameDetails.scores[idx] && gameDetails.scores[idx].name) || `Player ${idx + 1}`;
+	// 	// 	const names = [...Array(playersCalc).keys()].map(nameOptions);
 
-		// 	if (username && username !== "") {
-		// 		names[0] = username;
-		// 	};
+	// 	// 	if (username && username !== "") {
+	// 	// 		names[0] = username;
+	// 	// 	};
 
-		// 	setNumberOfPlayers(playersCalc);
-		// 	setPlayerNames(names);
-		// 	setMainTimerVisible(gameSettings.mainTimer);
-		// 	setIndividualTimersVisible(gameSettings.individualTimers);
+	// 	// 	setNumberOfPlayers(playersCalc);
+	// 	// 	setPlayerNames(names);
+	// 	// 	setMainTimerVisible(gameSettings.mainTimer);
+	// 	// 	setIndividualTimersVisible(gameSettings.individualTimers);
 			
-		// 	if (gameDetails && gameDetails.playerTurnIndex) {
-		// 		setPlayerTurnIndex(gameDetails.playerTurnIndex);
-		// 	};
-		// };
+	// 	// 	if (gameDetails && gameDetails.playerTurnIndex) {
+	// 	// 		setPlayerTurnIndex(gameDetails.playerTurnIndex);
+	// 	// 	};
+	// 	// };
 
-		// setStorage({ key: "scUserDetails", value: userDetails });
-	};
+	// 	// setStorage({ key: "scUserDetails", value: userDetails });
+	// };
 
 	/**
 	 * 
 	 * @param {Boolean} state The isPlaying state
 	 */
-	const resetGameData = (state) => {
-		// if (gamePaused) {
-		// 	setGamePaused(false);
-		// };
+	// const resetGameData = (state) => {
+	// 	// if (gamePaused) {
+	// 	// 	setGamePaused(false);
+	// 	// };
 
-		// const gameDetails = {
-		// 	isPlaying: state,
-		// 	gamePaused: false,
-		// 	playerTurnIndex: 0,
-		// 	mainTimer: [0, 0, 0],
-		// 	individualTimers: [...Array(numberOfPlayers).fill([0, 0, 0])],
-		// 	scores: [...Array(numberOfPlayers).keys()].map(el => ({ name: playerNames[el], scores: [] }))
-		// };
+	// 	// const gameDetails = {
+	// 	// 	isPlaying: state,
+	// 	// 	gamePaused: false,
+	// 	// 	playerTurnIndex: 0,
+	// 	// 	mainTimer: [0, 0, 0],
+	// 	// 	individualTimers: [...Array(numberOfPlayers).fill([0, 0, 0])],
+	// 	// 	scores: [...Array(numberOfPlayers).keys()].map(el => ({ name: playerNames[el], scores: [] }))
+	// 	// };
 
-		// setStorage({ key: "scGameDetails", value: gameDetails });
-		// handlePlayerTurnIndex(0);
-	};
+	// 	// setStorage({ key: "scGameDetails", value: gameDetails });
+	// 	// handlePlayerTurnIndex(0);
+	// };
 
 	/**
 	 * Set the isPlaying state with the passed parameter. 
 	 * @param {Boolean} state The isPlayng state.
 	 */
-	const handleIsPlayingState = (state) => {
-		if (!state) {
-			// handleEndgameModal(true);
-		} else {
-			// resetGameData(state);
-		};
+	// const handleIsPlayingState = (state) => {
+	// 	if (!state) {
+	// 		// handleEndgameModal(true);
+	// 	} else {
+	// 		// resetGameData(state);
+	// 	};
 		
-		// setIsPlaying(state);
-	};
+	// 	// setIsPlaying(state);
+	// };
 
 	/**
 	 * Set the user logged state hook.
 	 * Initialize player data.
 	 * @useCallback
 	 */
-	const handleLoggedState = useCallback((loggedState, playerData) => {
-		// setIsLogged(loggedState);
-		initPlayerData(playerData || getStorage("scUserDetails"), loggedState);
-	}, []);
+	// const handleLoggedState = useCallback((loggedState, playerData) => {
+	// 	// setIsLogged(loggedState);
+	// 	initPlayerData(playerData || getStorage("scUserDetails"), loggedState);
+	// }, []);
 
-	const handlePlayerTurnIndex = (index) => {
+	// const handlePlayerTurnIndex = (index) => {
 		// const turnIndex = playerTurnIndex + 1 < numberOfPlayers ? playerTurnIndex + 1 : 0;
 		// const indexFinal = index !== undefined ? index : turnIndex;
 		// const localData = getStorage("scGameDetails");
@@ -113,20 +113,12 @@ export default function App() {
 
 		// setStorage({ key: "scGameDetails", value: localData });
 		// setPlayerTurnIndex(indexFinal);
-	};
-
-	const handleEndgameModal = (state) => {
-		setEndgameModalVisible(state);
-
-		if (!state) {
-			// resetGameData(state);
-		};
-	};
+	// };
 
 	useEffect(() => {
 		// console.log(initialGameData);
 		// checkIfLogged(initialGameData && initialGameData.id).then(handleLoggedState);
-		initPlayerData(getStorage("scUserDetails"), false);
+		// initPlayerData(getStorage("scUserDetails"), false);
 	}, []);
 
 	return <>
@@ -135,11 +127,11 @@ export default function App() {
 				<GameProvider>
 					<Header/>
 					<Main/>
-					<Footer/>
+					<Footer endGameModalVisibilityHandler={setEndgameModalVisible}/>
 
 					{endgameModalVisible && <EndGameModal
 						isVisible={endgameModalVisible}
-						visibilityHandler={handleEndgameModal}
+						visibilityHandler={setEndgameModalVisible}
 						mainTimerVisible={mainTimerVisible}
 						individualTimersVisible={individualTimersVisible}
 					/>}

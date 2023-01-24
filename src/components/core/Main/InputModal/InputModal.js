@@ -1,10 +1,14 @@
-import { useRef, useEffect, useState } from "react";
+import { useRef, useEffect, useState, useContext } from "react";
 import styles from "./InputModal.module.scss";
+
+import GameContext from "../../../../contexts/GameContext";
 
 import Modal from "../../../shared/Modal/Modal";
 import Icons from "../../../shared/Icons/Icons";
 
-export default function InputModal({ isVisible, visibilityHandler, player, addPlayerScores, zIndex }) {
+export default function InputModal({ isVisible, visibilityHandler, player, zIndex }) {
+    const gameContext = useContext(GameContext);
+
     const [inputValue, setInputValue] = useState(0);
     const inputRef = useRef(null);
     
@@ -14,7 +18,8 @@ export default function InputModal({ isVisible, visibilityHandler, player, addPl
      * Calls the playerTurnIndexHandler in order to change the playerTurnIndex.
      */
     const handleScoreInput = () => {
-        addPlayerScores(inputValue);
+        gameContext.dispatch({ type: "score", payload: inputValue });
+        visibilityHandler(false);
     };
 
     useEffect(() => {
