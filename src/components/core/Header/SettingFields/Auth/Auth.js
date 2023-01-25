@@ -4,14 +4,13 @@ import UserContext from "../../../../../contexts/UserContext";
 
 import { register/* , logout, changeSetting  */} from "../../../../../services/userService";
 import useFetch from "../../../../../hooks/useFetch";
-// import { getStogare } from "../../../../../services/storageService";
 
 function Auth({ title, handleLoggedState }) {
     const userContext = useContext(UserContext);
     // const { isLogged } = userContext;
     // console.log(userContext);
 
-    const [data, error, loading, fetchData] = useFetch("");
+    // const [data, error, loading, fetchData] = useFetch("");
     const [username, setUsername] = useState("asd");
     const [password, setPassword] = useState("asdasd");
     const [rePassword, setRePassword] = useState("");
@@ -29,7 +28,7 @@ function Auth({ title, handleLoggedState }) {
         body.append("username", username);
         body.append("password", password);
 
-        fetchData("/").then(res => userContext.login(res));
+        // fetchData("/").then(res => userContext.login(res));
         // return doFetch({ route: "/login", body }).then(res => {
         //     let loggedIn = false;
         //     let response = {};

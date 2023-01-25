@@ -1,5 +1,6 @@
-import { createContext, useState } from "react";
-import { getStorage, setStorage } from "../services/storageService";
+import { createContext, useEffect, useState } from "react";
+import useFetch from "../hooks/useFetch";
+import { getStorage/* , setStorage */ } from "../utils/localStorage";
 import { mergeObjectData } from "../utils/utils";
 
 const UserContext = createContext();
@@ -22,18 +23,26 @@ export function UserProvider({ children }) {
         }
     };
     
-    const [userData, setUserData] = useState(mergeObjectData(storageData, defaultData));
+    const [userData, /* setUserData */] = useState(mergeObjectData(storageData, defaultData));
+    const [isLoggedCheck, /* error, loading */] = useFetch("", null, true);
 
     const setData = (data) => {
-        const newData = { ...userData };
+        // const newData = { ...userData };
+        console.log(data);
+        // for (const [key, value] of Object.entries(data)) {
+        //     newData[key] = value;
+        // };
 
-        for (const [key, value] of Object.entries(data)) {
-            newData[key] = value;
-        };
-        console.log(newData);
-        setStorage({ key:"scUserDetails", value: newData});
-        setUserData(newData);
+        // setStorage({ key:"scUserDetails", value: newData});
+        // setUserData(newData);
     };
+
+    useEffect(() => {
+        if (isLoggedCheck) {
+            setData(isLoggedCheck);
+            // console.log(userData);
+        }
+    }, [isLoggedCheck]);
 
     const value = { userData, setData };
     return <UserContext.Provider value={value}>

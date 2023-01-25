@@ -2,7 +2,6 @@ import { useContext } from "react";
 import styles from "./EndGameModal.module.scss";
 
 import GameContext from "../../../contexts/GameContext";
-import UserContext from "../../../contexts/UserContext";
 import { getStorage } from "../../../services/storageService";
 
 import Modal from "../../shared/Modal/Modal";
@@ -24,7 +23,6 @@ import RankRow from "./RankRow/RankRow";
  * @returns A summary of the finished game.
  */
 export default function EndGameModal({ isVisible, visibilityHandler }) {
-    const userContext = useContext(UserContext);
     const gameContext = useContext(GameContext);
     const { individualTimers , mainTimer, scores } = gameContext.gameData;
 
@@ -51,7 +49,6 @@ export default function EndGameModal({ isVisible, visibilityHandler }) {
     const sortedScores = [...scores].sort((a, b) => b.scoreTotal - a.scoreTotal);
     const highestScored = [...scores].sort((a, b) => b.highestScore - a.highestScore)[0];
     const lowestTime = [...scores].sort((a, b) => a.timer - b.timer)[0];
-    console.log(sortedScores);
 
     const winnerStats = [
         ["Points", <p>{sortedScores[0].scoreTotal}</p>],
@@ -81,28 +78,28 @@ export default function EndGameModal({ isVisible, visibilityHandler }) {
     /**
      * Close the endgame modal and reset the game data.
      */
-    function closeModal() {
-        gameContext.dispatch({ type: "stop_game" });
+    function closeModalAndResume() {
+        gameContext.dispatch({ type: "resume_game" });
         visibilityHandler(false);
     };
 
     /**
      * Close the endgame modal and reset the game data.
      */
-    function closeModal() {
+    function closeModalAndEnd() {
         gameContext.dispatch({ type: "stop_game" });
         visibilityHandler(false);
     };
 
     return <div className={styles.endGameModal}>
-        <Modal isVisible={isVisible} position="absolute" visibilityHandler={closeModal}>
+        <Modal isVisible={isVisible} position="absolute">
             <div className={styles.scoreDetails}>
                 <div className={styles.topContainer}>
-                    <button className={styles.topButton}></button>
-                    <SvgOutlinedText text="Results" width="168" height="86" strokeWidth="6" />
-                    <button className={styles.topButton}></button>
+                    <button className={styles.topButton} onClick={closeModalAndResume}>BACK</button>
+                    <SvgOutlinedText text="Results" width="218" height="86" strokeWidth="6" />
+                    <button className={styles.topButton} onClick={closeModalAndEnd}>END</button>
                 </div>
-                
+
                 <div className={styles.scoreDetailsInternal}>
                     <div className={styles.scoreDetailsTop}>
                         <StatsSection title="Winner">

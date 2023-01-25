@@ -58,31 +58,6 @@ export default function GameSettings({ isLogged }) {
         };
     };
 
-    // /**
-    //  * Merge the currently available settings with the present settings object if available.
-    //  * @param {Array<object>} settings The currently available settings and their respective values.
-    //  * @returns An array containing the merged settings.
-    //  */
-    // function mergeValues(settings) {
-    //     const storageData = getStorage("scUserDetails");
-    //     const currentValues = {};
-    //     console.log(currentValues, settings);
-    //     if (storageData && storageData.gameSettings) {
-    //         const gameSettings = storageData.gameSettings;
-
-    //         for (let i = 0; i < settings.length; i++) {
-    //             const { id, defaultValue } = settings[i];
-    //             const isNotDefault = typeof gameSettings[id] === typeof defaultValue && gameSettings[id] !== defaultValue;
-                
-    //             Object.defineProperty(currentValues, id, {
-    //                 value: isNotDefault ? gameSettings[id] : defaultValue
-    //             });
-    //         };
-    //     };
-
-    //     return currentValues;
-    // };
-
     // useEffect(() => {
         // if (settings) {
         //     setCurrentFieldValues(mergeValues(settings));

@@ -1,4 +1,4 @@
-import { convertJson } from "../utils/utils";
+import { convertJson } from "./utils";
 
 /**
  * Sets key value pair/s in local storage.

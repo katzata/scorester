@@ -1,5 +1,5 @@
-import { getStorage, clearStorage } from "./storageService";
-import { doFetch } from "../utils/utils";
+import { getStorage } from "./storageService";
+// import { doFetch } from "../utils/utils";
 
 /**
  * Handles the user registration.
@@ -23,11 +23,11 @@ export const register = async ({username, password, rePassword, handleLoggedStat
         body.append("password", password);
         body.append("rePassword", rePassword);
         
-        doFetch({ route: "/register", body }).then(res => {
-            // setStorage({ key: "scUserDetails", value: res });
+        // doFetch({ route: "/register", body }).then(res => {
+        //     // setStorage({ key: "scUserDetails", value: res });
             
-            handleLoggedState();
-        });
+        //     handleLoggedState();
+        // });
     } else {
         // !!!ERROR!!!
         console.warn(usernameCheck, passwordCheck, rePasswordCheck);
@@ -48,20 +48,20 @@ export const login = async ({ username, password, handleLoggedState }) => {
     body.append("username", username);
     body.append("password", password);
 
-    return doFetch({ route: "/login", body }).then(res => {
-        let loggedIn = false;
-        let response = {};
+    // return doFetch({ route: "/login", body }).then(res => {
+    //     let loggedIn = false;
+    //     let response = {};
 
-        if (res.id) {
-            loggedIn = true;
-            response = res;
-        } else {
-            // !!!ERROR!!!
-            console.warn(res.errors);
-        };
+    //     if (res.id) {
+    //         loggedIn = true;
+    //         response = res;
+    //     } else {
+    //         // !!!ERROR!!!
+    //         console.warn(res.errors);
+    //     };
 
-        handleLoggedState(loggedIn, response );
-    });
+    //     handleLoggedState(loggedIn, response );
+    // });
 };
 
 /**
@@ -70,12 +70,12 @@ export const login = async ({ username, password, handleLoggedState }) => {
  * @param {Function} callback The callback function handling the isLogged state.
  */
 export const logout = async (handleLoggedState) => {
-    doFetch({ route: "/logout" }).then(res => {
-        if (res) {
-            clearStorage();
-            handleLoggedState(false);
-        };
-    });
+    // doFetch({ route: "/logout" }).then(res => {
+    //     if (res) {
+    //         clearStorage();
+    //         handleLoggedState(false);
+    //     };
+    // });
 };
 
 /**
@@ -90,14 +90,14 @@ export const checkIfLogged = async () => {
         const body = new URLSearchParams();
         body.append("id", userData.id);
 
-        return doFetch({ route: "/checkIfLogged", body }).then(res => {
-            if (res && res.id && res.username && res.userSettings && res.gameSettings) {
-                // setStorage({ key: "scUserDetails", value: res });
-                return res;
-			} else {
-                return false;
-			};
-        });
+        // return doFetch({ route: "/checkIfLogged", body }).then(res => {
+        //     if (res && res.id && res.username && res.userSettings && res.gameSettings) {
+        //         // setStorage({ key: "scUserDetails", value: res });
+        //         return res;
+		// 	} else {
+        //         return false;
+		// 	};
+        // });
     } else {
         return false;
     };

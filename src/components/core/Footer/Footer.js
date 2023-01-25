@@ -9,11 +9,10 @@ export default function Footer({ endGameModalVisibilityHandler }) {
     const gameContext = useContext(GameContext);
     const { mainTimer, individualTimers } = userContext.userData.gameSettings;
     const { isPlaying, gamePaused } = gameContext.gameData;
-
     const timersPresent = mainTimer || individualTimers;
 
     /**
-     * Start ghe gaem if the isPlaying context toggle is false.
+     * Start ghe game if the isPlaying context toggle is false.
      * If the isPlaying context toggle is true, show the endGameModal component.
      */
     const handleIsPlayingToggle = () => {

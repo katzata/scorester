@@ -2,7 +2,6 @@ import styles from "./Modal.module.scss";
 
 /**
  * Modal component.
- * 
  * @param {Object} props
  * @param {Boolean} props.isVisible
  * @param {String} props.position
@@ -10,10 +9,10 @@ import styles from "./Modal.module.scss";
  * @param {CallableFunction} props.visibilityHandler
  * 
  * @component
- * @param {Boolean} props.isVisible Used to set the modal visibility.
- * @param {String} props.position Defines the type of positioning that will be applyed (absolute, fixed...).
- * @param {Array} props.children The default react children array.
- * @param {CallableFunction} props.visibilityHandler A callback that closes the modal.
+ * @props isVisible - Set the modal visibility.
+ * @props position - Defines the type of positioning that will be applyed (absolute, fixed...).
+ * @props children - The default react children array.
+ * @props visibilityHandler - A callback that closes the modal.
  */
 export default function Modal({ isVisible, position, children, visibilityHandler }) {
     const scale = !isVisible ? 0 : 1;
@@ -26,7 +25,7 @@ export default function Modal({ isVisible, position, children, visibilityHandler
 
     return <div className={styles.modal} style={visibilityStyles}>
         <div className={styles.modalInternal} style={{ transform: `scale(${scale}, ${scale})` }}>
-            <button className={styles.closeButton} onClick={() => {
+            {visibilityHandler && <button className={styles.closeButton} onClick={() => {
                 visibilityHandler(false)
             }}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="-1 -1 50 50">
@@ -35,7 +34,7 @@ export default function Modal({ isVisible, position, children, visibilityHandler
                         C1.465,47.677,2.233,47.97,3,47.97s1.535-0.293,2.121-0.879l18.865-18.864L42.85,47.091c0.586,0.586,1.354,0.879,2.121,0.879
                         s1.535-0.293,2.121-0.879c1.172-1.171,1.172-3.071,0-4.242L28.228,23.986z"/>
                 </svg>
-            </button>
+            </button>}
 
             {children}
         </div>
