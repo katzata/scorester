@@ -2,15 +2,15 @@ import { useState, useContext } from "react";
 import styles from "./Header.module.scss";
 
 import UserContext from "../../../contexts/UserContext";
+// import { ErrorsProvider } from '../../../contexts/ErrorsContext';
 
 import Timers from "./Timers/Timers";
 import Modal from "../../shared/Modal/Modal";
-import UserSettings from "./UserSettings/UserSettings";
-import GameSettings from "./GameSettings/GameSettings";
+import SettingsSection from "./SettingsSection/SettingsSection";
 import Icons from "../../shared/Icons/Icons";
 import SvgOutlinedText from "../../shared/SvgOutlinedText/SvgOutlinedText";
 
-export default function Header({ handleLoggedState }) {
+export default function Header() {
     const userContext = useContext(UserContext);
     const { mainTimer, individualTimers } = userContext.userData.gameSettings;
     const [userSettingsVisible, setUserSettingsVisible] = useState(false);
@@ -30,7 +30,7 @@ export default function Header({ handleLoggedState }) {
                 </button>
 
                 <Modal isVisible={userSettingsVisible} position="fixed" visibilityHandler={setUserSettingsVisible}>
-                    <UserSettings handleLoggedState={handleLoggedState} />
+                    <SettingsSection settingsUrl="settings/user.json"/>
                 </Modal>
             </div>
 
@@ -40,7 +40,7 @@ export default function Header({ handleLoggedState }) {
                 </button>
 
                 <Modal isVisible={gameSettingsVisible} position="fixed" visibilityHandler={setGameSettingsVisible} options={"gameSettings"}>
-                    <GameSettings />
+                    <SettingsSection settingsUrl="settings/game.json"/>
                 </Modal>
             </div>
         </div>

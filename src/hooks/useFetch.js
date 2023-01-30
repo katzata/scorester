@@ -11,44 +11,51 @@ const useFetch = (endpoint, body, local) => {
 	const [data, setData] = useState(null);
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(false);
-	
-	const doFetch = useCallback(fetchData, [body, local]);
 
-	async function fetchData(endpoint) {
-		if (!endpoint) return "Bad request";
+	/**
+	 * Does a fetch request.
+	 * Empty string to tests the root url.
+	 * Expected root result: json { res: 'yay' }
+	 * @param {String} endpoint A valid url endpoint.
+	 */
+	const fetchData = async (endpoint, fetchBody, fetchLocal) => {
+		if (!endpoint && typeof endpoint !== "string") {
+			return JSON.stringify({ res: "Bad request" });
+		};
+		
 		setLoading(true);
-
-		const url = `${local ? "" : process.env.REACT_APP_REST}${endpoint}`;
+		
+		const searchParams = new URLSearchParams(fetchBody);
+		const url = `${fetchLocal ? "" : process.env.REACT_APP_REST}${endpoint}`;
 		const options = {
-			local: {},
-			https: {
-				credentials: "include",
-				method: "POST",
-				mode: 'cors',
-				headers: {
-					"Content-Type": "application/x-www-form-urlencoded",
-				}
+			credentials: "include",
+			method: "POST",
+			mode: 'cors',
+			headers: {
+				"Content-Type": "application/x-www-form-urlencoded",
 			}
 		};
 
-		if (body) options["body"] = body;
-
-		return fetch(url, !local ? options : null)
+		if (fetchBody) options["body"] = searchParams;
+		
+		return fetch(url, !fetchLocal ? options : null)
 			.then((res) => res.json())
+			.catch(err => {
+				setLoading(false);
+				setError({ err: err });
+			})
 			.then((data) => {
 				setLoading(false);
 				setData(data);
 				return data;
-			})
-			.catch(err => {
-				setLoading(false);
-				setError("err:\n", err);
 			});
 	};
-	
+
+	const doFetch = useCallback(fetchData, []);
+
 	useEffect(() => {
-		doFetch(endpoint);
-	}, [endpoint, doFetch]);
+		doFetch(endpoint, body, local);
+	}, [endpoint, body, local, doFetch]);
 
 	return [data, error, loading, fetchData];
 };

@@ -2,7 +2,7 @@ import { useContext } from "react";
 import styles from "./EndGameModal.module.scss";
 
 import GameContext from "../../../contexts/GameContext";
-import { getStorage } from "../../../services/storageService";
+import { getStorage } from "../../../utils/localStorage";
 
 import Modal from "../../shared/Modal/Modal";
 import SvgTimer from "../../shared/SvgTimer/SvgTimer";

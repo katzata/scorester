@@ -1,6 +1,5 @@
 import { createContext, useEffect, useState } from "react";
-import useFetch from "../hooks/useFetch";
-import { getStorage/* , setStorage */ } from "../utils/localStorage";
+import { getStorage, setStorage } from "../utils/localStorage";
 import { mergeObjectData } from "../utils/utils";
 
 const UserContext = createContext();
@@ -22,29 +21,39 @@ export function UserProvider({ children }) {
             editableFields: false
         }
     };
-    
-    const [userData, /* setUserData */] = useState(mergeObjectData(storageData, defaultData));
-    const [isLoggedCheck, /* error, loading */] = useFetch("", null, true);
 
-    const setData = (data) => {
-        // const newData = { ...userData };
-        console.log(data);
-        // for (const [key, value] of Object.entries(data)) {
-        //     newData[key] = value;
-        // };
+    const [userData, setUserData] = useState(mergeObjectData(storageData, defaultData));
 
-        // setStorage({ key:"scUserDetails", value: newData});
-        // setUserData(newData);
+    /**
+     * Sets the user data.
+     * @param {Object} data The new user details data object.
+     * @param {Boolean} data Replace the userData object with the one that is being passed without any merging.
+     */
+    const setData = (data, replace) => {
+        const newData = { ...userData };
+
+        if (replace) {
+            return setUserData(data);
+        };
+
+        for (const [key, value] of Object.entries(data)) {
+            newData[key] = value;
+        };
+
+        if (data.id) {
+            newData.isLogged = true;
+        };
+
+        setStorage({ key:"scUserDetails", value: newData});
+        setUserData(newData);
     };
 
     useEffect(() => {
-        if (isLoggedCheck) {
-            setData(isLoggedCheck);
-            // console.log(userData);
-        }
-    }, [isLoggedCheck]);
+        // console.log("z", userData);
+    }, []);
 
     const value = { userData, setData };
+
     return <UserContext.Provider value={value}>
         {children}
     </UserContext.Provider>;

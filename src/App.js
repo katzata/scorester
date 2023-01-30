@@ -1,15 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import './App.css';
 
-import ErrorBoundary from './components/core/ErrorBoundary/ErrorBoundary';
+import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 
 import { UserProvider } from './contexts/UserContext';
 import { GameProvider } from './contexts/GameContext';
+import { ErrorsProvider } from './contexts/ErrorsContext';
 
 import Header from './components/core/Header/Header';
 import Main from './components/core/Main/Main';
 import Footer from './components/core/Footer/Footer';
 import EndGameModal from './components/core/EndGameModal/EndGameModal';
+import ErrorModal from './components/core/ErrorModal/ErrorModal';
 
 /**
  * The root component that handles all the shared app states.
@@ -18,26 +20,23 @@ import EndGameModal from './components/core/EndGameModal/EndGameModal';
 export default function App() {
 	const [endgameModalVisible, setEndgameModalVisible] = useState(false);
 
-	useEffect(() => {
-		// console.log(initialGameData);
-		// checkIfLogged(initialGameData && initialGameData.id).then(handleLoggedState);
-		// initPlayerData(getStorage("scUserDetails"), false);
-	}, []);
-
 	return <>
 		<ErrorBoundary>
-			<UserProvider>
-				<GameProvider>
-					<Header/>
-					<Main/>
-					<Footer endGameModalVisibilityHandler={setEndgameModalVisible}/>
+			<ErrorsProvider>
+				<UserProvider>
+					<GameProvider>
+					<ErrorModal/>
+						<Header/>
+						<Main/>
+						<Footer endGameModalVisibilityHandler={setEndgameModalVisible}/>
 
-					{endgameModalVisible && <EndGameModal
-						isVisible={endgameModalVisible}
-						visibilityHandler={setEndgameModalVisible}
-					/>}
-				</GameProvider>
-			</UserProvider>
+						{endgameModalVisible && <EndGameModal
+							isVisible={endgameModalVisible}
+							visibilityHandler={setEndgameModalVisible}
+						/>}
+					</GameProvider>
+				</UserProvider>
+			</ErrorsProvider>
 		</ErrorBoundary>
 	</>;
 };

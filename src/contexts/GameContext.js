@@ -1,5 +1,5 @@
 import { createContext, useReducer } from "react";
-import { getStorage, setStorage } from "../services/storageService";
+import { getStorage, setStorage } from "../utils/localStorage";
 import { mergeObjectData } from "../utils/utils";
 
 const GameContext = createContext();
@@ -33,8 +33,8 @@ export function GameProvider({ children }) {
      * - number_of_players - paylode Number
      * @returns The updated state object.
      * !!!
+     * Break instead of return.
      * Returning the state at the end makes updating the state and storage with the same data object.
-     * But that also makes the switch scope a bit tricky (break instead of return).
      * !!!
      */
     function reducer(state, action) {
@@ -47,10 +47,8 @@ export function GameProvider({ children }) {
             case "stop_game":
                 newData.isPlaying = false;
                 newData.gamePaused = false;
-
-                if (newData.mainTimer !== 0) {
-                    newData.mainTimer = 0;
-                };
+                newData.mainTimer = 0;
+                newData.playerTurnIndex = 0;
 
                 for (let i = 0; i < newData.scores.length; i++) {
                     newData.scores[i].scores = [];
@@ -65,8 +63,8 @@ export function GameProvider({ children }) {
                 newData.gamePaused = false;
                 break;
             case "score":
-                newData.scores[newData.playerTurnIndex].scores.push(action.payload);
                 const increment = newData.playerTurnIndex + 1;
+                newData.scores[newData.playerTurnIndex].scores.push(action.payload);
                 newData.playerTurnIndex = increment < scores.length ? increment : 0;
                 break;
             case "player_name":

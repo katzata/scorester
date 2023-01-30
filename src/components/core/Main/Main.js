@@ -4,7 +4,7 @@ import styles from "./Main.module.scss";
 import UserContext from "../../../contexts/UserContext";
 import GameContext from "../../../contexts/GameContext";
 
-import { getStorage, saveToStorage } from "../../../services/storageService";
+import { getStorage, saveToStorage } from "../../../utils/localStorage";
 
 import InputModal from "./InputModal/InputModal";
 import ScoreColumn from "./ScoreColumn/ScoreColumn";
