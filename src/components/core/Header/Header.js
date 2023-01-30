@@ -2,7 +2,6 @@ import { useState, useContext } from "react";
 import styles from "./Header.module.scss";
 
 import UserContext from "../../../contexts/UserContext";
-// import { ErrorsProvider } from '../../../contexts/ErrorsContext';
 
 import Timers from "./Timers/Timers";
 import Modal from "../../shared/Modal/Modal";
