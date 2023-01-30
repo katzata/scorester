@@ -23,9 +23,10 @@ export default function App() {
 	return <>
 		<ErrorBoundary>
 			<ErrorsProvider>
+				<ErrorModal/>
+
 				<UserProvider>
 					<GameProvider>
-					<ErrorModal/>
 						<Header/>
 						<Main/>
 						<Footer endGameModalVisibilityHandler={setEndgameModalVisible}/>

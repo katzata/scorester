@@ -1,5 +1,14 @@
 import styles from "./Icons.module.scss";
 
+/**
+ * 
+ * @param {Object} props
+ * @param {String} props.current
+ * @param {Number | String} props.size
+ * 
+ * @props current - The icon name.
+ * @props size - The icon size (all icons will have equal sides).
+ */
 export default function Icons({ current, size }) {
     const icons = {
         gameTimer: (

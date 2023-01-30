@@ -1,4 +1,4 @@
-import { createContext, useMemo, useState } from "react";
+import { createContext, useState } from "react";
 
 const ErrorsContext = createContext();
 
@@ -30,11 +30,8 @@ export function ErrorsProvider({ children }) {
 
         setCurrentErrors(existingErrors);
     };
-    
-    
-    const value = useMemo(() => ({ currentErrors, setErrors }), [currentErrors]);
 
-    return <ErrorsContext.Provider value={value}>
+    return <ErrorsContext.Provider value={{ currentErrors, setErrors }}>
         {children}
     </ErrorsContext.Provider>;
 };

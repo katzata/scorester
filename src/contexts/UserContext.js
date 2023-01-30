@@ -48,10 +48,6 @@ export function UserProvider({ children }) {
         setUserData(newData);
     };
 
-    useEffect(() => {
-        // console.log("z", userData);
-    }, []);
-
     const value = { userData, setData };
 
     return <UserContext.Provider value={value}>
