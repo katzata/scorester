@@ -18,7 +18,7 @@ const useFetch = (endpoint, body, local) => {
 	 * Expected root result: json { res: 'yay' }
 	 * @param {String} endpoint A valid url endpoint.
 	 */
-	const fetchData = async (endpoint, fetchBody, fetchLocal) => {
+	const fetchData = useCallback((endpoint, fetchBody, fetchLocal) => {
 		if (!endpoint && typeof endpoint !== "string") {
 			return JSON.stringify({ res: "Bad request" });
 		};
@@ -42,20 +42,18 @@ const useFetch = (endpoint, body, local) => {
 			.then((res) => res.json())
 			.catch(err => {
 				setLoading(false);
-				setError({ err: err });
+				setError(err);
 			})
 			.then((data) => {
 				setLoading(false);
 				setData(data);
 				return data;
 			});
-	};
-
-	const doFetch = useCallback(fetchData, []);
+	}, []);
 
 	useEffect(() => {
-		doFetch(endpoint, body, local);
-	}, [endpoint, body, local, doFetch]);
+		fetchData(endpoint, body, local);
+	}, [endpoint, body, local, fetchData]);
 
 	return [data, error, loading, fetchData];
 };

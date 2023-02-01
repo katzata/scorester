@@ -1,37 +1,64 @@
-import { createContext, useState } from "react";
+import { createContext, useState, useMemo, useCallback } from "react";
 
 const ErrorsContext = createContext();
 
 export function ErrorsProvider({ children }) {
     const [currentErrors, setCurrentErrors] = useState([]);
+    const [currentWarnings, setCurrentWarnings] = useState([]);
 
     /**
      * Sets the current error list.
      * @param {Object} newErrors An array contaning objects, each with a single key value pair.
      * @example
-     * { tag: "login", subTag: "chars", text: "contains invalid characters." }
+     * { tag: "login", text: "contains invalid characters." }
      */
-    const setErrors = (newErrors) => {
-        const incomingErrors = [...newErrors];
+    const setErrors = useCallback((type, errors) => {
+        if (errors === "clear") return clearErrors(type);
+
+        const incomingErrors = [...errors];
         const existingErrors = [...currentErrors];
+        const existingWarnings = [...currentWarnings];
 
         for (const incomingError of incomingErrors) {
-            if (existingErrors.length === 0) {
-                existingErrors.push(incomingError);
+            const list = type === "errors" ? existingErrors : existingWarnings;
+
+            if (list.length === 0) {
+                list.push(incomingError);
             } else {
-                const error = existingErrors.filter(err => err.tag === incomingError.tag && err.subTag === incomingError.subTag && err.text === incomingError.text);
+                const errors = list.filter(err => err.tag === incomingError.tag && err.text === incomingError.text);
                 
-                if (!error) {
-                    existingErrors.push(incomingError);
+                if (errors.length === 0) {
+                    list.push(incomingError);
                 };
             };
-
         };
 
-        setCurrentErrors(existingErrors);
+        if (existingErrors.length !== currentErrors.length) {
+            setCurrentErrors(existingErrors);
+        };
+        
+        if (existingWarnings.length !== currentWarnings.length) {
+            setCurrentWarnings(existingWarnings);
+        };
+    }, [currentErrors, currentWarnings]);
+
+    /**
+     * Clear the error/warnings list.
+     * @param {String} type The type of error message list to be cleared.
+     */
+    const clearErrors = (type) => {
+        if (type === "errors") {
+            setCurrentErrors(() => []);
+        };
+        
+        if (type === "warnings") {
+            setCurrentWarnings(() => []);
+        };
     };
 
-    return <ErrorsContext.Provider value={{ currentErrors, setErrors }}>
+    const value = useMemo(() => ({ currentErrors, currentWarnings, setErrors }), [currentErrors, currentWarnings, setErrors]);
+
+    return <ErrorsContext.Provider value={value}>
         {children}
     </ErrorsContext.Provider>;
 };

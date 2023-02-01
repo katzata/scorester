@@ -8,8 +8,8 @@ import { getStorage } from "../../../../utils/localStorage";
 import Icons from "../../../shared/Icons/Icons";
 
 function Auth({ title, handleLoggedState }) {
-    const errorsContext = useContext(ErrorsContext);
     const userContext = useContext(UserContext);
+    const errorsContext = useContext(ErrorsContext);
     const { isLogged } = userContext.userData;
     const { id } = getStorage("scUserDetails") || {};
     const fetchBody = useMemo(() => ({ id }), [id]);
@@ -20,7 +20,10 @@ function Auth({ title, handleLoggedState }) {
     const [rePassword, setRePassword] = useState("");
     const [isRegistering, setIsRegistering] = useState(false);
     
-    const formType = (toggle) => toggle ? "REGISTER" : "LOGIN";
+    const formType = (toggle) => {
+
+        return toggle ? "REGISTER" : "LOGIN";
+    };
 
     /**
      * Toggle the form type from login to register and back to login.
@@ -47,15 +50,14 @@ function Auth({ title, handleLoggedState }) {
             });
 
             fetchData("/register", body).then(res => {
-                // if (res) handleResponse(res);
-                console.log(res);
+                handleResponse("register", res);
             });
         } else {
             // !!!ERROR!!!
             console.warn(usernameCheck, passwordCheck, rePasswordCheck);
         };
     };
-    
+
     /**
      * Log the user in.
      */
@@ -64,7 +66,9 @@ function Auth({ title, handleLoggedState }) {
         body.append("username", username);
         body.append("password", password);
 
-        fetchData("/login", body).then(handleResponse);
+        fetchData("/login", body).then(res => {
+            handleResponse("login", res);
+        });
     };
 
     /**
@@ -73,7 +77,8 @@ function Auth({ title, handleLoggedState }) {
     const logout = () => {
         fetchData("/logout").then(res => {
             if (res && res.status) {
-                handleResponse();
+                const { username, userSettings, gameSettings } = userContext.userData;
+                userContext.setData({ username, userSettings, gameSettings }, true);
             } else {
                 errorsContext.setErrors({ tag: "logout", subTag: "connection", text: res });
             };
@@ -96,13 +101,15 @@ function Auth({ title, handleLoggedState }) {
      * Handle the incoming https response (if available).
      * @param {Object} data The response object (initially json);
      */
-    const handleResponse = (data) => {
+    const handleResponse = (type, data) => {
         if (data && data.id) {
             data.isLogged = true;
             userContext.setData(data);
         } else {
-            const { username, userSettings, gameSettings } = userContext.userData;
-            userContext.setData({ username, userSettings, gameSettings }, true);
+            console.log(data);
+            // undefined on login without server connection!
+            const errors = data.Errors.slice(0).map(err => ({ tag: type, text: err }));
+            errorsContext.setErrors("errors", errors);
         };
     };
 
@@ -111,7 +118,7 @@ function Auth({ title, handleLoggedState }) {
      * @param {Object} obj An object containing the type and the value of the input that will be checked.
      * @param {String} obj.type A string containing the type of input (username, password, rePassword).
      * @param {Value} obj.type A string containing the user input (username, password, rePassword).
-     * @returns True if the input passes the RegEx check or false, and triggers an error message.
+     * @returns {Boolean} True if the input passes the RegEx check or false, and triggers an error message.
      */
     const checkInput = ({ type, value }) => {
         if (type === "username") {
@@ -144,27 +151,44 @@ function Auth({ title, handleLoggedState }) {
             };
         };
     };
-    
 
-    const inputStyle = { width: isRegistering ? "94%" : "48%" };
-    const setErrors = useCallback(() => {
-        errorsContext.setErrors([{ tag: "logout", subTag: "connection", text: "loggedCheckError" }]);
-    }, [])
+    /**
+     * Set the error data in the errors context.
+     * @param {Error} data An error object.
+     */
+    const setErrorData = useCallback((errorData) => {
+        const { message } = errorData;
+        let error = { tag: "logCheck", text: "" }
 
-    const setContext = useCallback(() => {
+        if (message === "Failed to fetch") {
+            error.text = "No connection to the server!";
+        };
+
+        errorsContext.setErrors("warnings", [error]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    /**
+     * Set the user context data.
+     */
+    const setUserData = useCallback(() => {
         userContext.setData(isLoggedCheck);
-    }, [])
+    }, [userContext, isLoggedCheck]);
+    
     useEffect(() => {
-        if (!loggedCheckError && isLoggedCheck) {
-            setContext();
+        if (isLoggedCheck && !loggedCheckError && !isLogged) {
+            if (isLoggedCheck.Errors === undefined) {
+                setUserData(isLoggedCheck);
+            };
         };
 
         if (loggedCheckError && !isLoggedCheck) {
-            // errorsContext.setErrors([{ tag: "logout", subTag: "connection", text: "loggedCheckError" }]);
-            setErrors();
+            setErrorData(loggedCheckError);
         };
-    }, [isLogged, isLoggedCheck, loggedCheckError, setErrors, setContext]);
-    
+    }, [isLogged, isLoggedCheck, loggedCheckError,  setUserData, setErrorData]);
+
+    const inputStyle = { width: isRegistering ? "94%" : "48%" };
+
     return <>
         {!isLogged && <>
             <form className={styles.loginForm} onSubmit={(e) => handleSubmit(e, handleLoggedState)}>

@@ -1,4 +1,4 @@
-import { createContext, useEffect, useState } from "react";
+import { createContext, useMemo, useState, useCallback } from "react";
 import { getStorage, setStorage } from "../utils/localStorage";
 import { mergeObjectData } from "../utils/utils";
 
@@ -29,7 +29,7 @@ export function UserProvider({ children }) {
      * @param {Object} data The new user details data object.
      * @param {Boolean} data Replace the userData object with the one that is being passed without any merging.
      */
-    const setData = (data, replace) => {
+    const setData = useCallback((data, replace) => {
         const newData = { ...userData };
 
         if (replace) {
@@ -46,9 +46,9 @@ export function UserProvider({ children }) {
 
         setStorage({ key:"scUserDetails", value: newData});
         setUserData(newData);
-    };
+    }, [userData]);
 
-    const value = { userData, setData };
+    const value = useMemo(() => ({ userData, setData }), [userData, setData]);
 
     return <UserContext.Provider value={value}>
         {children}

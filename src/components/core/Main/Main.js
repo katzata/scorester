@@ -9,6 +9,8 @@ import { getStorage, saveToStorage } from "../../../utils/localStorage";
 import InputModal from "./InputModal/InputModal";
 import ScoreColumn from "./ScoreColumn/ScoreColumn";
 
+import MessageModal from "../MessageModal/MessageModal";
+
 /**
  * Component containing the player score columns.
  * One of the four main components besides the Header, Footer and the EndGameModal.
@@ -48,8 +50,10 @@ export default function Main() {
         saveToStorage("scGameDetails", localData);
         gameContext.dispatch({ type: "player_name", payload: [index, newName] });
 	};
-
+    
     return <main className={styles.main}>
+        <MessageModal/>
+
         <InputModal
             isVisible={inputModalVisible}
             visibilityHandler={handleModalVisibility}

@@ -1,4 +1,4 @@
-import { createContext, useReducer } from "react";
+import { createContext, useMemo, useReducer } from "react";
 import { getStorage, setStorage } from "../utils/localStorage";
 import { mergeObjectData } from "../utils/utils";
 
@@ -101,7 +101,8 @@ export function GameProvider({ children }) {
         return newData;
     };
 
-    const value = { gameData, dispatch };
+    const value = useMemo(() => ({ gameData, dispatch }), [gameData]);
+    
     return <GameContext.Provider value={value}>
         {children}
     </GameContext.Provider>;

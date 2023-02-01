@@ -45,3 +45,10 @@ export const mergeObjectData = (newData, defaultData) => {
 
     return newData ? mergedData : defaultData;
 };
+
+/**
+ * Capitalize the first letter of a string.
+ * @param {String} text A string.
+ * @returns {String} The capitalized string.
+ */
+export const capitalize = (text) => text[0].toLocaleUpperCase() + text.slice(1);

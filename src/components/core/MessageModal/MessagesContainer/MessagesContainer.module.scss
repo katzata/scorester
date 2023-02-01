@@ -1,0 +1,58 @@
+$box-shadow: 0 0 0px 1px rgba(255, 255, 255, .8);
+
+.shadowWrapper {
+    position: absolute;
+    max-height: calc(100% - 2px);
+    display: inline-flex;
+    transition-duration: .2s;
+    transition-timing-function: ease-out;
+    box-shadow: 0 0 3px 4px rgba(50, 50, 50, 1);
+    border-radius: 4px;
+    opacity: 0;
+    z-index: 1;
+    
+    .modalInternalSection {
+        position: relative;
+        padding: 10px 5px 10px 10px;
+        border-radius: 4px;
+        box-shadow: $box-shadow;
+        background-color: rgba(0, 0, 0, .2);
+        
+        .closeButton,
+        .hideButton {
+            position: absolute;
+            right: -9px;
+            width: 16px;
+            height: 16px;
+            background-color: rgba(50, 50, 50, .9);
+            border-radius: 50%;
+            box-shadow: 0 0 3px 4px rgba(50, 50, 50, 1);
+            
+            &>svg {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                box-shadow: $box-shadow;
+                
+                &>path {
+                    fill: rgba(255, 255, 255, .7);
+                }
+            }
+        }
+
+        .closeButton {
+            top: -9px;
+        }
+
+        .hideButton {
+            bottom: -9px;
+        }
+
+        .messageList {
+            max-height: 100%;
+            padding: 0 10px;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+    }
+}

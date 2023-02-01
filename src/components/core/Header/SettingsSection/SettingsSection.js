@@ -1,8 +1,9 @@
 import { useContext } from "react";
 
 import UserContext from "../../../../contexts/UserContext";
-
+import GameContext from "../../../../contexts/GameContext";
 import useFetch from "../../../../hooks/useFetch";
+import { capitalize } from "../../../../utils/utils";
 
 import Auth from "../Auth/Auth";
 import Checkbox from "../SettingFields/Checkbox/Checkbox";
@@ -16,10 +17,12 @@ import LoadingText from "../../../shared/LoadingText/LoadingText";
  */
 export default function SettingsSection({ settingsUrl }) {
     let settingsSection = settingsUrl.split(".")[0].split("/");
+    const sectionTitle = `${capitalize(settingsSection[1])} settings`;
     settingsSection[0] = `S${settingsSection[0].slice(1)}`;
     settingsSection = settingsSection.reverse().join("");
     
     const userContext = useContext(UserContext);
+    const gameContext = useContext(GameContext);
     const { isLogged } = userContext.userData;
     const sectionEndpoint = `/${settingsSection}`;
     const values = userContext.userData[settingsSection];
@@ -38,6 +41,10 @@ export default function SettingsSection({ settingsUrl }) {
 
         newValues[id] = type === "number" ? Number(settingValue) : settingValue;
         setValues(newValues);
+
+        if (id === "numberOfPlayers") {
+            gameContext.dispatch({ type: "number_of_players", payload: value });
+        };
     };
 
     /**
@@ -71,7 +78,9 @@ export default function SettingsSection({ settingsUrl }) {
         });
     };
 
-    return <div>
+    return <div style={{ padding: "26px"}}>
+        <h3>{sectionTitle}</h3>
+
         {settings && settings.map((setting, idx) =>  {
             const { type, title, id, min } = setting;
 
