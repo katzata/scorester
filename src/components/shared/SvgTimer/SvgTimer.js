@@ -32,14 +32,14 @@ export default function SvgTimer({ id, digits, style }) {
             const dividersOffset = [-34, 34];
 
             return <g
-                dominantBaseline="hanging"
+                dominantBaseline="center"
                 textAnchor="middle"
                 fill={`url(#${id}gradient)`}
                 fontSize={ style && style.fontSize ? style.fontSize : "74"}
                 key={`mainDigit${idx}`}
             >
-                {idx > 0 && <text x="50%" y="-8" transform={`translate(${dividersOffset[idx - 1]})`}>:</text>}
-                <text x="50%" y="0%" transform={`translate(${digitsOffset[idx]})`}>
+                {idx > 0 && <text x="50%" y="78%" transform={`translate(${dividersOffset[idx - 1]})`}>:</text>}
+                <text x="50%" y="90%" transform={`translate(${digitsOffset[idx]})`}>
                     {formatTimer(time)}
                 </text>
             </g>

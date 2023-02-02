@@ -8,8 +8,8 @@ import { getStorage } from "../../../../utils/localStorage";
 import Icons from "../../../shared/Icons/Icons";
 
 function Auth({ title, handleLoggedState }) {
-    const userContext = useContext(UserContext);
     const errorsContext = useContext(ErrorsContext);
+    const userContext = useContext(UserContext);
     const { isLogged } = userContext.userData;
     const { id } = getStorage("scUserDetails") || {};
     const fetchBody = useMemo(() => ({ id }), [id]);
@@ -78,7 +78,7 @@ function Auth({ title, handleLoggedState }) {
                 const { username, userSettings, gameSettings } = userContext.userData;
                 userContext.setData({ username, userSettings, gameSettings }, true);
             } else {
-                errorsContext.setErrors({ tag: "logout", subTag: "connection", text: res });
+                setErrorData("add_warning", [{ tag: "logout", subTag: "connection", text: res }]);
             };
         });
     };
@@ -105,8 +105,7 @@ function Auth({ title, handleLoggedState }) {
             userContext.setData(data);
         } else {
             if (data.Errors) {
-                const errors = data.Errors.map(err => ({ tag: formType(isRegistering), subTag: "api", text: err }));
-                setErrorData(action, errors);
+                setErrorData(action, data.Errors);
             };
         };
     };
@@ -166,20 +165,24 @@ function Auth({ title, handleLoggedState }) {
     const setErrorData = useCallback(
         /**
          * @param {String} action The action of messages that are being sent.
-         * @param {Array} errorData An array of error objects.
+         * @param {Array.<object>} errorData An array of error objects.
          */
         (action, errorData) => {
             const errors = [];
 
             for (const error of errorData) {
-                const formatedError = { ...error };
-
-                if (error.message && (error.message.includes("Failed to fetch") || error.message.includes("Load failed"))) {
-                    formatedError.tag = "connection";
-                    formatedError.text = "No connection to the server!";
+                if (typeof error === "string") {
+                    errors.push({ tag: formType(isRegistering), subTag: "api", text: error });
+                } else {
+                    const formatedError = { ...error };
+    
+                    if (error.message && (error.message.includes("Failed to fetch") || error.message.includes("Load failed"))) {
+                        formatedError.tag = "connection";
+                        formatedError.text = "No connection to the server!";
+                    };
+    
+                    errors.push(formatedError);
                 };
-
-                errors.push(formatedError);
             };
 
             errorsContext.dispatch({ type: action, payload: errors});
@@ -199,7 +202,10 @@ function Auth({ title, handleLoggedState }) {
                 setUserData(isLoggedCheck);
             } else {
                 // !!!ERROR!!!
-                console.warn("x");
+                if (isLoggedCheck.Errors[0] !== "no id") {
+                    console.warn(isLoggedCheck.Errors);
+                    setErrorData("add_errors", isLoggedCheck.Errors);
+                }
             };
         };
 

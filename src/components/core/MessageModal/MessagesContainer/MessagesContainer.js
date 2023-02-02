@@ -38,7 +38,7 @@ export default function MessagesContainer({ currentMessages, side, messageBg, cl
             setIsVisible(true);
             setIsExtended(true);
         } else {
-            if (sidecheck) clearList();
+            clearList();
         };
     }, [currentMessages.length]);
 

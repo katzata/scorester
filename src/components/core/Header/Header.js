@@ -1,6 +1,7 @@
 import { useState, useContext } from "react";
 import styles from "./Header.module.scss";
 
+import ErrorsContext from "../../../contexts/ErrorsContext";
 import UserContext from "../../../contexts/UserContext";
 
 import Timers from "./Timers/Timers";
@@ -10,10 +11,22 @@ import Icons from "../../shared/Icons/Icons";
 import SvgOutlinedText from "../../shared/SvgOutlinedText/SvgOutlinedText";
 
 export default function Header() {
+    const errorsContext = useContext(ErrorsContext);
     const userContext = useContext(UserContext);
     const { mainTimer, individualTimers } = userContext.userData.gameSettings;
     const [userSettingsVisible, setUserSettingsVisible] = useState(false);
     const [gameSettingsVisible, setGameSettingsVisible] = useState(false);
+
+
+    const toggleUserSettings = (state) => {
+        if (!state) errorsContext.dispatch({ type: "clear", payload: "errors"});
+        setUserSettingsVisible(state);
+    };
+
+    const toggleGameSettings = (state) => {
+        if (!state) errorsContext.dispatch({ type: "clear", payload: "errors"});
+        setGameSettingsVisible(state);
+    };
 
     return <header>
         <div className={styles.timersWrapper}>
@@ -28,7 +41,7 @@ export default function Header() {
                     <Icons current={"user"}/>
                 </button>
 
-                <Modal isVisible={userSettingsVisible} position="fixed" visibilityHandler={setUserSettingsVisible}>
+                <Modal isVisible={userSettingsVisible} position="fixed" visibilityHandler={toggleUserSettings} title={"userSettings"}>
                     <SettingsSection settingsUrl="settings/user.json"/>
                 </Modal>
             </div>
@@ -38,7 +51,7 @@ export default function Header() {
                     <Icons current={"cog"}/>
                 </button>
 
-                <Modal isVisible={gameSettingsVisible} position="fixed" visibilityHandler={setGameSettingsVisible} options={"gameSettings"}>
+                <Modal isVisible={gameSettingsVisible} position="fixed" visibilityHandler={toggleGameSettings} title={"gameSettings"}>
                     <SettingsSection settingsUrl="settings/game.json"/>
                 </Modal>
             </div>
