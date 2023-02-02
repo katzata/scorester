@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import styles from "./MessagesContainer.module.scss";
 
 import Icons from "../../../shared/Icons/Icons";
@@ -19,30 +19,26 @@ export default function MessagesContainer({ currentMessages, side, messageBg, cl
     };
 
     const posX = sidecheck ? "right" : "left";
-    let deg = [0, 180];
-
-    if (!sidecheck) {
-        deg = deg.reverse();
-    };
+    let deg = sidecheck ? [0, 180] : [180, 0];
 
     const hideButtonsStyles = {
         [posX]: "-9px",
         transform: `rotateZ(${isExtended ? deg[0] : deg[1]}deg)`
     };
 
-    const clearList = () => {
-        setIsVisible(false);
-        setIsExtended(false);
+    const clearList = useCallback(() => {
+        if (isVisible) setIsVisible(false);
+        if (isExtended) setIsExtended(false);
 
-        setTimeout(() => {
-            clearMessages();
-        }, 200);
-    };
+        setTimeout(clearMessages, 200);
+    }, [clearMessages]);
 
     useEffect(() => {
         if (currentMessages.length > 0) {
             setIsVisible(true);
             setIsExtended(true);
+        } else {
+            if (sidecheck) clearList();
         };
     }, [currentMessages.length]);
 

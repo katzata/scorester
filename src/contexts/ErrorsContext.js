@@ -1,10 +1,9 @@
-import { createContext, useState, useMemo, useCallback } from "react";
+import { createContext, /* useState,  */useReducer, useMemo/* , useCallback */ } from "react";
 
 const ErrorsContext = createContext();
 
 export function ErrorsProvider({ children }) {
-    const [currentErrors, setCurrentErrors] = useState([]);
-    const [currentWarnings, setCurrentWarnings] = useState([]);
+    const [errorData, dispatch] = useReducer(reducer, { errors: [], warnings: [] });
 
     /**
      * Sets the current error list.
@@ -12,51 +11,73 @@ export function ErrorsProvider({ children }) {
      * @example
      * { tag: "login", text: "contains invalid characters." }
      */
-    const setErrors = useCallback((type, errors) => {
-        if (errors === "clear") return clearErrors(type);
+    function reducer(state, action) {
+        const { payload } = action;
+        const newState = (list, prevState) => prevState[list].length > 0 ? [...prevState[list]] : [];
 
-        const incomingErrors = [...errors];
-        const existingErrors = [...currentErrors];
-        const existingWarnings = [...currentWarnings];
-
-        for (const incomingError of incomingErrors) {
-            const list = type === "errors" ? existingErrors : existingWarnings;
-
-            if (list.length === 0) {
-                list.push(incomingError);
-            } else {
-                const errors = list.filter(err => err.tag === incomingError.tag && err.text === incomingError.text);
-                
-                if (errors.length === 0) {
-                    list.push(incomingError);
+        switch (action.type) {
+            case "add_errors":
+                return {
+                    ...state,
+                    errors: setErrorData("add", payload, newState("errors", state))
                 };
-            };
-        };
-
-        if (existingErrors.length !== currentErrors.length) {
-            setCurrentErrors(existingErrors);
-        };
-        
-        if (existingWarnings.length !== currentWarnings.length) {
-            setCurrentWarnings(existingWarnings);
-        };
-    }, [currentErrors, currentWarnings]);
-
-    /**
-     * Clear the error/warnings list.
-     * @param {String} type The type of error message list to be cleared.
-     */
-    const clearErrors = (type) => {
-        if (type === "errors") {
-            setCurrentErrors(() => []);
-        };
-        
-        if (type === "warnings") {
-            setCurrentWarnings(() => []);
+            case "remove_errors":
+                return {
+                    ...state,
+                    errors: setErrorData("add", payload, newState("errors", state))
+                };
+            case "add_warnings":
+                return {
+                    ...state,
+                    warnings: setErrorData("add", payload, newState("warnings", state))
+                };
+            case "remove_warnings":
+                return {
+                    ...state,
+                    warnings: setErrorData("add", payload, newState("warnings", state))
+                };
+            case "clear":
+                return {
+                    ...state,
+                    [payload]: []
+                };
+            default:
+                return state;
         };
     };
 
-    const value = useMemo(() => ({ currentErrors, currentWarnings, setErrors }), [currentErrors, currentWarnings, setErrors]);
+    function setErrorData(action, incomingErrors, existingErrors) {
+        for (const incomingError of incomingErrors) {
+            if (action === "add") {
+                if (existingErrors.length === 0) {
+                    existingErrors.push(incomingError);
+                } else {
+                    const errors = existingErrors.filter(err => err.tag === incomingError.tag && err.text === incomingError.text);
+                    
+                    if (errors.length === 0) {
+                        existingErrors.push(incomingError);
+                    };
+                };
+            };
+
+            if (action === "remove") {
+                // if (existingErrors.length === 0) {
+                //     existingErrors.push(incomingError);
+                // } else {
+                //     const errors = existingErrors.filter(err => err.tag === incomingError.tag && err.text === incomingError.text);
+                    
+                //     if (errors.length === 0) {
+                //         existingErrors.push(incomingError);
+                //     };
+                // };
+            };
+            
+        };
+        // console.log(action, incomingErrors, existingErrors);
+        return existingErrors;
+    };
+
+    const value = useMemo(() => ({ ...errorData, dispatch }), [errorData, dispatch]);
 
     return <ErrorsContext.Provider value={value}>
         {children}

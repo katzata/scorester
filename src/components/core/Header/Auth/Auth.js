@@ -14,16 +14,13 @@ function Auth({ title, handleLoggedState }) {
     const { id } = getStorage("scUserDetails") || {};
     const fetchBody = useMemo(() => ({ id }), [id]);
 
-    const [isLoggedCheck, loggedCheckError, loading, fetchData] = useFetch("/checkIfLogged", fetchBody);
+    const [isLoggedCheck, fetchError, loading, fetchData] = useFetch("/checkIfLogged", fetchBody);
     const [username, setUsername] = useState("asd");
-    const [password, setPassword] = useState("asdasd");
+    const [password, setPassword] = useState("asdas");
     const [rePassword, setRePassword] = useState("");
-    const [isRegistering, setIsRegistering] = useState(false);
+    const [isRegistering, setIsRegistering] = useState(true);
     
-    const formType = (toggle) => {
-
-        return toggle ? "REGISTER" : "LOGIN";
-    };
+    const formType = (toggle) => toggle ? "REGISTER" : "LOGIN";
 
     /**
      * Toggle the form type from login to register and back to login.
@@ -31,6 +28,7 @@ function Auth({ title, handleLoggedState }) {
      */
     const toggleFormType = (e) => {
         e.preventDefault();
+        errorsContext.dispatch({ type: "clear", payload: "errors"});
         setIsRegistering(!isRegistering);
     };
 
@@ -43,18 +41,18 @@ function Auth({ title, handleLoggedState }) {
         const rePasswordCheck = checkInput({ type: "rePassword", value: rePassword });
     
         if (usernameCheck && passwordCheck && rePasswordCheck && password === rePassword) {
-            const body = new URLSearchParams({
-                username: username,
-                password: password,
-                rePassword: rePassword
-            });
-
-            fetchData("/register", body).then(res => {
-                handleResponse("register", res);
-            });
+            const body = new URLSearchParams({ username, password, rePassword });
+            fetchData("/register", body).then(res => handleResponse("register", res || fetchError));
         } else {
-            // !!!ERROR!!!
-            console.warn(usernameCheck, passwordCheck, rePasswordCheck);
+            const errors = [];
+
+            if (usernameCheck instanceof Array) usernameCheck.forEach(err => errors.push(err));
+            if (passwordCheck instanceof Array) passwordCheck.forEach(err => errors.push(err));
+            if (rePasswordCheck instanceof Array) rePasswordCheck.forEach(err => errors.push(err));
+            if (password !== rePassword) errors.push({ tag: "password", text: "Passwords do not match!" });
+
+            errorsContext.dispatch({ type: "clear", payload: "errors"});
+            setErrorData("add_errors", errors);
         };
     };
 
@@ -62,12 +60,12 @@ function Auth({ title, handleLoggedState }) {
      * Log the user in.
      */
     const login = ({ username, password }) => {
-        const body = new URLSearchParams({});
-        body.append("username", username);
-        body.append("password", password);
+        const body = new URLSearchParams({ username, password });
 
         fetchData("/login", body).then(res => {
-            handleResponse("login", res);
+            const action = res && fetchError ? "add_errors" : "";
+            const data = res || fetchError;
+            handleResponse(action, data);
         });
     };
 
@@ -101,15 +99,15 @@ function Auth({ title, handleLoggedState }) {
      * Handle the incoming https response (if available).
      * @param {Object} data The response object (initially json);
      */
-    const handleResponse = (type, data) => {
+    const handleResponse = (action, data) => {
         if (data && data.id) {
             data.isLogged = true;
             userContext.setData(data);
         } else {
-            console.log(data);
-            // undefined on login without server connection!
-            const errors = data.Errors.slice(0).map(err => ({ tag: type, text: err }));
-            errorsContext.setErrors("errors", errors);
+            if (data.Errors) {
+                const errors = data.Errors.map(err => ({ tag: formType(isRegistering), subTag: "api", text: err }));
+                setErrorData(action, errors);
+            };
         };
     };
 
@@ -122,49 +120,69 @@ function Auth({ title, handleLoggedState }) {
      */
     const checkInput = ({ type, value }) => {
         if (type === "username") {
-            const pattern = /[a-zA-Zа-яА-Я0-9.'\s]+/;
+            const pattern = /[a-zA-Zа-яА-Я0-9.'\s]+$/;
             const length = 3;
 
             return check(type, length, pattern);
         };
 
-        if (type === "password" || type === "rePassword") {
-            const pattern = /[a-zA-Zа-яА-Я0-9]+/;
+        if (type === "password") {
+            const pattern = /[a-zA-Zа-яА-Я0-9.!?]+$/;
             const length = 6;
 
             return check(type, length, pattern);
         };
 
+        if (type === "rePassword") {
+            const pattern = /[a-zA-Zа-яА-Я0-9.!?]+$/;
+            const length = 0;
+
+            return check(type, length, pattern);
+        };
+
         function check(type, length, pattern) {
-            if (value.length >= length) {
-                if (value.match(pattern)) {
-                    return true;
-                } else {
-                    // !!!ERROR!!!
-                    console.warn(`${type} contians invalid chars`);
-                    return false;
-                };
-            } else {
-                // !!!ERROR!!!
-                console.warn(`${type} too short`);
-                return false;
+            const errors = [];
+
+            if (!value.match(pattern)) {
+                const field = type !== "rePassword" ? type : "repeat password";
+                errors.push({ tag: type, text: `The ${field} contians invalid characters.` });
             };
+
+            if (value === "" && type !== "rePassword") {
+                return [{ tag: type, text: `The ${type} field can not be empty.` }]
+            };
+
+            if (value.length < length && type !== "rePassword") {
+                errors.push({ tag: type, text: `The ${type} is too short` });
+            };
+
+            return errors.length > 0 ? errors : true;
         };
     };
 
     /**
      * Set the error data in the errors context.
-     * @param {Error} data An error object.
      */
-    const setErrorData = useCallback((errorData) => {
-        const { message } = errorData;
-        let error = { tag: "logCheck", text: "" }
+    const setErrorData = useCallback(
+        /**
+         * @param {String} action The action of messages that are being sent.
+         * @param {Array} errorData An array of error objects.
+         */
+        (action, errorData) => {
+            const errors = [];
 
-        if (message === "Failed to fetch") {
-            error.text = "No connection to the server!";
-        };
+            for (const error of errorData) {
+                const formatedError = { ...error };
 
-        errorsContext.setErrors("warnings", [error]);
+                if (error.message && (error.message.includes("Failed to fetch") || error.message.includes("Load failed"))) {
+                    formatedError.tag = "connection";
+                    formatedError.text = "No connection to the server!";
+                };
+
+                errors.push(formatedError);
+            };
+
+            errorsContext.dispatch({ type: action, payload: errors});
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -176,16 +194,19 @@ function Auth({ title, handleLoggedState }) {
     }, [userContext, isLoggedCheck]);
     
     useEffect(() => {
-        if (isLoggedCheck && !loggedCheckError && !isLogged) {
+        if (isLoggedCheck && !fetchError && !isLogged) {
             if (isLoggedCheck.Errors === undefined) {
                 setUserData(isLoggedCheck);
+            } else {
+                // !!!ERROR!!!
+                console.warn("x");
             };
         };
 
-        if (loggedCheckError && !isLoggedCheck) {
-            setErrorData(loggedCheckError);
+        if (fetchError && !isLoggedCheck && !isLogged) {
+            setErrorData("add_warnings", [fetchError]);
         };
-    }, [isLogged, isLoggedCheck, loggedCheckError,  setUserData, setErrorData]);
+    }, [isLogged, isLoggedCheck, fetchError,  setUserData, setErrorData]);
 
     const inputStyle = { width: isRegistering ? "94%" : "48%" };
 

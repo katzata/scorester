@@ -15,27 +15,27 @@ import MessagesContainer from "./MessagesContainer/MessagesContainer";
  */
 export default function MessageModal() {
     const errorsContext = useContext(ErrorsContext);
-    const { currentErrors, currentWarnings } = errorsContext;
+    const { errors, warnings, dispatch } = errorsContext;
 
     /**
      * Clear the current errors list.
      */
     const clearCurrentErrors = () => {
-        errorsContext.setErrors("errors", "clear");
+        dispatch({ type: "clear", payload: "errors" });
     };
 
     /**
      * Clear the current warnings list.
      */
     const clearCurrentWarnings = () => {
-        errorsContext.setErrors("warnings", "clear");
+        dispatch({ type: "clear", payload: "warnings" });
     };
 
     return <section className={styles.messageModalContainer}>
         <MessagesContainer
             type="errors"
             side="left"
-            currentMessages={currentErrors}
+            currentMessages={errors}
             messageBg="rgba(200, 0, 0, 0.9)"
             clearMessages={clearCurrentErrors}
         />
@@ -43,7 +43,7 @@ export default function MessageModal() {
         <MessagesContainer
             type="warnings"
             side="right"
-            currentMessages={currentWarnings}
+            currentMessages={warnings}
             messageBg="rgba(200, 200, 0, 0.9)"
             clearMessages={clearCurrentWarnings}
         />

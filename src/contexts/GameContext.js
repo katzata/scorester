@@ -1,4 +1,4 @@
-import { createContext, useMemo, useReducer } from "react";
+import { createContext, useCallback, useEffect, useMemo, useReducer } from "react";
 import { getStorage, setStorage } from "../utils/localStorage";
 import { mergeObjectData } from "../utils/utils";
 
@@ -28,13 +28,13 @@ export function GameProvider({ children }) {
      * - stop_game
      * - pause_game
      * - resume_game
-     * - score - paylode Number
-     * - player_name - paylode String
-     * - number_of_players - paylode Number
-     * @returns The updated state object.
+     * - score - payload Number
+     * - player_name - payload String
+     * - number_of_players - payload Number
+     * @returns An updated state object.
      * !!!
-     * Break instead of return.
-     * Returning the state at the end makes updating the state and storage with the same data object.
+     * Break instead of return to stop the switch.
+     * To avoid "erratic" behaviour the "newData" object is created, and will be returned to update the state.
      * !!!
      */
     function reducer(state, action) {
@@ -97,9 +97,14 @@ export function GameProvider({ children }) {
                 return state;
         };
 
-        setStorage({ key:"scGameDetails", value: newData});
         return newData;
     };
+
+    const updateStorage = useCallback(() => setStorage({ key:"scGameDetails", value: gameData}), [gameData])
+
+    useEffect(() => {
+        updateStorage();
+    }, [gameData, updateStorage]);
 
     const value = useMemo(() => ({ gameData, dispatch }), [gameData]);
     
