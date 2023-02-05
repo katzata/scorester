@@ -33,6 +33,7 @@ export default function Footer({ endGameModalVisibilityHandler }) {
 
     return <footer>
         <button
+            id="startButton"
             className={styles.startButton}
             style={{ width: `${isPlaying && timersPresent ? 70 : 100}%` }}
             onClick={handleIsPlayingToggle}
@@ -46,6 +47,7 @@ export default function Footer({ endGameModalVisibilityHandler }) {
         </button>
 
         <button
+            id="pauseButton"
             className={styles.pauseButton}
             style={{ width: `${isPlaying && timersPresent ? 30 : 0}%` }}
             onClick={handlePauseToggle}

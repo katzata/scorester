@@ -1,0 +1,17 @@
+.settingsSection {
+    padding: 60px 30px 12px;
+
+    h3 {
+        position: absolute;
+        top: 10px;
+        left: 16px;
+        font-size: 28px;
+    }
+
+    &>div {
+        margin-bottom: 10px;
+        font-size: 18px;
+        letter-spacing: .5px;
+        gap: 40px;
+    }
+}

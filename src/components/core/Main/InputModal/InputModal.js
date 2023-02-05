@@ -29,7 +29,7 @@ export default function InputModal({ isVisible, visibilityHandler, player, zInde
         };
     }, [isVisible]);
 
-    return <section className={styles.modalContainer} style={{ transform: `scaleY(${isVisible ? 100 : 0}%)`, zIndex }}>
+    return <section id="inputModal" className={styles.modalContainer} style={{ transform: `scaleY(${isVisible ? 100 : 0}%)`, zIndex }}>
         <Modal isVisible={isVisible} position="absolute" visibilityHandler={visibilityHandler}>
             <div className={styles.scoreInputContainer}>
                 <span className={styles.playerName}>{player}</span>

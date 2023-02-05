@@ -2,6 +2,7 @@ $box-shadow: 0 0 0px 1px rgba(255, 255, 255, .8);
 
 .shadowWrapper {
     position: absolute;
+    max-width: calc(100vw - 16px);
     max-height: calc(100% - 2px);
     display: inline-flex;
     transition-duration: .2s;
@@ -9,14 +10,17 @@ $box-shadow: 0 0 0px 1px rgba(255, 255, 255, .8);
     box-shadow: 0 0 3px 4px rgba(50, 50, 50, 1);
     border-radius: 4px;
     opacity: 0;
-    z-index: 1;
     
     .modalInternalSection {
         position: relative;
         padding: 10px 5px 10px 10px;
+        background-color: rgba(0, 0, 0, .2);
+        animation-name: flash;
+        animation-timing-function: linear;
+        animation-iteration-count: 1;
+        animation-duration: .5s;
         border-radius: 4px;
         box-shadow: $box-shadow;
-        background-color: rgba(0, 0, 0, .2);
         
         .closeButton,
         .hideButton {
@@ -53,6 +57,20 @@ $box-shadow: 0 0 0px 1px rgba(255, 255, 255, .8);
             padding: 0 10px;
             overflow-y: auto;
             overflow-x: hidden;
+
+            .error {
+                font-size: 18px;
+                text-shadow: 0 0px 3px black;
+                letter-spacing: .5px;
+            }
         }
     }
+}
+
+@keyframes flash {
+    0%{background-color: rgba(0, 0, 0, .2)}
+    25%{background-color: rgba(0, 0, 0, 0)}
+    50%{background-color: rgba(0, 0, 0, .2)}
+    75%{background-color: rgba(0, 0, 0, 0)}
+    100%{background-color: rgba(0, 0, 0, .2)}
 }

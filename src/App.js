@@ -11,7 +11,6 @@ import Header from './components/core/Header/Header';
 import Main from './components/core/Main/Main';
 import Footer from './components/core/Footer/Footer';
 import EndGameModal from './components/core/EndGameModal/EndGameModal';
-import MessageModal from './components/core/MessageModal/MessageModal';
 
 /**
  * The root component that handles all the shared app states.

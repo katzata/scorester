@@ -201,11 +201,9 @@ function Auth({ title, handleLoggedState }) {
             if (isLoggedCheck.Errors === undefined) {
                 setUserData(isLoggedCheck);
             } else {
-                // !!!ERROR!!!
                 if (isLoggedCheck.Errors[0] !== "no id") {
-                    console.warn(isLoggedCheck.Errors);
                     setErrorData("add_errors", isLoggedCheck.Errors);
-                }
+                };
             };
         };
 
@@ -221,35 +219,34 @@ function Auth({ title, handleLoggedState }) {
             <form className={styles.loginForm} onSubmit={(e) => handleSubmit(e, handleLoggedState)}>
                 <p>{title}</p>
                 
-                <input
-                    type="text"
-                    name="username"
-                    placeholder="Username"
-                    style={inputStyle}
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    disabled={loading}
-                />
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    style={inputStyle}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    disabled={loading}
-                />
-                {isRegistering && <input
-                    type="password"
-                    name="rePassword"
-                    placeholder="Repeat password"
-                    style={inputStyle}
-                    value={rePassword}
-                    onChange={(e) => setRePassword(e.target.value)}
-                    disabled={loading}
-                />}
+                <fieldset disabled={loading}>
+                    <input
+                        type="text"
+                        name="username"
+                        placeholder="Username"
+                        style={inputStyle}
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                    />
+                    <input
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        style={inputStyle}
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                    {isRegistering && <input
+                        type="password"
+                        name="rePassword"
+                        placeholder="Repeat password"
+                        style={inputStyle}
+                        value={rePassword}
+                        onChange={(e) => setRePassword(e.target.value)}
+                    />}
                 
-                <button disabled={loading}>{formType(isRegistering)}</button>
+                    <button>{formType(isRegistering)}</button>
+                </fieldset>
             </form>
 
             <p>

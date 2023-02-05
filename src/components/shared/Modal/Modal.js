@@ -15,7 +15,7 @@ import Icons from "../Icons/Icons";
  * @props children - The default react children array.
  * @props visibilityHandler - A callback that closes the modal.
  */
-export default function Modal({ isVisible, position, children, visibilityHandler }) {
+export default function Modal({ id, isVisible, position, children, visibilityHandler }) {
     const scale = !isVisible ? 0 : 1;
 
     const visibilityStyles = {
@@ -24,7 +24,7 @@ export default function Modal({ isVisible, position, children, visibilityHandler
         zIndex: !isVisible ? -1 : 10
     };
 
-    return <div className={styles.modal} style={visibilityStyles}>
+    return <div id={id} className={styles.modal} style={visibilityStyles}>
         <div className={styles.modalInternal} style={{ transform: `scale(${scale}, ${scale})` }}>
             {visibilityHandler && <button className={styles.closeButton} onClick={() => visibilityHandler(false)}>
                 <Icons current="close" />

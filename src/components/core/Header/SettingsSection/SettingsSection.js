@@ -1,4 +1,5 @@
 import { useContext } from "react";
+import styles from "./SettingsSection.module.scss";
 
 import UserContext from "../../../../contexts/UserContext";
 import GameContext from "../../../../contexts/GameContext";
@@ -78,7 +79,7 @@ export default function SettingsSection({ settingsUrl }) {
         });
     };
 
-    return <div style={{ padding: "26px"}}>
+    return <div className={styles.settingsSection}>
         <h3>{sectionTitle}</h3>
 
         {settings && settings.map((setting, idx) =>  {

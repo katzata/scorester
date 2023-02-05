@@ -118,6 +118,11 @@ export default function Icons({ current, size }) {
             <svg className={styles.chevronIcon} xmlns="http://www.w3.org/2000/svg" width={ size ? size : "64px"} viewBox="4 4 62 60">
                 <path d="M35.98,50.002c-1.046,0-2.093-0.395-2.863-1.185L13.595,28.809c-1.542-1.581-1.512-4.114,0.069-5.656	c1.582-1.542,4.113-1.512,5.657,0.069L35.98,40.296l16.698-17.113c1.544-1.582,4.076-1.612,5.657-0.069s1.611,4.075,0.069,5.656	L38.844,48.817C38.073,49.607,37.026,50.002,35.98,50.002z"/>
             </svg>
+        ),
+        checkBox: (
+            <svg className={styles.checkBoxIcon} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path d="M0 0v24h24v-24h-24zm11 17l-5-5.299 1.399-1.43 3.574 3.736 6.572-7.007 1.455 1.403-8 8.597z"/>
+            </svg>
         )
     }
 

@@ -16,6 +16,8 @@ export default function MessagesContainer({ currentMessages, side, messageBg, cl
         backgroundColor: messageBg ? messageBg : "transparent",
         transform: `translateX(${ isExtended ? baseX : offsetX })`,
         opacity: isVisible ? 1 : 0,
+        zIndex: sidecheck ? 1 : 0,
+        display: currentMessages.length > 0 ? "inline-flex" : "none"
     };
 
     const posX = sidecheck ? "right" : "left";
@@ -26,9 +28,13 @@ export default function MessagesContainer({ currentMessages, side, messageBg, cl
         transform: `rotateZ(${isExtended ? deg[0] : deg[1]}deg)`
     };
 
+    /**
+     * Clear the "currentMessages" list.
+     * Done with a delay for the disolve animation.
+     */
     const clearList = useCallback(() => {
-        if (isVisible) setIsVisible(false);
-        if (isExtended) setIsExtended(false);
+        setIsVisible(false);
+        setIsExtended(false);
 
         setTimeout(clearMessages, 200);
     }, [clearMessages]);

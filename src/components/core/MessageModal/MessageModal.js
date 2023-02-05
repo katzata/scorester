@@ -31,12 +31,12 @@ export default function MessageModal() {
         dispatch({ type: "clear", payload: "warnings" });
     };
 
-    return <section className={styles.messageModalContainer}>
+    return <section id="messageModal" className={styles.messageModalContainer}>
         <MessagesContainer
             type="errors"
             side="left"
             currentMessages={errors}
-            messageBg="rgba(200, 0, 0, 0.9)"
+            messageBg="rgba(160, 0, 0, 0.9)"
             clearMessages={clearCurrentErrors}
         />
 
@@ -44,7 +44,7 @@ export default function MessageModal() {
             type="warnings"
             side="right"
             currentMessages={warnings}
-            messageBg="rgba(200, 200, 0, 0.9)"
+            messageBg="rgba(160, 160, 0, 0.9)"
             clearMessages={clearCurrentWarnings}
         />
     </section>;

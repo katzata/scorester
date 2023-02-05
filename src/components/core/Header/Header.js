@@ -29,19 +29,19 @@ export default function Header() {
     };
 
     return <header>
-        <div className={styles.timersWrapper}>
+        <div id="timersWrapper" className={styles.timersWrapper}>
             {(mainTimer || individualTimers) && <Timers/>}
         </div>
 
         <SvgOutlinedText text="Scorester" width="146" height="62"/>
 
-        <div className={styles.buttonsContainer}>
+        <div id="buttonsContainer" className={styles.buttonsContainer}>
             <div className={styles.buttonWrapper}>
                 <button onClick={() => setUserSettingsVisible(true)}>
                     <Icons current={"user"}/>
                 </button>
 
-                <Modal isVisible={userSettingsVisible} position="fixed" visibilityHandler={toggleUserSettings} title={"userSettings"}>
+                <Modal id="userSettings" isVisible={userSettingsVisible} position="fixed" visibilityHandler={toggleUserSettings} title={"userSettings"}>
                     <SettingsSection settingsUrl="settings/user.json"/>
                 </Modal>
             </div>
@@ -51,7 +51,7 @@ export default function Header() {
                     <Icons current={"cog"}/>
                 </button>
 
-                <Modal isVisible={gameSettingsVisible} position="fixed" visibilityHandler={toggleGameSettings} title={"gameSettings"}>
+                <Modal id="gameSettings" isVisible={gameSettingsVisible} position="fixed" visibilityHandler={toggleGameSettings} title={"gameSettings"}>
                     <SettingsSection settingsUrl="settings/game.json"/>
                 </Modal>
             </div>

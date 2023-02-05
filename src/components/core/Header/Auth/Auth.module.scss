@@ -1,32 +1,41 @@
+@use "../../../../mixins/fonts";
+@use "../../../../mixins/colors";
+
 .loginForm {
-    display: flex;
-    flex-wrap: wrap;
+    max-width: 360px;
 
     >p {
         width: 100%;
     }
 
-    >input,
-    >button {
-        height: 18px;
-        background-color: transparent;
-        border-radius: 2px;
-        box-shadow: 0 0 2px 1px rgba(255, 255, 255, .5);
-    }
+    fieldset {
+        display: flex;
+        flex-wrap: wrap;
 
-    >input {
-        width: 48%;
-        margin: 2px auto;
-        text-align: center;
-        transition-duration: .1s;
-
-        &[name="rePassword"] {
-            width: 94%;
+        >input,
+        >button {
+            height: 24px;
+            border-radius: 2px;
+            background-color: colors.$modal-fg;
+            box-shadow: 0 0 2px 1px rgba(255, 255, 255, .5);
+            color: rgba(255, 255, 255, .8);
         }
-    }
-
-    >button {
-        width: 98%;
-        margin: 6px auto;
+        
+        >input {
+            width: 48%;
+            margin: 1% auto;
+            text-align: center;
+            transition-duration: .1s;
+            border: 1px solid rgba(255, 255, 255, .5);
+            
+            &[name="rePassword"] {
+                width: 94%;
+            }
+        }
+        
+        >button {
+            width: 98%;
+            margin: 6px auto;
+        }
     }
 }
