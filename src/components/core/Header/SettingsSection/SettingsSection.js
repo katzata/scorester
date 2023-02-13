@@ -3,6 +3,7 @@ import styles from "./SettingsSection.module.scss";
 
 import UserContext from "../../../../contexts/UserContext";
 import GameContext from "../../../../contexts/GameContext";
+import ErrorsContext from "../../../../contexts/ErrorsContext";
 import useFetch from "../../../../hooks/useFetch";
 import { capitalize } from "../../../../utils/utils";
 
@@ -24,6 +25,7 @@ export default function SettingsSection({ settingsUrl }) {
     
     const userContext = useContext(UserContext);
     const gameContext = useContext(GameContext);
+    const errorsContext = useContext(ErrorsContext);
     const { isLogged } = userContext.userData;
     const sectionEndpoint = `/${settingsSection}`;
     const values = userContext.userData[settingsSection];
@@ -35,7 +37,7 @@ export default function SettingsSection({ settingsUrl }) {
      * Extract the necessary values from the element in order to update them.
      * @param {HTMLElement} setting The HTML element whose value is currently being updated.
      */
-    const handleSetting = (setting) => {
+    const handleSettingValue = (setting) => {
         const { type, id, checked, value } = setting;
         const newValues = {...values};
         const settingValue = type === "checkbox" ? checked : value;
@@ -56,9 +58,7 @@ export default function SettingsSection({ settingsUrl }) {
      */
     const setValues = async (newValues) => {
         if (isLogged) await saveToDb(newValues);
-        const contextData = {};
-        contextData[settingsSection] = newValues;
-        userContext.setData(contextData);
+        userContext.setData({ [settingsSection]: newValues });
     };
 
     /**
@@ -73,8 +73,7 @@ export default function SettingsSection({ settingsUrl }) {
             const { changedRows, message, warningCount } = res;
 
             if (changedRows === 0 && warningCount !== 0) {
-                // !!!ERROR!!!
-                console.log(warningCount, message, settingsChanged, changedError);
+                errorsContext.dispatch({type: "add_warnings", payload: [{ tag: "connection", subTag: "api", text: "No connection to the server!" }] });
             };
         });
     };
@@ -96,7 +95,7 @@ export default function SettingsSection({ settingsUrl }) {
                     id={id}
                     section={settingsSection}
                     value={values[id]}
-                    changeHandler={handleSetting}
+                    changeHandler={handleSettingValue}
                     disabled={changedLoading}
                     key={`user${idx}`}
                 />,
@@ -106,7 +105,7 @@ export default function SettingsSection({ settingsUrl }) {
                     section={settingsSection}
                     min={min}
                     value={values[id]}
-                    changeHandler={handleSetting}
+                    changeHandler={handleSettingValue}
                     disabled={changedLoading}
                     key={`user${idx}`}
                 />

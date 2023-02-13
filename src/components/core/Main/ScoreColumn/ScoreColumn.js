@@ -1,7 +1,6 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import styles from "./ScoreColumn.module.scss";
 import GameContext from "../../../../contexts/GameContext";
-// import { getStorage, setStorage } from "../../../../services/storageService";
 
 import InputField from "./InputField/InputField";
 
@@ -71,13 +70,9 @@ export default function ScoreColumn({
         setIsEditingInput(false);
     };
 
-    useEffect(() => {
-        // console.log("x", currentScores);
-    }, []);
-
     return <section className={styles.scoreColumn} style={columnStyles} onClick={() => inputModalVisibilityHandler(true)}>
         <div className={styles.columnInternal}>
-            <div id="columnHeader" className={styles.columnHeader}>
+            <div className={styles.columnHeader}>
                 <InputField
                     type="text"
                     value={player}
@@ -86,7 +81,7 @@ export default function ScoreColumn({
                 />
             </div>
             
-            <div id="columnBody" className={styles.columnBody}>
+            <div className={styles.columnBody}>
                 {playerScores && playerScores.length > 0 && playerScores.map((el, idx) => <InputField
                     type="number"
                     value={el}
@@ -96,7 +91,7 @@ export default function ScoreColumn({
                 />)}
             </div>
 
-            <div id="columnFooter" className={styles.columnFooter}>
+            <div className={styles.columnFooter}>
                 <span className={styles.columnTotal}>{playerScores && playerScores[0] !== undefined && playerScores.reduce((a, b) => Number(a) + Number(b))}</span>
             </div>
         </div>

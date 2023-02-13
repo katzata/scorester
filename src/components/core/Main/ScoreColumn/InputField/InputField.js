@@ -1,15 +1,11 @@
 import { useState, useEffect, useRef, useCallback, useContext } from "react";
-
-// import UserContext from "../../../../../contexts/UserContext";
-import GameContext from "../../../../../contexts/GameContext";
-
-import useClickAndHold from "../../../../../hooks/useClickAndHold";
-
-import Icons from "../../../../shared/Icons/Icons";
 import styles from "./InputField.module.scss";
 
+import GameContext from "../../../../../contexts/GameContext";
+import useClickAndHold from "../../../../../hooks/useClickAndHold";
+import Icons from "../../../../shared/Icons/Icons";
+
 export default function InputField({ type, value, editToggle, setValueHandler }) {
-    // const userContext = useContext(UserContext).userData;
     const { isPlaying } = useContext(GameContext).gameData;
 
     const [currentValue, setCurrentValue] = useState(value);
@@ -44,7 +40,6 @@ export default function InputField({ type, value, editToggle, setValueHandler })
         setValueHandler(currentValue);
         setIsEditing(false);
         editToggle(false);
-
     };
 
     const triggerEdit = useCallback((state) => {

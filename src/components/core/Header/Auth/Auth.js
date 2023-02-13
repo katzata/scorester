@@ -15,10 +15,10 @@ function Auth({ title, handleLoggedState }) {
     const fetchBody = useMemo(() => ({ id }), [id]);
 
     const [isLoggedCheck, fetchError, loading, fetchData] = useFetch("/checkIfLogged", fetchBody);
-    const [username, setUsername] = useState("asd");
-    const [password, setPassword] = useState("asdas");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
     const [rePassword, setRePassword] = useState("");
-    const [isRegistering, setIsRegistering] = useState(true);
+    const [isRegistering, setIsRegistering] = useState(false);
     
     const formType = (toggle) => toggle ? "REGISTER" : "LOGIN";
 
@@ -81,6 +81,14 @@ function Auth({ title, handleLoggedState }) {
                 setErrorData("add_warning", [{ tag: "logout", subTag: "connection", text: res }]);
             };
         });
+    };
+
+    const deleteAccount = () => {
+        const check = window.confirm("Are you sure you want to delete your account?");
+
+        if (check) {
+            console.log(check);
+        };
     };
 
     /**
@@ -185,7 +193,7 @@ function Auth({ title, handleLoggedState }) {
                 };
             };
 
-            errorsContext.dispatch({ type: action, payload: errors});
+            errorsContext.dispatch({ type: action, payload: errors });
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -256,11 +264,12 @@ function Auth({ title, handleLoggedState }) {
         </>}
 
         {isLogged && <div className={styles.loggedUserSection}>
-            <div className={styles.userAvatarContainer}>
+            <div id="avatar" className={styles.userAvatarContainer}>
                 <Icons current={"user"}/>
             </div>
 
             <button id="logout" onClick={() => logout(handleLoggedState)}>LOGOUT</button>
+            <button id="deleteAccount" onClick={() => deleteAccount(handleLoggedState)}>Delete account</button>
         </div>}
     </>
 };

@@ -69,10 +69,7 @@ export default function EndGameModal({ isVisible, visibilityHandler }) {
      */
     function handleStats(stats) {
         return stats.filter(([stat, el]) => el && [stat, el])
-            .map(([stat, el]) => <StatRow title={stat} key={stat}>
-                {el}
-            </StatRow>
-        );
+            .map(([stat, el]) => <StatRow title={stat} key={stat}>{el}</StatRow>);
     };
 
     /**
@@ -91,13 +88,13 @@ export default function EndGameModal({ isVisible, visibilityHandler }) {
         visibilityHandler(false);
     };
 
-    return <div className={styles.endGameModal}>
+    return <div id="endGameModal" className={styles.endGameModal}>
         <Modal isVisible={isVisible} position="absolute">
             <div className={styles.scoreDetails}>
                 <div className={styles.topContainer}>
-                    <button className={styles.topButton} onClick={closeModalAndResume}>BACK</button>
+                    <button id="backToGame" className={styles.topButton} onClick={closeModalAndResume}>BACK</button>
                     <SvgOutlinedText text="Results" width="218" height="86" strokeWidth="6" />
-                    <button className={styles.topButton} onClick={closeModalAndEnd}>END</button>
+                    <button id="endGame" className={styles.topButton} onClick={closeModalAndEnd}>END</button>
                 </div>
 
                 <div className={styles.scoreDetailsInternal}>

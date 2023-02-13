@@ -13,42 +13,24 @@
         "defaultValue": false
     },
     {
-        "title": "Individual player timers",
+        "title": "Individual timers",
         "type": "checkbox",
         "id": "individualTimers",
         "defaultValue": false
     },
     {
-        "title": "Timed turns duration",
+        "title": "Turn limit",
         "type": "numberInput",
         "id": "turnDuration",
         "min": 10,
-        "defaultValue": 0
-    },
-    {
-        "title": "Auto switch turns",
-        "type": "checkbox",
-        "id": "autoSwitchTurns",
-        "defaultValue": true
-    },
-    {
-        "title": "Allow negative values",
-        "type": "checkbox",
-        "id": "negativeValues",
-        "defaultValue": false
-    },
-    {
-        "title": "Score can go below zero",
-        "type": "checkbox",
-        "id": "scoreBelowZero",
-        "defaultValue": false
+        "defaultValue": ""
     },
     {
         "title": "Target score",
         "type": "numberInput",
         "id": "scoreTarget",
         "min": 0,
-        "defaultValue": 0
+        "defaultValue": ""
     },
     {
         "title": "Editable score fields",

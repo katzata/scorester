@@ -50,7 +50,7 @@ export default function Timers() {
     }, [isPlaying, gamePaused, handleTimers]);
 
     return <section className={styles.timersSection}>
-        { gameSettings.mainTimer && <SvgTimer id="main" digits={mainTimer}/> }
+        { gameSettings.mainTimer && <SvgTimer id="gameTimer" digits={mainTimer}/> }
 
         { gameSettings.individualTimers && <div className={styles.individualTimersContainer}>
             <svg className={styles.timerIcon} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">

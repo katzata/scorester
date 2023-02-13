@@ -62,7 +62,7 @@ export default function Main() {
             playerTurnIndex={playerTurnIndex}
         />
 
-        <section className={styles.scoreColumnsContainer}>
+        <section id="scoreColumnsContainer" className={styles.scoreColumnsContainer}>
             {scores && scores.map((data, idx) => {
                 return <ScoreColumn
                     index={idx}

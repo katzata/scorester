@@ -1,4 +1,6 @@
+import { useState } from "react";
 import styles from "./NumberInput.module.scss";
+
 /**
  * A number input field component containing a title and the actual number input field.
  * @param {Object} props
@@ -18,6 +20,7 @@ import styles from "./NumberInput.module.scss";
  * @param {CallableFunction} props.changeHandler A callback that updates the values.
  */
 function NumberInput({ title, id, section, value, min, changeHandler, disabled}) {
+    const [currentValue, setCurrentValue] = useState(value);
     /**
      * Validates the user input.
      * Sets the value at it's minimum (min prop) if the value is below it and if the min prop is provided.
@@ -27,12 +30,22 @@ function NumberInput({ title, id, section, value, min, changeHandler, disabled})
         const input = parseInt(e.target.value);
         const newValue = input >= min ? input : min;
 
-        changeHandler({
-            type: e.target.type,
-            id: e.target.id,
-            dataset: e.target.dataset,
-            value: newValue
-        });
+        if (input >= min) {
+            changeHandler({
+                type: e.target.type,
+                id: e.target.id,
+                dataset: e.target.dataset,
+                value: newValue
+            });
+            
+            setCurrentValue(input);
+        } else {
+            if (!isNaN(input) && typeof input !== "string") {
+                setCurrentValue(input);
+            } else {
+                setCurrentValue("");
+            };
+        };
     };
 
     return <div className={styles.numberInput}>
@@ -41,10 +54,10 @@ function NumberInput({ title, id, section, value, min, changeHandler, disabled})
         <input
             type="number"
             id={id}
-            min={Number(min) || ""}
+            min={""}
             placeholder={min ? min : 0}
             data-section={section}
-            value={value || ""}
+            value={currentValue || ""}
             onChange={handleInput}
             disabled={disabled}
         />

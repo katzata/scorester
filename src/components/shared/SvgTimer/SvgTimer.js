@@ -19,7 +19,7 @@ export default function SvgTimer({ id, digits, fontSize }) {
     const minutes = Math.floor(digits / 60);
     const seconds = digits - minutes * 60;
 
-    return <svg className={styles.svgTimer} height="60px" viewBox="0 0 210 60">
+    return <svg id={id} className={styles.svgTimer} height="60px" viewBox="0 0 210 60">
         <defs>
             <linearGradient id={`${id}gradient`} x1="0" x2="0" y1="0" y2="1">
                 <stop offset="0%" stopColor="rgba(255, 255, 255, 1)" />

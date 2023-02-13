@@ -32,10 +32,6 @@ export function GameProvider({ children }) {
      * - player_name - payload String
      * - number_of_players - payload Number
      * @returns An updated state object.
-     * !!!
-     * Break instead of return to stop the switch.
-     * To avoid "erratic" behaviour the "newData" object is created, and will be returned to update the state.
-     * !!!
      */
     function reducer(state, action) {
         let newData = { ...state };
@@ -43,7 +39,7 @@ export function GameProvider({ children }) {
         switch (action.type) {
             case "start_game":
                 newData.isPlaying = true;
-                break;
+                return newData;
             case "stop_game":
                 newData.isPlaying = false;
                 newData.gamePaused = false;
@@ -55,22 +51,22 @@ export function GameProvider({ children }) {
                     newData.individualTimers[i] = 0;
                 };
 
-                break;
+                return newData;
             case "pause_game":
                 newData.gamePaused = true;
-                break;
+                return newData;
             case "resume_game":
                 newData.gamePaused = false;
-                break;
+                return newData;
             case "score":
                 const increment = newData.playerTurnIndex + 1;
                 newData.scores[newData.playerTurnIndex].scores.push(action.payload);
                 newData.playerTurnIndex = increment < scores.length ? increment : 0;
-                break;
+                return newData;
             case "player_name":
                 const [nameIndex, newName] = action.payload;
                 newData.scores[nameIndex].name = newName;
-                break;
+                return newData;
             case "number_of_players":
                 while (newData.scores.length !== action.payload) {
                     if (newData.scores.length <= action.payload) {
@@ -81,7 +77,7 @@ export function GameProvider({ children }) {
                         newData.individualTimers.pop();
                     };
                 };
-                break;
+                return newData;
             case "timers_update":
                 const { mainTimerVisible, individualTimersVisible } = action.payload;
 
@@ -92,12 +88,10 @@ export function GameProvider({ children }) {
                 if (individualTimersVisible) {
                     newData.individualTimers[playerTurnIndex] += 1;
                 };
-                break;
+                return newData;
             default:
                 return state;
         };
-
-        return newData;
     };
 
     const updateStorage = useCallback(() => setStorage({ key:"scGameDetails", value: gameData}), [gameData])
