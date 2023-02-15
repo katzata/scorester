@@ -1,12 +1,14 @@
 import { useState, useEffect, useRef, useCallback, useContext } from "react";
 import styles from "./InputField.module.scss";
 
+import UserContext from "../../../../../contexts/UserContext";
 import GameContext from "../../../../../contexts/GameContext";
 import useClickAndHold from "../../../../../hooks/useClickAndHold";
 import Icons from "../../../../shared/Icons/Icons";
 
 export default function InputField({ type, value, editToggle, setValueHandler }) {
     const { isPlaying } = useContext(GameContext).gameData;
+    const { editableFields } = useContext(UserContext).userData.gameSettings;
 
     const [currentValue, setCurrentValue] = useState(value);
     const [isEditing, setIsEditing] = useState(false);
@@ -25,8 +27,12 @@ export default function InputField({ type, value, editToggle, setValueHandler })
         zIndex: isEditing ? "0" : "-1"
     };
 
+    /**
+     * Receive a hold state and select the input field.
+     * @param {Boolean} holdState The current hold state.
+     */
     const handleHold = (holdState) => {
-        if (isPlaying) {
+        if (isPlaying && editableFields) {
             setIsHolding(holdState);
 
             if (!holdState && isEditing && currentValue === value) {
@@ -36,12 +42,20 @@ export default function InputField({ type, value, editToggle, setValueHandler })
         };
     };
 
+    /**
+     * Confirm the edited value.
+     */
     const handleConfirm = () => {
         setValueHandler(currentValue);
         setIsEditing(false);
         editToggle(false);
+
+        window.getSelection().removeAllRanges();
     };
 
+    /**
+     * Trigger the edit state.
+     */
     const triggerEdit = useCallback((state) => {
         editToggle(state);
     }, [editToggle]);
@@ -59,7 +73,7 @@ export default function InputField({ type, value, editToggle, setValueHandler })
         onTouchStart={() => handleHold(true)}
         onTouchEnd={() => handleHold(false)}
     >
-        <input 
+        <input
             ref={inputRef}
             type={type}
             style={inputStyles}

@@ -40,7 +40,7 @@ export default function Timers() {
         if (mainTimerVisible || individualTimersVisible) {
             gameContext.dispatch({ type: "timers_update", payload: { mainTimerVisible, individualTimersVisible } });
         };
-    }, [gameContext, gameSettings.mainTimer, gameSettings.individualTimers]);
+    }, [gameContext, gameSettings.individualTimers, gameSettings.mainTimer]);
 
     useEffect(() => {
         if (isPlaying && !gamePaused) {
@@ -48,7 +48,7 @@ export default function Timers() {
             return () => clearInterval(timersInterval);
         };
     }, [isPlaying, gamePaused, handleTimers]);
-
+    
     return <section className={styles.timersSection}>
         { gameSettings.mainTimer && <SvgTimer id="gameTimer" digits={mainTimer}/> }
 

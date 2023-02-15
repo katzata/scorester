@@ -1,5 +1,5 @@
 .settingsSection {
-    padding: 60px 30px 12px;
+    padding: 60px 30px 14px;
 
     h3 {
         position: absolute;
@@ -9,9 +9,7 @@
     }
 
     &>div {
-        margin-bottom: 10px;
-        font-size: 18px;
+        font-size: 17px;
         letter-spacing: .5px;
-        gap: 40px;
     }
 }

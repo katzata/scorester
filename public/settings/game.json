@@ -19,13 +19,6 @@
         "defaultValue": false
     },
     {
-        "title": "Turn limit",
-        "type": "numberInput",
-        "id": "turnDuration",
-        "min": 10,
-        "defaultValue": ""
-    },
-    {
         "title": "Target score",
         "type": "numberInput",
         "id": "scoreTarget",

@@ -60,13 +60,28 @@ function Auth({ title, handleLoggedState }) {
      * Log the user in.
      */
     const login = ({ username, password }) => {
-        const body = new URLSearchParams({ username, password });
+        const types = ["username", "password"];
+        const usernameNotOk = checkInput({ type: types[0], value: username});
+        const passwordNotOk = checkInput({ type: types[1], value: password});
 
-        fetchData("/login", body).then(res => {
-            const action = res && fetchError ? "add_errors" : "";
-            const data = res || fetchError;
-            handleResponse(action, data);
-        });
+        if (usernameNotOk || passwordNotOk) {
+            const errors = [usernameNotOk, passwordNotOk];
+            for (let i = 0; i < errors.length; i++) {
+                if (!errors[i][0]) continue;
+                errors[i] = { tag: "login", subTag: types[i], text: errors[i][0].text };
+            };
+
+            console.log(errors);
+            // setErrorData("add_errors", [{ tag: "login", subTag: "", text: res }]);
+        } else {
+            const body = new URLSearchParams({ username, password });
+
+            fetchData("/login", body).then(res => {
+                const action = res && fetchError ? "add_errors" : "";
+                const data = res || fetchError;
+                handleResponse(action, data);
+            });
+        }
     };
 
     /**
@@ -83,11 +98,14 @@ function Auth({ title, handleLoggedState }) {
         });
     };
 
+    /**
+     * Delete the user account.
+     */
     const deleteAccount = () => {
         const check = window.confirm("Are you sure you want to delete your account?");
 
         if (check) {
-            console.log(check);
+            console.log(check, "under construction");
         };
     };
 
@@ -122,7 +140,7 @@ function Auth({ title, handleLoggedState }) {
      * Checks the validity of the user input.
      * @param {Object} obj An object containing the type and the value of the input that will be checked.
      * @param {String} obj.type A string containing the type of input (username, password, rePassword).
-     * @param {Value} obj.type A string containing the user input (username, password, rePassword).
+     * @param {Value} obj.value A string containing the user input (username, password, rePassword).
      * @returns {Boolean} True if the input passes the RegEx check or false, and triggers an error message.
      */
     const checkInput = ({ type, value }) => {
@@ -163,7 +181,7 @@ function Auth({ title, handleLoggedState }) {
                 errors.push({ tag: type, text: `The ${type} is too short` });
             };
 
-            return errors.length > 0 ? errors : true;
+            return errors.length > 0 ? errors : false;
         };
     };
 
@@ -268,8 +286,10 @@ function Auth({ title, handleLoggedState }) {
                 <Icons current={"user"}/>
             </div>
 
-            <button id="logout" onClick={() => logout(handleLoggedState)}>LOGOUT</button>
-            <button id="deleteAccount" onClick={() => deleteAccount(handleLoggedState)}>Delete account</button>
+            <div className={styles.loggedButtonsContainer}>
+                <button id="deleteAccount" onClick={() => deleteAccount(handleLoggedState)}>Delete account</button>
+                <button id="logout" onClick={() => logout(handleLoggedState)}>LOGOUT</button>
+            </div>
         </div>}
     </>
 };

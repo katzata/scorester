@@ -1,3 +1,4 @@
+// import { useEffect } from "react";
 import styles from "./SvgTimer.module.scss";
 
 /**
@@ -13,13 +14,13 @@ import styles from "./SvgTimer.module.scss";
  * @param {Number} props.digits A timer in seconds.
  * @param {Number | String} props.style Set the desired font size.
  */
-export default function SvgTimer({ id, digits, fontSize }) {
+export default function SvgTimer({ id, digits, fontSize, style }) {
     const formatTimer = (time) => Number(time) < 10 ? `0${time}` : time;
     const hours = Math.floor(digits / 3600);
-    const minutes = Math.floor(digits / 60);
-    const seconds = digits - minutes * 60;
+    const minutes = Math.floor((digits % 3600) / 60);
+    const seconds = digits % 60;
 
-    return <svg id={id} className={styles.svgTimer} height="60px" viewBox="0 0 210 60">
+    return <svg id={id} className={styles.svgTimer} style={style || {}} height="60px" viewBox="0 0 210 60">
         <defs>
             <linearGradient id={`${id}gradient`} x1="0" x2="0" y1="0" y2="1">
                 <stop offset="0%" stopColor="rgba(255, 255, 255, 1)" />
