@@ -11,29 +11,19 @@
     }
 
     .scoreInputContainer {
+        width: 100%;
+        max-width: 280px;
         background-color: black;
-        padding: 30px;
+        padding: 20px 30px 30px;
         border-radius: 5px;
 
-        .scoreOperatorsContainer {
+        p {
+            width: calc(100% - 20px);
             display: flex;
-
-            .scoreOperatorToggle {
-                padding: 2px;
-                margin: auto;
-                display: inline;
-                background-color: transparent;
-                border-radius: 3px;
-                
-                &:nth-child(2) {
-                    margin-left: 12px;
-                }
-
-                >svg {
-                    width: 30px;
-                    height: 30px;
-                }
-            }
+            flex-wrap: wrap;
+            font-size: 20px;
+            letter-spacing: .5px;
+            overflow: hidden;
         }
 
         .insertScoreContainer {
@@ -42,7 +32,7 @@
             overflow-x: hidden;
 
             .scoreInput {
-                width: 177px;
+                // width: 177px;
                 height: 32px;
                 margin: 20px 0;
                 text-align: center;

@@ -36,23 +36,23 @@ function Auth({ title, handleLoggedState }) {
      * Register a new user.
      */
     const register = ({username, password, rePassword}) => {
-        const usernameCheck = checkInput({ type: "username", value: username });
-        const passwordCheck = checkInput({ type: "password", value: password });
-        const rePasswordCheck = checkInput({ type: "rePassword", value: rePassword });
+        const usernameNotValid = checkInput({ inputType: "username", value: username });
+        const passwordNotValid = checkInput({ inputType: "password", value: password });
+        const rePasswordNotValid = checkInput({ inputType: "rePassword", value: rePassword });
     
-        if (usernameCheck && passwordCheck && rePasswordCheck && password === rePassword) {
-            const body = new URLSearchParams({ username, password, rePassword });
-            fetchData("/register", body).then(res => handleResponse("register", res || fetchError));
-        } else {
+        if (usernameNotValid || passwordNotValid || rePasswordNotValid || password !== rePassword) {
             const errors = [];
 
-            if (usernameCheck instanceof Array) usernameCheck.forEach(err => errors.push(err));
-            if (passwordCheck instanceof Array) passwordCheck.forEach(err => errors.push(err));
-            if (rePasswordCheck instanceof Array) rePasswordCheck.forEach(err => errors.push(err));
+            if (usernameNotValid instanceof Array) usernameNotValid.forEach(err => errors.push(err));
+            if (passwordNotValid instanceof Array) passwordNotValid.forEach(err => errors.push(err));
+            if (rePasswordNotValid instanceof Array) rePasswordNotValid.forEach(err => errors.push(err));
             if (password !== rePassword) errors.push({ tag: "password", text: "Passwords do not match!" });
 
             errorsContext.dispatch({ type: "clear", payload: "errors"});
             setErrorData("add_errors", errors);
+        } else {
+            const body = new URLSearchParams({ username, password, rePassword });
+            fetchData("/register", body).then(res => handleResponse("register", res || fetchError));
         };
     };
 
@@ -60,25 +60,25 @@ function Auth({ title, handleLoggedState }) {
      * Log the user in.
      */
     const login = ({ username, password }) => {
-        const types = ["username", "password"];
-        const usernameNotOk = checkInput({ type: types[0], value: username});
-        const passwordNotOk = checkInput({ type: types[1], value: password});
+        const inputTypes = ["username", "password"];
+        const usernameNotValid = checkInput({ inputType: inputTypes[0], value: username }, true);
+        const passwordNotValid = checkInput({ inputType: inputTypes[1], value: password }, true);
 
-        if (usernameNotOk || passwordNotOk) {
-            const errors = [usernameNotOk, passwordNotOk];
+        if (usernameNotValid || passwordNotValid) {
+            const errors = [usernameNotValid, passwordNotValid];
             for (let i = 0; i < errors.length; i++) {
                 if (!errors[i][0]) continue;
-                errors[i] = { tag: "login", subTag: types[i], text: errors[i][0].text };
+                errors[i] = { tag: "login", subTag: inputTypes[i], text: errors[i][0].text };
             };
 
-            console.log(errors);
-            // setErrorData("add_errors", [{ tag: "login", subTag: "", text: res }]);
+            setErrorData("add_errors", errors);
         } else {
             const body = new URLSearchParams({ username, password });
 
             fetchData("/login", body).then(res => {
                 const action = res && fetchError ? "add_errors" : "";
                 const data = res || fetchError;
+
                 handleResponse(action, data);
             });
         }
@@ -105,7 +105,16 @@ function Auth({ title, handleLoggedState }) {
         const check = window.confirm("Are you sure you want to delete your account?");
 
         if (check) {
-            console.log(check, "under construction");
+            const body = new URLSearchParams({ id });
+
+            fetchData("/delete", body).then(res => {
+                if (res && res.status) {
+                    const { username, userSettings, gameSettings } = userContext.userData;
+                    userContext.setData({ username, userSettings, gameSettings }, true);
+                } else {
+                    setErrorData("add_errors", [{ tag: "delete", subTag: "connection", text: res }]);
+                };
+            });
         };
     };
 
@@ -141,44 +150,44 @@ function Auth({ title, handleLoggedState }) {
      * @param {Object} obj An object containing the type and the value of the input that will be checked.
      * @param {String} obj.type A string containing the type of input (username, password, rePassword).
      * @param {Value} obj.value A string containing the user input (username, password, rePassword).
+     * @param {Boolean} lengthOnly The type of check to be made ()
      * @returns {Boolean} True if the input passes the RegEx check or false, and triggers an error message.
      */
-    const checkInput = ({ type, value }) => {
-        if (type === "username") {
+    const checkInput = ({ inputType, value }, isEmptyOnly) => {
+        if (inputType === "username") {
             const pattern = /[a-zA-Zа-яА-Я0-9.'\s]+$/;
-            const length = 3;
+            const length = !isEmptyOnly ? 3 : 0;
 
-            return check(type, length, pattern);
+            return check(inputType, length, pattern);
         };
 
-        if (type === "password") {
+        if (inputType === "password") {
             const pattern = /[a-zA-Zа-яА-Я0-9.!?]+$/;
-            const length = 6;
-
-            return check(type, length, pattern);
+            const length = !isEmptyOnly ? 6 : 0;
+            return check(inputType, length, pattern);
         };
 
-        if (type === "rePassword") {
+        if (inputType === "rePassword") {
             const pattern = /[a-zA-Zа-яА-Я0-9.!?]+$/;
             const length = 0;
 
-            return check(type, length, pattern);
+            return check(inputType, length, pattern);
         };
 
-        function check(type, length, pattern) {
+        function check(inputType, length, pattern) {
             const errors = [];
 
             if (!value.match(pattern)) {
-                const field = type !== "rePassword" ? type : "repeat password";
-                errors.push({ tag: type, text: `The ${field} contians invalid characters.` });
+                const field = inputType !== "rePassword" ? inputType : "repeat password";
+                errors.push({ tag: inputType, text: `The ${field} contians invalid characters.` });
             };
 
-            if (value === "" && type !== "rePassword") {
-                return [{ tag: type, text: `The ${type} field can not be empty.` }]
+            if (value === "" && inputType !== "rePassword") {
+                return [{ tag: inputType, text: `The ${inputType} field can not be empty.` }]
             };
 
-            if (value.length < length && type !== "rePassword") {
-                errors.push({ tag: type, text: `The ${type} is too short` });
+            if (value.length < length && inputType !== "rePassword") {
+                errors.push({ tag: inputType, text: `The ${inputType} is too short` });
             };
 
             return errors.length > 0 ? errors : false;
@@ -275,15 +284,17 @@ function Auth({ title, handleLoggedState }) {
                 </fieldset>
             </form>
 
-            <p>
-                <span>Or if you {isRegistering ? "already" : "don't"} have an account you can</span>
-                <button onClick={toggleFormType} disabled={loading}>{formType(!isRegistering).toLocaleLowerCase()}</button>
-            </p>
+            <section className={styles.toggleFormSection}>
+                <p>Or if you {isRegistering ? "already" : "don't"} have an account you can</p>
+                <button className={styles.toggleFormButton} onClick={toggleFormType} disabled={loading}>{formType(!isRegistering).toLocaleLowerCase()}</button>
+            </section>
         </>}
 
         {isLogged && <div className={styles.loggedUserSection}>
             <div id="avatar" className={styles.userAvatarContainer}>
                 <Icons current={"user"}/>
+
+                <p>{userContext.userData.username}</p>
             </div>
 
             <div className={styles.loggedButtonsContainer}>

@@ -88,7 +88,7 @@ export function GameProvider({ children }) {
                 if (individualTimersVisible) {
                     newData.individualTimers[playerTurnIndex] += 1;
                 };
-                // console.log(newData.individualTimers[playerTurnIndex]);
+
                 return newData;
             default:
                 return state;

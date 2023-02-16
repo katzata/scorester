@@ -17,9 +17,9 @@ import LoadingText from "../../../shared/LoadingText/LoadingText";
  * @param {String} props.settingsUrl
  * @props settingsUrl - A url for the initial settings json. Will be fetched once.
  */
-export default function SettingsSection({ settingsUrl }) {
+export default function SettingsSection({ settingsUrl, title }) {
     let settingsSection = settingsUrl.split(".")[0].split("/");
-    const sectionTitle = `${capitalize(settingsSection[1])} settings`;
+    const sectionTitle = title || `${capitalize(settingsSection[1])} settings`;
     settingsSection[0] = `S${settingsSection[0].slice(1)}`;
     settingsSection = settingsSection.reverse().join("");
     

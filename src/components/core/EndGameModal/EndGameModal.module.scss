@@ -23,7 +23,7 @@ $summary-title-font-weight: 400;
         flex-direction: column;
         box-shadow: inset 0 0 2px 0px black;
         border-radius: 6px;
-        text-shadow: 0 1px 1px rgba(0, 0, 0, .6);
+        text-shadow: 1px 1px 1px rgba(0, 0, 0, .6);
 
         .topContainer {
             width: 100%;
@@ -63,6 +63,7 @@ $summary-title-font-weight: 400;
 
         h4 {
             font-family: fonts.$secondary-font;
+            font-weight: 500;
         }
         
         .scoreDetailsInternal {
@@ -74,9 +75,9 @@ $summary-title-font-weight: 400;
                 display: flex;
                 
                 .winnerName {
-                    margin-bottom: 6px;
+                    margin-bottom: 15px;
                     font-size: 25px;
-                    line-height: 25px;
+                    line-height: 20px;
                     text-align: center;
                 }
                 

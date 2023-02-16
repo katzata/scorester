@@ -1,10 +1,11 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import styles from "./Main.module.scss";
 
 import UserContext from "../../../contexts/UserContext";
 import GameContext from "../../../contexts/GameContext";
 
 import { getStorage, saveToStorage } from "../../../utils/localStorage";
+import useKeyPress from "../../../hooks/useKeyPress";
 
 import InputModal from "./InputModal/InputModal";
 import ScoreColumn from "./ScoreColumn/ScoreColumn";
@@ -21,6 +22,7 @@ export default function Main() {
     const { numberOfPlayers } = userContext.userData.gameSettings;
     const { isPlaying, scores, playerTurnIndex } = gameContext.gameData;
 
+    const [pressedKey] = useKeyPress();
     const [inputModalVisible, setInputModalVisible] = useState(false);
     const [isEditingInput, setIsEditingInput] = useState(false);
 
@@ -50,6 +52,12 @@ export default function Main() {
         saveToStorage("scGameDetails", localData);
         gameContext.dispatch({ type: "player_name", payload: [index, newName] });
 	};
+
+    useEffect(() => {
+        if (inputModalVisible && pressedKey === "cancel") {
+            setInputModalVisible(false);
+        };
+    }, [pressedKey, inputModalVisible]);
     
     return <main className={styles.main}>
         <MessageModal/>

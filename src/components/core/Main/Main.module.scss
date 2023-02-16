@@ -3,6 +3,7 @@
 .main {
     @include styles-mixin.main-components-style;
 
+    max-height: calc(97.1374045802vh - 119px);
     position: relative;
     flex-grow: 1;
     flex-direction: column;

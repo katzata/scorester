@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import styles from "./Header.module.scss";
 
 import ErrorsContext from "../../../contexts/ErrorsContext";
@@ -9,11 +9,14 @@ import Modal from "../../shared/Modal/Modal";
 import SettingsSection from "./SettingsSection/SettingsSection";
 import Icons from "../../shared/Icons/Icons";
 import SvgOutlinedText from "../../shared/SvgOutlinedText/SvgOutlinedText";
+import useKeyPress from "../../../hooks/useKeyPress";
 
 export default function Header() {
     const errorsContext = useContext(ErrorsContext);
     const userContext = useContext(UserContext);
     const { mainTimer, individualTimers } = userContext.userData.gameSettings;
+
+    const [pressedKey] = useKeyPress();
     const [userSettingsVisible, setUserSettingsVisible] = useState(false);
     const [gameSettingsVisible, setGameSettingsVisible] = useState(false);
 
@@ -27,6 +30,16 @@ export default function Header() {
         if (!state) errorsContext.dispatch({ type: "clear", payload: "errors" });
         setGameSettingsVisible(state);
     };
+
+    useEffect(() => {
+        if (userSettingsVisible && pressedKey === "cancel") {
+            setUserSettingsVisible(false);
+        };
+
+        if (gameSettingsVisible && pressedKey === "cancel") {
+            setGameSettingsVisible(false);
+        };
+    }, [pressedKey]);
 
     return <header>
         <div id="timersWrapper" className={styles.timersWrapper}>
@@ -42,7 +55,7 @@ export default function Header() {
                 </button>
 
                 <Modal id="userSettings" isVisible={userSettingsVisible} position="fixed" visibilityHandler={toggleUserSettings} title={"userSettings"}>
-                    <SettingsSection settingsUrl="settings/user.json"/>
+                    <SettingsSection settingsUrl="settings/user.json" title="User info"/>
                 </Modal>
             </div>
 

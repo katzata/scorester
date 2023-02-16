@@ -55,7 +55,7 @@
         text-align: center;
     }
 
-    >svg {
+    svg {
         width: auto;
         height: 15px;
         margin: auto 0 auto auto;
@@ -66,5 +66,23 @@
             stroke: rgba(255, 255, 255, .6);
             stroke-width: 1;
         }
+    }
+}
+
+@media screen and (max-width: 420px) {
+    .rankingRow .nameColumn {
+        width: 60%;
+        margin-left: auto;
+    }
+    
+    .rankingRow .pointsColumn {
+        width: 50%;
+        margin-left: 4px;
+        text-align: left;
+    }
+
+    .rankingRow svg {
+        height: 15px;
+        margin-left: calc(50% - 58px);
     }
 }
