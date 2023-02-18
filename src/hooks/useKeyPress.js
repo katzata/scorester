@@ -6,26 +6,29 @@ export default function useKeyPress() {
     const handleKeyPress = (e) => {
         const { code } = e;
         const setAction = (type, command) => type === "keydown" ? command : null;
+        let action = null;
 
-        const actions = {
-            Enter: function (e) {
-                setKeyCode(setAction(e.type, "enter"));
-            },
-            Escape: (e) => {
-                setKeyCode(setAction(e.type, "cancel"));
-            },
-            Pause: (e) => {
-                setKeyCode(setAction(e.type, "pause"));
-            }
+        if (code === "Enter" || code === "NumpadEnter") {
+            action = "enter";
         };
 
-        if (actions[code]) actions[code](e);
+        if (code === "Escape") {
+            action = "cancel";
+        };
+
+        if (code === "Pause") {
+            action = "pause";
+        };
+
+        if (action) {
+            setKeyCode(setAction(e.type, action));
+        };
     };
 
     useEffect(() => {
         window.addEventListener("keydown", handleKeyPress);
         window.addEventListener("keyup", handleKeyPress);
-        
+
         return () => {
             window.removeEventListener("keydown", handleKeyPress)
             window.removeEventListener("keyup", handleKeyPress)

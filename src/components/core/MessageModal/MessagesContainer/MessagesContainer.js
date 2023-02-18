@@ -7,21 +7,21 @@ export default function MessagesContainer({ currentMessages, side, messageBg, cl
     const [isVisible, setIsVisible] = useState(false);
     const [isExtended, setIsExtended] = useState(false);
 
-    const sidecheck = side === "left";
-    const baseX = sidecheck ? "3px" : "-3px";
-    const offsetX = sidecheck ? "calc(-100% + 9px)" : "calc(100% - 9px)";
+    const sideCheck = side === "left";
+    const baseX = sideCheck ? "3px" : "-3px";
+    const offsetX = sideCheck ? "calc(-100% + 9px)" : "calc(100% - 9px)";
 
     const wrapperStyles = {
         [side]: "0px",
         backgroundColor: messageBg ? messageBg : "transparent",
         transform: `translateX(${ isExtended ? baseX : offsetX })`,
         opacity: isVisible ? 1 : 0,
-        zIndex: sidecheck ? 1 : 0,
+        zIndex: sideCheck ? 1 : 0,
         display: currentMessages.length > 0 ? "inline-flex" : "none"
     };
 
-    const posX = sidecheck ? "right" : "left";
-    let deg = sidecheck ? [0, 180] : [180, 0];
+    const posX = sideCheck ? "right" : "left";
+    let deg = sideCheck ? [0, 180] : [180, 0];
 
     const hideButtonsStyles = {
         [posX]: "-9px",
@@ -46,7 +46,7 @@ export default function MessagesContainer({ currentMessages, side, messageBg, cl
         } else {
             clearList();
         };
-    }, [currentMessages.length]);
+    }, [currentMessages.length, clearList]);
 
     return <div className={styles.shadowWrapper} style={wrapperStyles}>
         <div className={styles.modalInternalSection}>

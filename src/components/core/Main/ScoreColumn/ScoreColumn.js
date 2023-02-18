@@ -8,6 +8,7 @@ export default function ScoreColumn({
     index,
     player,
     playerScores,
+    scoreTotal,
     setPlayerName,
     setIsEditingInput,
     inputModalVisibilityHandler
@@ -92,7 +93,7 @@ export default function ScoreColumn({
             </div>
 
             <div className={styles.columnFooter}>
-                <span className={styles.columnTotal}>{playerScores && playerScores[0] !== undefined && playerScores.reduce((a, b) => Number(a) + Number(b))}</span>
+                <span className={styles.columnTotal}>{playerScores && playerScores[0] !== undefined && scoreTotal}</span>
             </div>
         </div>
     </section>;

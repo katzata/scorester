@@ -1,4 +1,4 @@
-import { createContext, useMemo, useState, useCallback } from "react";
+import { createContext, useMemo, useState, useCallback, useEffect } from "react";
 import { getStorage, setStorage } from "../utils/localStorage";
 import { mergeObjectData } from "../utils/utils";
 
@@ -36,17 +36,23 @@ export function UserProvider({ children }) {
             return setUserData(data);
         };
 
-        for (const [key, value] of Object.entries(data)) {
-            newData[key] = value;
+        if (data) {
+            for (const [key, value] of Object.entries(data)) {
+                newData[key] = value;
+            };
         };
 
-        if (data.id) {
+        if (data && data.id) {
             newData.isLogged = true;
         };
 
         setStorage({ key:"scUserDetails", value: newData});
         setUserData(newData);
     }, [userData]);
+
+    useEffect(() => {
+        if (storageData === null) setData();
+    }, [storageData, setData]);
 
     const value = useMemo(() => ({ userData, setData }), [userData, setData]);
 

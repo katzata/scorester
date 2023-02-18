@@ -39,7 +39,7 @@ export default function Header() {
         if (gameSettingsVisible && pressedKey === "cancel") {
             setGameSettingsVisible(false);
         };
-    }, [pressedKey]);
+    }, [pressedKey, userSettingsVisible, gameSettingsVisible, setGameSettingsVisible]);
 
     return <header>
         <div id="timersWrapper" className={styles.timersWrapper}>

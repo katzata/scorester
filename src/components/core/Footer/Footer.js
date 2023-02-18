@@ -10,6 +10,7 @@ export default function Footer({ endGameModalVisibilityHandler }) {
     const gameContext = useContext(GameContext);
     const { mainTimer, individualTimers } = userContext.userData.gameSettings;
     const { isPlaying, gamePaused } = gameContext.gameData;
+    const { dispatch } = gameContext;
     const timersPresent = mainTimer || individualTimers;
 
     const [pressedKey] = useKeyPress();
@@ -45,9 +46,9 @@ export default function Footer({ endGameModalVisibilityHandler }) {
 
     useEffect(() => {
         if (isPlaying && pressedKey === "pause") {
-            handlePauseToggle();
+            dispatch({ type: !gamePaused ? "pause_game" : "resume_game" });
         };
-    }, [pressedKey]);
+    }, [pressedKey, dispatch, isPlaying, gamePaused]);
 
     return <footer>
         <button

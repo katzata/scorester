@@ -12,14 +12,14 @@ export function GameProvider({ children }) {
         gamePaused: gamePaused !== undefined ? gamePaused : false,
         playerTurnIndex: playerTurnIndex !== undefined ? playerTurnIndex : 0,
         mainTimer: mainTimer !== undefined ? mainTimer : 0,
-        scores: scores !== undefined ? scores : [...Array(1).keys()].map(el => ({ name: `Player ${el + 1}`, scores: [] })),
+        scores: scores !== undefined ? scores : [...Array(1).keys()].map(el => ({ name: `Player ${el + 1}`, scores: [], scoreTotal: 0 })),
         individualTimers:  individualTimers !== undefined ? individualTimers : [...Array(1).fill(0)]
     };
     
     const [gameData, dispatch] = useReducer(reducer, mergeObjectData(storageData, defaultData));
 
     /**
-     * Sets the current context state accourding to the provided actions.
+     * Sets the current context state according to the provided actions.
      * Saves to local storage the updated state.
      * @param {Object.<any>} state The current state.
      * @param {Object} action The current action (may have payload).
@@ -48,6 +48,7 @@ export function GameProvider({ children }) {
 
                 for (let i = 0; i < newData.scores.length; i++) {
                     newData.scores[i].scores = [];
+                    newData.scores[i].scoreTotal = 0;
                     newData.individualTimers[i] = 0;
                 };
 
@@ -59,9 +60,13 @@ export function GameProvider({ children }) {
                 newData.gamePaused = false;
                 return newData;
             case "score":
+                const { score } = action.payload || 0;
                 const increment = newData.playerTurnIndex + 1;
-                newData.scores[newData.playerTurnIndex].scores.push(action.payload);
+
+                newData.scores[newData.playerTurnIndex].scoreTotal += score;
+                newData.scores[newData.playerTurnIndex].scores.push(score);
                 newData.playerTurnIndex = increment < scores.length ? increment : 0;
+
                 return newData;
             case "player_name":
                 const [nameIndex, newName] = action.payload;
@@ -75,6 +80,10 @@ export function GameProvider({ children }) {
                     } else {
                         newData.scores.pop();
                         newData.individualTimers.pop();
+                        
+                        if (newData.playerTurnIndex >= newData.scores.length) {
+                            newData.playerTurnIndex = newData.scores.length - 1;
+                        };
                     };
                 };
                 return newData;
@@ -95,6 +104,9 @@ export function GameProvider({ children }) {
         };
     };
 
+    /**
+     * Update the localStorage object.
+     */
     const updateStorage = useCallback(() => setStorage({ key:"scGameDetails", value: gameData}), [gameData])
 
     useEffect(() => {

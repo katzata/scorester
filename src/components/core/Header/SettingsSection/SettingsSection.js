@@ -26,7 +26,7 @@ export default function SettingsSection({ settingsUrl, title }) {
     const userContext = useContext(UserContext);
     const gameContext = useContext(GameContext);
     const errorsContext = useContext(ErrorsContext);
-    const { isLogged } = userContext.userData;
+    const { isLogged, gameSettings } = userContext.userData;
     const sectionEndpoint = `/${settingsSection}`;
     const values = userContext.userData[settingsSection];
 
@@ -53,18 +53,22 @@ export default function SettingsSection({ settingsUrl, title }) {
     /**
      * Sets the current user setting values.
      * If the user is logged in it makes a call to the server to update the values in the database.
-     * Async in order to await when saving to the database thus preventing settings update until the request is complete.
+     * Async in order to await/prevent saving to the database until the request is complete.
      * @param {Object} newValues An updated userSettings object.
      */
     const setValues = async (newValues) => {
         if (isLogged) await saveToDb(newValues);
         userContext.setData({ [settingsSection]: newValues });
+
+        if (newValues.mainTimer !== gameSettings.mainTimer && !newValues.mainTimer) {
+            gameContext.dispatch({ type: "number_of_players", payload: "value" });
+        };
     };
 
     /**
      * Send the values to the database.
      * @param {Object} newValues An updated userSettings object.
-     * @returns The fetch function in order to use await inside the parent functiuon.
+     * @returns The fetch function in order to use await inside the parent function.
      */
     const saveToDb = (newValues) => {
         const body = new URLSearchParams(newValues);
@@ -73,11 +77,12 @@ export default function SettingsSection({ settingsUrl, title }) {
             const { changedRows, message, warningCount } = res;
 
             if (changedRows === 0 && warningCount !== 0) {
+                console.warn(settingsChanged, changedError, message)
                 errorsContext.dispatch({type: "add_warnings", payload: [{ tag: "connection", subTag: "api", text: "No connection to the server!" }] });
             };
         });
     };
-
+    
     return <div className={styles.settingsSection}>
         <h3>{sectionTitle}</h3>
 

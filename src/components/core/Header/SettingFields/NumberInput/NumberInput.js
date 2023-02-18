@@ -48,6 +48,13 @@ function NumberInput({ title, id, section, value, min, changeHandler, disabled})
         };
     };
 
+    /**
+     * Check if the value in the field is within range.
+     * If the value is not within range it get's reset to the last known good value.
+     * @returns The last known good value or null.
+     */
+    const handleBlur = () => (currentValue !== value ? setCurrentValue(value) : null);
+
     return <div className={styles.numberInput}>
         <p>{title}</p>
 
@@ -59,6 +66,7 @@ function NumberInput({ title, id, section, value, min, changeHandler, disabled})
             data-section={section}
             value={currentValue || ""}
             onChange={handleInput}
+            onBlur={handleBlur}
             disabled={disabled}
         />
     </div>;

@@ -1,47 +1,40 @@
-import { useRef, useEffect, useState, useContext, useCallback } from "react";
+import { useRef, useEffect, useState } from "react";
 import styles from "./InputModal.module.scss";
 
-import GameContext from "../../../../contexts/GameContext";
+// import GameContext from "../../../../contexts/GameContext";
 
 import useKeyPress from "../../../../hooks/useKeyPress";
 import Modal from "../../../shared/Modal/Modal";
 import Icons from "../../../shared/Icons/Icons";
 
-export default function InputModal({ isVisible, visibilityHandler, player, zIndex }) {
-    const gameContext = useContext(GameContext);
+export default function InputModal({ isVisible, player, handleScoreInput, visibilityHandler, zIndex }) {
+    // const gameContext = useContext(GameContext);
 
     const [pressedKey] = useKeyPress();
-    const [inputValue, setInputValue] = useState(0);
+    const [inputValue, setInputValue] = useState("");
     const inputRef = useRef(null);
-    
-    /**
-     * Gets the game data from the local storage, updates the player score arrays and saves the new data to the local storage.
-     * Toggles the modal visibility state to false thus closing the input modal.
-     * Calls the playerTurnIndexHandler in order to change the playerTurnIndex.
-     */
-    const handleScoreInput = useCallback(() => {
-        gameContext.dispatch({ type: "score", payload: inputValue });
-        visibilityHandler(false);
-    }, [gameContext, visibilityHandler]);
 
+    const handleConfirm = () => {
+        inputRef.current.blur();
+        handleScoreInput(inputValue);
+        setInputValue("");
+    };
+    
     useEffect(() => {
-        if (isVisible) {
+        if (isVisible && document.activeElement !== inputRef.current) {
             inputRef.current.focus();
-            inputRef.current.select();
         };
 
         if (isVisible && pressedKey === "enter") {
-            console.log("isVisible", isVisible);
-            handleScoreInput();
+            handleScoreInput(inputValue);
         };
-    }, [isVisible, pressedKey, handleScoreInput]);
+    }, [isVisible, pressedKey, inputValue, handleScoreInput]);
 
     return <section id="inputModal" className={styles.modalContainer} style={{ transform: `scaleY(${isVisible ? 100 : 0}%)`, zIndex }}>
         <Modal isVisible={isVisible} position="absolute" visibilityHandler={visibilityHandler}>
             <div className={styles.scoreInputContainer}>
                 <p className={styles.playerName}>
                     {player}
-
                     <span>'s turn</span>
                 </p>
 
@@ -52,9 +45,10 @@ export default function InputModal({ isVisible, visibilityHandler, player, zInde
                         type="number"
                         value={inputValue}
                         onChange={(e) => setInputValue(Number(e.target.value))}
+                        enterKeyHint="go"
                     />
 
-                    <button className={styles.insertScoreButton} onClick={handleScoreInput}>
+                    <button className={styles.insertScoreButton} onClick={handleConfirm}>
                         <Icons current={"check"}/>
                     </button>
                 </div>

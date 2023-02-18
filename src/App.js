@@ -25,7 +25,7 @@ export default function App() {
 				<UserProvider>
 					<GameProvider>
 						<Header/>
-						<Main/>
+						<Main setEndgameModalVisible={setEndgameModalVisible}/>
 						<Footer endGameModalVisibilityHandler={setEndgameModalVisible}/>
 
 						{endgameModalVisible && <EndGameModal

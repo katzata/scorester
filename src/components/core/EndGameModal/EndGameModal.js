@@ -1,6 +1,7 @@
 import { useContext } from "react";
 import styles from "./EndGameModal.module.scss";
 
+import UserContext from "../../../contexts/UserContext";
 import GameContext from "../../../contexts/GameContext";
 import { getStorage } from "../../../utils/localStorage";
 
@@ -23,43 +24,45 @@ import RankRow from "./RankRow/RankRow";
  * @returns A summary of the finished game.
  */
 export default function EndGameModal({ isVisible, visibilityHandler }) {
+    const userContext = useContext(UserContext);
     const gameContext = useContext(GameContext);
-    const { individualTimers , mainTimer, scores } = gameContext.gameData;
-
-    const data = getStorage("scGameDetails");
+    const { individualTimers , mainTimer, scores, playerTurnIndex } = gameContext.gameData;
+    const { gameSettings } = userContext.userData;
+    
+    const endGameScores = [...scores];
     let totalTurns = 0;
 
-    for (let i = 0; i < scores.length; i++) {
-        const increment = scores[i].scores.length || 0;
+    for (let i = 0; i < endGameScores.length; i++) {
+        const increment = endGameScores[i].scores.length || 0;
 
-        if (scores[i].scores.length < 1) {
-            scores[i].scores = [0];
+        if (endGameScores[i].scores.length < 1) {
+            endGameScores[i].scores = [0];
         };
         
-        scores[i].scoreTotal = scores[i].scores.reduce((a, b) => a + (b || 0));
         totalTurns += increment;
-        scores[i].turns = increment;
-        scores[i].highestScore = Math.max(...scores[i].scores);
-        scores[i].timer = individualTimers[i];
-
-        if (individualTimers) {
-            data.scores[i].timer = data.individualTimers[i];
-        };
+        endGameScores[i].turns = increment;
+        endGameScores[i].highestScore = Math.max(...endGameScores[i].scores);
+        endGameScores[i].timer = individualTimers[i];
     };
-    const sortedScores = [...scores].sort((a, b) => b.scoreTotal - a.scoreTotal);
-    const highestScored = [...scores].sort((a, b) => b.highestScore - a.highestScore)[0];
-    const lowestTime = [...scores].sort((a, b) => a.timer - b.timer)[0];
+
+
+    const sortedScores = [...endGameScores].sort((a, b) => b.scoreTotal - a.scoreTotal);
+    const highestScored = [...endGameScores].sort((a, b) => b.highestScore - a.highestScore)[0];
+    const lowestTime = [...endGameScores].sort((a, b) => a.timer - b.timer)[0];
+
+    const winnerIndex = playerTurnIndex - 1 < 0 ? endGameScores.length - 1 : playerTurnIndex - 1;
+    const winner = gameSettings.scoreTarget > 0 ? scores[winnerIndex] : sortedScores[0];
 
     const winnerStats = [
-        ["Points", <p>{sortedScores[0].scoreTotal}</p>],
-        ["Playtime", individualTimers && <SvgTimer id={"individual-resW"} digits={sortedScores[0].timer}/>],
-        ["Turns", <p>{sortedScores[0].turns}</p> ]
+        ["Points", <p>{winner.scoreTotal}</p>],
+        ["Turns", <p>{winner.turns}</p> ],
+        ["Playtime", gameSettings.individualTimers && <SvgTimer id={"individual-resW"} digits={winner.timer}/>]
     ];
 
     const gameStats = [
-        ["Game points", mainTimer && <p>{scores.map(el => el.scoreTotal).reduce((a, b) => a + b)}</p>],
-        ["Game time", individualTimers && <SvgTimer id={"individual-resG"} digits={mainTimer}/>],
-        ["Turns", <p>{totalTurns}</p> ]
+        ["Game points", <p>{endGameScores.map(el => el.scoreTotal).reduce((a, b) => a + b)}</p>],
+        ["Turns", <p>{totalTurns}</p> ],
+        ["Game time", (gameSettings.mainTimer || gameSettings.individualTimers) && <SvgTimer id={"individual-resG"} digits={gameSettings.mainTimer ? mainTimer : individualTimers.reduce((a, b) => a + b)}/>]
     ];
     
     /**
@@ -68,7 +71,8 @@ export default function EndGameModal({ isVisible, visibilityHandler }) {
      * @returns A StatRow component containing the necessary data.
      */
     function handleStats(stats) {
-        return stats.filter(([stat, el]) => el && [stat, el])
+        return [...stats]
+            .filter(([stat, el]) => el && [stat, el])
             .map(([stat, el]) => <StatRow title={stat} key={stat}>{el}</StatRow>);
     };
 
@@ -100,14 +104,12 @@ export default function EndGameModal({ isVisible, visibilityHandler }) {
                 <div className={styles.scoreDetailsInternal}>
                     <div className={styles.scoreDetailsTop}>
                         <StatsSection title="Winner">
-                            <h4 className={styles.winnerName}>{sortedScores[0].name}</h4>
-
+                            <h4 className={styles.winnerName}>{winner.name}</h4>
                             {handleStats(winnerStats)}
                         </StatsSection>
 
                         <StatsSection title="Game stats">
                             <h4 className={styles.winnerName}>Totals</h4>
-                            
                             {handleStats(gameStats)}
                         </StatsSection>
                     </div>
@@ -118,7 +120,7 @@ export default function EndGameModal({ isVisible, visibilityHandler }) {
                             <p>{highestScored.highestScore} <span>pts.</span></p>
                         </StatsSection>
 
-                        {individualTimers && <StatsSection title="Lowest time">
+                        {gameSettings.individualTimers && <StatsSection title="Lowest time">
                             <h4 className={styles.winnerName}>{lowestTime.name}</h4>
                             <SvgTimer id="lowestTime" digits={lowestTime.timer}/>
                         </StatsSection>}
