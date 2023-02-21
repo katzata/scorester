@@ -14,6 +14,7 @@ function Auth({ title, handleLoggedState }) {
     const userContext = useContext(UserContext);
     const gameContext = useContext(GameContext);
     const { isLogged } = userContext.userData;
+    const { dispatch } = errorsContext;
     const { id } = getStorage("scUserDetails") || {};
     const fetchBody = useMemo(() => ({ id }), [id]);
 
@@ -22,7 +23,7 @@ function Auth({ title, handleLoggedState }) {
     const [password, setPassword] = useState("");
     const [rePassword, setRePassword] = useState("");
     const [isRegistering, setIsRegistering] = useState(false);
-    
+
     const formType = (toggle) => toggle ? "REGISTER" : "LOGIN";
 
     /**
@@ -31,7 +32,7 @@ function Auth({ title, handleLoggedState }) {
      */
     const toggleFormType = (e) => {
         e.preventDefault();
-        errorsContext.dispatch({ type: "clear", payload: "errors"});
+        dispatch({ type: "clear", payload: "errors"});
         setIsRegistering(!isRegistering);
     };
 
@@ -49,9 +50,9 @@ function Auth({ title, handleLoggedState }) {
             if (usernameNotValid instanceof Array) usernameNotValid.forEach(err => errors.push(err));
             if (passwordNotValid instanceof Array) passwordNotValid.forEach(err => errors.push(err));
             if (rePasswordNotValid instanceof Array) rePasswordNotValid.forEach(err => errors.push(err));
-            if (password !== rePassword) errors.push({ tag: "password", text: "Passwords do not match!" });
+            if (password !== rePassword) errors.push({ tag: "register", subTag:"password", text: "Passwords do not match!" });
 
-            errorsContext.dispatch({ type: "clear", payload: "errors"});
+            dispatch({ type: "clear", payload: "errors"});
             setErrorData("add_errors", errors);
         } else {
             const body = new URLSearchParams({ username, password, rePassword });
@@ -69,6 +70,7 @@ function Auth({ title, handleLoggedState }) {
 
         if (usernameNotValid || passwordNotValid) {
             const errors = [usernameNotValid, passwordNotValid];
+
             for (let i = 0; i < errors.length; i++) {
                 if (!errors[i][0]) continue;
                 errors[i] = { tag: "login", subTag: inputTypes[i], text: errors[i][0].text };
@@ -84,7 +86,7 @@ function Auth({ title, handleLoggedState }) {
 
                 handleResponse(action, data);
             });
-        }
+        };
     };
 
     /**
@@ -139,14 +141,45 @@ function Auth({ title, handleLoggedState }) {
      */
     const handleResponse = (action, data) => {
         const { id, gameSettings, Errors } = data;
+
         if (data && id) {
             data.isLogged = true;
             userContext.setData(data);
 
             gameSettings && gameContext.dispatch({ type: "number_of_players", payload: Number(gameSettings.numberOfPlayers) });
         } else {
-            if (data.Errors) {
-                setErrorData(action, data.Errors);
+            if (Errors) {
+                setErrorData(action, Errors);
+            };
+        };
+    };
+
+    const handleInput = (e) => {
+        const { name, value } = e.target;
+        const { errors } = errorsContext;
+
+        if (name === "username") {
+            setUsername(value);
+        };
+
+        if (name === "password") {
+            setPassword(value);
+        };
+
+        if (name === "rePassword") {
+            setRePassword(value);
+        };
+
+        for (const { tag, subTag, text } of errors) {
+            if (subTag === name) {
+                const input = checkInput({ inputType: name, value });
+                const errorStillPresent = input.length > 0 && input.filter(err => err.subTag === subTag && err.text === text);
+
+                if (!errorStillPresent || errorStillPresent.length === 0) {
+                    dispatch({ type: "remove_errors", payload: [{ tag, subTag, text }] });
+                };
+
+                break;
             };
         };
     };
@@ -182,18 +215,18 @@ function Auth({ title, handleLoggedState }) {
 
         function check(inputType, length, pattern) {
             const errors = [];
-
+            const tag = formType(isRegistering).toLocaleLowerCase();
             if (!value.match(pattern)) {
                 const field = inputType !== "rePassword" ? inputType : "repeat password";
-                errors.push({ tag: inputType, text: `The ${field} contains invalid characters.` });
+                errors.push({ tag, subTag: inputType, text: `The ${field} contains invalid characters.` });
             };
 
             if (value === "" && inputType !== "rePassword") {
-                return [{ tag: inputType, text: `The ${inputType} field can not be empty.` }]
+                return [{ tag, subTag: inputType, text: `The ${inputType} field can not be empty.` }]
             };
 
             if (value.length < length && inputType !== "rePassword") {
-                errors.push({ tag: inputType, text: `The ${inputType} is too short` });
+                errors.push({ tag, subTag: inputType, text: `The ${inputType} is too short` });
             };
 
             return errors.length > 0 ? errors : false;
@@ -212,23 +245,24 @@ function Auth({ title, handleLoggedState }) {
             const errors = [];
 
             for (const error of errorData) {
-                if (typeof error === "string") {
-                    errors.push({ tag: formType(isRegistering), subTag: "api", text: error });
-                } else {
-                    const formattedError = { ...error };
-    
-                    if (error.message && (error.message.includes("Failed to fetch") || error.message.includes("Load failed"))) {
-                        formattedError.tag = "connection";
-                        formattedError.text = "No connection to the server!";
+                if (error) {
+                    if (typeof error === "string") {
+                        errors.push({ tag: formType(isRegistering), subTag: "api", text: error });
+                    } else {
+                        const formattedError = { ...error };
+        
+                        if (error.message && (error.message.includes("Failed to fetch") || error.message.includes("Load failed"))) {
+                            formattedError.tag = "connection";
+                            formattedError.text = "No connection to the server!";
+                        };
+        
+                        errors.push(formattedError);
                     };
-    
-                    errors.push(formattedError);
                 };
             };
 
-            errorsContext.dispatch({ type: action, payload: errors });
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+            dispatch({ type: action, payload: errors });
+    }, [dispatch, isRegistering]);
 
     /**
      * Set the user context data.
@@ -251,7 +285,7 @@ function Auth({ title, handleLoggedState }) {
         if (fetchError && !isLoggedCheck && !isLogged) {
             setErrorData("add_warnings", [fetchError]);
         };
-    }, [isLogged, isLoggedCheck, fetchError,  setUserData, setErrorData]);
+    }, [isLogged, isLoggedCheck, fetchError, setUserData, setErrorData]);
 
     const inputStyle = { width: isRegistering ? "94%" : "48%" };
 
@@ -267,7 +301,7 @@ function Auth({ title, handleLoggedState }) {
                         placeholder="Username"
                         style={inputStyle}
                         value={username}
-                        onChange={(e) => setUsername(e.target.value)}
+                        onChange={handleInput}
                     />
                     <input
                         type="password"
@@ -275,7 +309,7 @@ function Auth({ title, handleLoggedState }) {
                         placeholder="Password"
                         style={inputStyle}
                         value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        onChange={handleInput}
                     />
                     {isRegistering && <input
                         type="password"
@@ -283,7 +317,7 @@ function Auth({ title, handleLoggedState }) {
                         placeholder="Repeat password"
                         style={inputStyle}
                         value={rePassword}
-                        onChange={(e) => setRePassword(e.target.value)}
+                        onChange={handleInput}
                     />}
                 
                     <button>{formType(isRegistering)}</button>

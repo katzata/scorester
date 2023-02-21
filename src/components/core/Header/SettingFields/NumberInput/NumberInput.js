@@ -57,7 +57,6 @@ function NumberInput({ title, id, section, value, min, changeHandler, disabled})
      */
     const handleBlur = () => (currentValue !== value ? setCurrentValue(value) : null);
     useEffect(() => {
-        // console.log(Number(value));
         setCurrentValue(Number(value));
     }, [value]);
 

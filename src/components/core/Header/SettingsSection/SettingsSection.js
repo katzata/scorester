@@ -1,4 +1,4 @@
-import { useContext/* , useEffect */ } from "react";
+import { useContext } from "react";
 import styles from "./SettingsSection.module.scss";
 
 import UserContext from "../../../../contexts/UserContext";
@@ -78,10 +78,6 @@ export default function SettingsSection({ settingsUrl, title }) {
             };
         });
     };
-
-    // useEffect(() => {
-    //     // console.log(settings);
-    // }, [settings]);
     
     return <div className={styles.settingsSection}>
         <h3>{sectionTitle}</h3>

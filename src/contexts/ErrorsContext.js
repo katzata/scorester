@@ -1,4 +1,4 @@
-import { createContext, /* useState,  */useReducer, useMemo/* , useCallback */ } from "react";
+import { createContext, useReducer, useMemo } from "react";
 
 const ErrorsContext = createContext();
 
@@ -24,7 +24,7 @@ export function ErrorsProvider({ children }) {
             case "remove_errors":
                 return {
                     ...state,
-                    errors: setErrorData("add", payload, newState("errors", state))
+                    errors: setErrorData("remove", payload, newState("errors", state))
                 };
             case "add_warnings":
                 return {
@@ -34,7 +34,7 @@ export function ErrorsProvider({ children }) {
             case "remove_warnings":
                 return {
                     ...state,
-                    warnings: setErrorData("add", payload, newState("warnings", state))
+                    warnings: setErrorData("remove", payload, newState("warnings", state))
                 };
             case "clear":
                 return {
@@ -46,6 +46,13 @@ export function ErrorsProvider({ children }) {
         };
     };
 
+    /**
+     * Add or remove errors.
+     * @param {String} action The current action (add/remove).
+     * @param {Array<object>} incomingErrors An array of error objects.
+     * @param {Array<object>} existingErrors An array of error objects.
+     * @returns The updated existing errors array.
+     */
     function setErrorData(action, incomingErrors, existingErrors) {
         for (const incomingError of incomingErrors) {
             if (action === "add") {
@@ -61,15 +68,14 @@ export function ErrorsProvider({ children }) {
             };
 
             if (action === "remove") {
-                // if (existingErrors.length === 0) {
-                //     existingErrors.push(incomingError);
-                // } else {
-                //     const errors = existingErrors.filter(err => err.tag === incomingError.tag && err.text === incomingError.text);
-                    
-                //     if (errors.length === 0) {
-                //         existingErrors.push(incomingError);
-                //     };
-                // };
+                for (let i = 0; i < existingErrors.length; i++) {
+                    const incomingError = incomingErrors[0];
+
+                    if (incomingError.subTag === existingErrors[i].subTag && incomingError.text === existingErrors[i].text) {
+                        existingErrors.splice(i, 1);
+                        break;
+                    };
+                };
             };
             
         };

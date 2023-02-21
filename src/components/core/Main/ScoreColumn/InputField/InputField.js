@@ -4,6 +4,7 @@ import styles from "./InputField.module.scss";
 import UserContext from "../../../../../contexts/UserContext";
 import GameContext from "../../../../../contexts/GameContext";
 import useClickAndHold from "../../../../../hooks/useClickAndHold";
+import useKeyPress from "../../../../../hooks/useKeyPress";
 import Icons from "../../../../shared/Icons/Icons";
 
 export default function InputField({ type, value, editToggle, setValueHandler }) {
@@ -13,6 +14,7 @@ export default function InputField({ type, value, editToggle, setValueHandler })
     const [currentValue, setCurrentValue] = useState(value);
     const [isEditing, setIsEditing] = useState(false);
     const [holdTrigger, setIsHolding] = useClickAndHold();
+    const [ pressedKey ] = useKeyPress();
 
     const inputRef = useRef(null);
 
@@ -52,6 +54,13 @@ export default function InputField({ type, value, editToggle, setValueHandler })
      */
     const handleConfirm = () => {
         setValueHandler(currentValue);
+        resetToggles();
+    };
+
+    /**
+     * Reset all the active toggles.
+     */
+    const resetToggles = () => {
         setIsEditing(false);
         editToggle(false);
 
@@ -69,10 +78,19 @@ export default function InputField({ type, value, editToggle, setValueHandler })
         if (holdTrigger) {
             setIsEditing(true);
             triggerEdit(true);
+
             inputRef.current.select();
             inputRef.current.focus();
         };
-    }, [holdTrigger, triggerEdit]);
+
+        if (isEditing && pressedKey === "cancel") {
+            resetToggles();
+        };
+
+        if (isEditing && pressedKey === "enter") {
+            handleConfirm();
+        };
+    }, [isEditing, holdTrigger, triggerEdit, pressedKey]);
 
     return <div className={styles.scoreField}
         onMouseDown={() => handleHold(true)}

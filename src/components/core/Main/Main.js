@@ -34,8 +34,6 @@ export default function Main({ setEndgameModalVisible }) {
     const handleModalVisibility = useCallback((state) => {
         if (isPlaying && !isEditingInput) {
             setInputModalVisible(state);
-
-            // if (!state) handleScoreTarget(playerTurnIndex);
         };
     }, [isEditingInput, isPlaying]);
 
@@ -83,7 +81,6 @@ export default function Main({ setEndgameModalVisible }) {
 		const newPlayerScores = [...scores.map(el => el.scores)];
 
         newPlayerScores[playerTurnIndex][index] = Number(newScore);
-
         localData.scores[playerTurnIndex].scores = newPlayerScores[playerTurnIndex];
 
         saveToStorage("scGameDetails", localData);
@@ -94,7 +91,6 @@ export default function Main({ setEndgameModalVisible }) {
         if (inputModalVisible && pressedKey === "cancel") {
             setInputModalVisible(false);
         };
-        console.log(numberOfPlayers);
     }, [pressedKey, inputModalVisible, scores]);
     
     return <main className={styles.main}>

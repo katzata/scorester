@@ -28,9 +28,11 @@ export function GameProvider({ children }) {
      * - stop_game
      * - pause_game
      * - resume_game
-     * - score - payload Number
+     * - add_score - payload Number
+     * - edit_score - payload Number
      * - player_name - payload String
      * - number_of_players - payload Number
+     * - timers_update - payload Object
      * @returns An updated state object.
      */
     function reducer(state, action) {
@@ -113,7 +115,6 @@ export function GameProvider({ children }) {
     const updateStorage = useCallback(() => setStorage({ key:"scGameDetails", value: gameData}), [gameData])
 
     useEffect(() => {
-        console.log(gameData);
         updateStorage();
     }, [gameData, updateStorage]);
 
