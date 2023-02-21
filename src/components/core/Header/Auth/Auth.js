@@ -1,6 +1,8 @@
 import { useEffect, useState, useContext, useMemo, useCallback } from "react";
 import styles from "./Auth.module.scss";
+
 import UserContext from "../../../../contexts/UserContext";
+import GameContext from "../../../../contexts/GameContext";
 import ErrorsContext from "../../../../contexts/ErrorsContext";
 
 import useFetch from "../../../../hooks/useFetch";
@@ -10,6 +12,7 @@ import Icons from "../../../shared/Icons/Icons";
 function Auth({ title, handleLoggedState }) {
     const errorsContext = useContext(ErrorsContext);
     const userContext = useContext(UserContext);
+    const gameContext = useContext(GameContext);
     const { isLogged } = userContext.userData;
     const { id } = getStorage("scUserDetails") || {};
     const fetchBody = useMemo(() => ({ id }), [id]);
@@ -119,7 +122,7 @@ function Auth({ title, handleLoggedState }) {
     };
 
     /**
-     * Handle the form submition.
+     * Handle the form submission.
      * @param {Event} e An event object.
      */
     const handleSubmit = (e) => {
@@ -135,9 +138,12 @@ function Auth({ title, handleLoggedState }) {
      * @param {Object} data The response object (initially json);
      */
     const handleResponse = (action, data) => {
-        if (data && data.id) {
+        const { id, gameSettings, Errors } = data;
+        if (data && id) {
             data.isLogged = true;
             userContext.setData(data);
+
+            gameSettings && gameContext.dispatch({ type: "number_of_players", payload: Number(gameSettings.numberOfPlayers) });
         } else {
             if (data.Errors) {
                 setErrorData(action, data.Errors);
@@ -179,7 +185,7 @@ function Auth({ title, handleLoggedState }) {
 
             if (!value.match(pattern)) {
                 const field = inputType !== "rePassword" ? inputType : "repeat password";
-                errors.push({ tag: inputType, text: `The ${field} contians invalid characters.` });
+                errors.push({ tag: inputType, text: `The ${field} contains invalid characters.` });
             };
 
             if (value === "" && inputType !== "rePassword") {
@@ -209,14 +215,14 @@ function Auth({ title, handleLoggedState }) {
                 if (typeof error === "string") {
                     errors.push({ tag: formType(isRegistering), subTag: "api", text: error });
                 } else {
-                    const formatedError = { ...error };
+                    const formattedError = { ...error };
     
                     if (error.message && (error.message.includes("Failed to fetch") || error.message.includes("Load failed"))) {
-                        formatedError.tag = "connection";
-                        formatedError.text = "No connection to the server!";
+                        formattedError.tag = "connection";
+                        formattedError.text = "No connection to the server!";
                     };
     
-                    errors.push(formatedError);
+                    errors.push(formattedError);
                 };
             };
 
@@ -286,7 +292,7 @@ function Auth({ title, handleLoggedState }) {
 
             <section className={styles.toggleFormSection}>
                 <p>Or if you {isRegistering ? "already" : "don't"} have an account you can</p>
-                <button className={styles.toggleFormButton} onClick={toggleFormType} disabled={loading}>{formType(!isRegistering).toLocaleLowerCase()}</button>
+                <button id="formToggle" className={styles.toggleFormButton} onClick={toggleFormType} disabled={loading}>{formType(!isRegistering).toLocaleLowerCase()}</button>
             </section>
         </>}
 

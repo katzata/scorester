@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import styles from "./MessageModal.module.scss";
 
 import ErrorsContext from "../../../contexts/ErrorsContext";
@@ -20,16 +20,16 @@ export default function MessageModal() {
     /**
      * Clear the current errors list.
      */
-    const clearCurrentErrors = () => {
+    const clearCurrentErrors = useCallback(() => {
         dispatch({ type: "clear", payload: "errors" });
-    };
+    }, [dispatch]);
 
     /**
      * Clear the current warnings list.
      */
-    const clearCurrentWarnings = () => {
+    const clearCurrentWarnings = useCallback(() => {
         dispatch({ type: "clear", payload: "warnings" });
-    };
+    }, [dispatch]);
 
     return <section id="messageModal" className={styles.messageModalContainer}>
         <MessagesContainer

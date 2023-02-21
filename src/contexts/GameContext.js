@@ -59,14 +59,16 @@ export function GameProvider({ children }) {
             case "resume_game":
                 newData.gamePaused = false;
                 return newData;
-            case "score":
-                const { score } = action.payload || 0;
+            case "add_score":
                 const increment = newData.playerTurnIndex + 1;
 
-                newData.scores[newData.playerTurnIndex].scoreTotal += score;
-                newData.scores[newData.playerTurnIndex].scores.push(score);
+                newData.scores[newData.playerTurnIndex].scoreTotal += (action.payload || 0);
+                newData.scores[newData.playerTurnIndex].scores.push(action.payload);
                 newData.playerTurnIndex = increment < scores.length ? increment : 0;
-
+                return newData;
+            case "edit_score":
+                newData.scores[newData.playerTurnIndex].scores = action.payload;
+                newData.scores[newData.playerTurnIndex].scoreTotal = Number([...action.payload].reduce((a, b) => a + b));
                 return newData;
             case "player_name":
                 const [nameIndex, newName] = action.payload;
@@ -76,7 +78,7 @@ export function GameProvider({ children }) {
                 while (newData.scores.length !== action.payload) {
                     if (newData.scores.length <= action.payload) {
                         newData.individualTimers.push(0);
-                        newData.scores.push({ name: `Player ${newData.scores.length + 1}`, scores: [] });
+                        newData.scores.push({ name: `Player ${newData.scores.length + 1}`, scores: [], scoreTotal: 0 });
                     } else {
                         newData.scores.pop();
                         newData.individualTimers.pop();
@@ -86,6 +88,7 @@ export function GameProvider({ children }) {
                         };
                     };
                 };
+
                 return newData;
             case "timers_update":
                 const { mainTimerVisible, individualTimersVisible } = action.payload;
@@ -110,6 +113,7 @@ export function GameProvider({ children }) {
     const updateStorage = useCallback(() => setStorage({ key:"scGameDetails", value: gameData}), [gameData])
 
     useEffect(() => {
+        console.log(gameData);
         updateStorage();
     }, [gameData, updateStorage]);
 

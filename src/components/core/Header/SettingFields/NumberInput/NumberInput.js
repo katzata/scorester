@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./NumberInput.module.scss";
 
 /**
@@ -20,7 +20,9 @@ import styles from "./NumberInput.module.scss";
  * @param {CallableFunction} props.changeHandler A callback that updates the values.
  */
 function NumberInput({ title, id, section, value, min, changeHandler, disabled}) {
-    const [currentValue, setCurrentValue] = useState(value);
+    const [currentValue, setCurrentValue] = useState(Number(value));
+    const inputRef = useRef(null);
+
     /**
      * Validates the user input.
      * Sets the value at it's minimum (min prop) if the value is below it and if the min prop is provided.
@@ -37,7 +39,7 @@ function NumberInput({ title, id, section, value, min, changeHandler, disabled})
                 dataset: e.target.dataset,
                 value: newValue
             });
-            
+
             setCurrentValue(input);
         } else {
             if (!isNaN(input) && typeof input !== "string") {
@@ -54,11 +56,16 @@ function NumberInput({ title, id, section, value, min, changeHandler, disabled})
      * @returns The last known good value or null.
      */
     const handleBlur = () => (currentValue !== value ? setCurrentValue(value) : null);
+    useEffect(() => {
+        // console.log(Number(value));
+        setCurrentValue(Number(value));
+    }, [value]);
 
     return <div className={styles.numberInput}>
         <p>{title}</p>
 
         <input
+            ref={inputRef}
             type="number"
             id={id}
             min={""}

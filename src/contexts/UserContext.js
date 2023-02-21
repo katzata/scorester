@@ -13,10 +13,7 @@ export function UserProvider({ children }) {
             numberOfPlayers: 1,
             mainTimer: false,
             individualTimers: false,
-            turnDuration: 0,
             autoSwitchTurns: false,
-            negativeValues: false,
-            scoreBelowZero: false,
             scoreTarget: 0,
             editableFields: false
         }

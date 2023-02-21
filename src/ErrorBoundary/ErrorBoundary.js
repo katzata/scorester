@@ -11,13 +11,11 @@ class ErrorBoundary extends React.Component {
     
     componentDidMount() {
         window.onerror = (error) => {
-            console.log("yay", error);
-            this.setState({ error, info: "asd" });
-        }
-    }
+            this.setState({ error, info: error.message });
+        };
+    };
   
     componentDidCatch(error, info) {
-        console.log("yay");
         this.setState({ error, info });
     };
   

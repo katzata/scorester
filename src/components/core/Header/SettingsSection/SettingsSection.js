@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext/* , useEffect */ } from "react";
 import styles from "./SettingsSection.module.scss";
 
 import UserContext from "../../../../contexts/UserContext";
@@ -26,7 +26,7 @@ export default function SettingsSection({ settingsUrl, title }) {
     const userContext = useContext(UserContext);
     const gameContext = useContext(GameContext);
     const errorsContext = useContext(ErrorsContext);
-    const { isLogged, gameSettings } = userContext.userData;
+    const { isLogged } = userContext.userData;
     const sectionEndpoint = `/${settingsSection}`;
     const values = userContext.userData[settingsSection];
 
@@ -46,7 +46,7 @@ export default function SettingsSection({ settingsUrl, title }) {
         setValues(newValues);
 
         if (id === "numberOfPlayers") {
-            gameContext.dispatch({ type: "number_of_players", payload: value });
+            gameContext.dispatch({ type: "number_of_players", payload: Number(value) });
         };
     };
 
@@ -59,10 +59,6 @@ export default function SettingsSection({ settingsUrl, title }) {
     const setValues = async (newValues) => {
         if (isLogged) await saveToDb(newValues);
         userContext.setData({ [settingsSection]: newValues });
-
-        if (newValues.mainTimer !== gameSettings.mainTimer && !newValues.mainTimer) {
-            gameContext.dispatch({ type: "number_of_players", payload: "value" });
-        };
     };
 
     /**
@@ -82,6 +78,10 @@ export default function SettingsSection({ settingsUrl, title }) {
             };
         });
     };
+
+    // useEffect(() => {
+    //     // console.log(settings);
+    // }, [settings]);
     
     return <div className={styles.settingsSection}>
         <h3>{sectionTitle}</h3>

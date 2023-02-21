@@ -1,15 +1,11 @@
 import { useRef, useEffect, useState } from "react";
 import styles from "./InputModal.module.scss";
 
-// import GameContext from "../../../../contexts/GameContext";
-
 import useKeyPress from "../../../../hooks/useKeyPress";
 import Modal from "../../../shared/Modal/Modal";
 import Icons from "../../../shared/Icons/Icons";
 
 export default function InputModal({ isVisible, player, handleScoreInput, visibilityHandler, zIndex }) {
-    // const gameContext = useContext(GameContext);
-
     const [pressedKey] = useKeyPress();
     const [inputValue, setInputValue] = useState("");
     const inputRef = useRef(null);

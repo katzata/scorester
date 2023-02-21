@@ -45,11 +45,10 @@ export default function Main({ setEndgameModalVisible }) {
      * Calls the playerTurnIndexHandler in order to change the playerTurnIndex.
      */
     const handleScoreInput = useCallback((inputValue) => {
-        console.log(inputValue);
         const score = inputValue === "" ? 0 : inputValue;
         const total = scores[playerTurnIndex].scoreTotal + inputValue;
 
-        dispatch({ type: "score", payload: { score, target: false } });
+        dispatch({ type: "add_score", payload: score });
         handleModalVisibility(false);
 
         if (scoreTarget > 0 && total >= scoreTarget) {
@@ -60,7 +59,6 @@ export default function Main({ setEndgameModalVisible }) {
 
     /**
 	 * Edit a player name field.
-	 * Sets the state hook (playerNames) and saves to local storage.
 	 * @param {Number} index The index indicating which player name to edit.
 	 * @param {String} newName The new name value.
 	 */
@@ -76,19 +74,27 @@ export default function Main({ setEndgameModalVisible }) {
 	};
 
     /**
-     * Check wether the option is enabled, and if the score target has been reached.
-     */
-    // const handleScoreTarget = useCallback((turnIndex) => {
-    //     if (scoreTarget > 0 && scores[turnIndex].scoreTotal >= scoreTarget) {
-    //         gameContext.dispatch({ type: "pause_game" });
-    //         setEndgameModalVisible(true);
-    //     };
-    // }, [scoreTarget, gameContext, scores, setEndgameModalVisible]);
+	 * Edit a player score field.
+	 * @param {Number} index The index indicating which player score to edit.
+	 * @param {String} newScore The new score value.
+	 */
+    const handleScoreEdit = (index, newScore) => {
+        const localData = getStorage("scGameDetails");
+		const newPlayerScores = [...scores.map(el => el.scores)];
+
+        newPlayerScores[playerTurnIndex][index] = Number(newScore);
+
+        localData.scores[playerTurnIndex].scores = newPlayerScores[playerTurnIndex];
+
+        saveToStorage("scGameDetails", localData);
+        gameContext.dispatch({ type: "edit_score", payload: newPlayerScores[playerTurnIndex] });
+    };
 
     useEffect(() => {
         if (inputModalVisible && pressedKey === "cancel") {
             setInputModalVisible(false);
         };
+        console.log(numberOfPlayers);
     }, [pressedKey, inputModalVisible, scores]);
     
     return <main className={styles.main}>
@@ -110,9 +116,10 @@ export default function Main({ setEndgameModalVisible }) {
                     player={playerData.name}
                     playerScores={playerData.scores}
                     scoreTotal={playerData.scoreTotal}
-                    numberOfPlayers={numberOfPlayers}
-                    setPlayerName={handlePlayerNameEdit}
+                    isCurrentlyPlaying={playerTurnIndex === idx}
+                    editPlayerName={handlePlayerNameEdit}
                     setIsEditingInput={setIsEditingInput}
+                    editPlayerScore={handleScoreEdit}
                     inputModalVisibilityHandler={() => handleModalVisibility(true)}
                     key={`col${idx}`}
                 />

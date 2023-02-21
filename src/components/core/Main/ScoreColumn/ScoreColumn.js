@@ -9,13 +9,13 @@ export default function ScoreColumn({
     player,
     playerScores,
     scoreTotal,
-    setPlayerName,
+    editPlayerName,
     setIsEditingInput,
+    editPlayerScore,
     inputModalVisibilityHandler
     }) {
     const { playerTurnIndex } = useContext(GameContext).gameData;
 
-    const [currentScores, setCurrentScores] = useState(playerScores);
     const [editingIndex, setEditingIndex] = useState(null);
         
     const isCurrentlyPlaying = playerTurnIndex === index;
@@ -48,12 +48,30 @@ export default function ScoreColumn({
     };
 
     /**
-     * Sets a new player name using the setPlayerName callback component prop.
+     * Sets a new player name using the editPlayerName callback component prop.
      * Uses the index component prop in order to define which player name is being currently edited.
      * @param {String} name A string representing the new player name.
      */
     const handleNameEditValue = (name) => {
-        setPlayerName(index, name);
+        editPlayerName(index, name);
+        setIsEditingInput(false);
+    };
+
+    /**
+     * Sets a new player name using the editPlayerName callback component prop.
+     * Uses the index component prop in order to define which player name is being currently edited.
+     * @param {String} name A string representing the new player name.
+     */
+    const handleEditValue = (type, data) => {
+        const { idx, value } = data;
+
+        if (type === "name") {
+            editPlayerName(idx, value);
+        };
+
+        if (type === "score") {
+            editPlayerScore(idx, value);
+        };
     };
 
     /**
@@ -64,11 +82,12 @@ export default function ScoreColumn({
      * @param {Number} data.value A number that represents the new score field value.
      */
     const handleScoreEditValue = ({ idx, value }) => {
-        const newScores = [...currentScores];
+        const newScores = [...playerScores];
         newScores[idx] = Number(value);
 
-        setCurrentScores(newScores);
+        // setCurrentScores(newScores);
         setIsEditingInput(false);
+        handleEditValue("score", { idx, value });
     };
 
     return <section className={styles.scoreColumn} style={columnStyles} onClick={() => inputModalVisibilityHandler(true)}>
@@ -93,7 +112,7 @@ export default function ScoreColumn({
             </div>
 
             <div className={styles.columnFooter}>
-                <span className={styles.columnTotal}>{playerScores && playerScores[0] !== undefined && scoreTotal}</span>
+                <span className={styles.columnTotal}>{scoreTotal > 0 && scoreTotal}</span>
             </div>
         </div>
     </section>;

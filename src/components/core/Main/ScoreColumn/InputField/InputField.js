@@ -31,14 +31,19 @@ export default function InputField({ type, value, editToggle, setValueHandler })
      * Receive a hold state and select the input field.
      * @param {Boolean} holdState The current hold state.
      */
+
     const handleHold = (holdState) => {
         if (isPlaying && editableFields) {
-            setIsHolding(holdState);
-
-            if (!holdState && isEditing && currentValue === value) {
-                inputRef.current.select();
-                inputRef.current.focus();
+            if ((editableFields && type === "number") || type === "text") {
+                setIsHolding(holdState);
             };
+        } else {
+            if (type === "text") setIsHolding(holdState);
+        };
+
+        if (!holdState && isEditing && currentValue === value) {
+            inputRef.current.select();
+            inputRef.current.focus();
         };
     };
 
@@ -64,6 +69,8 @@ export default function InputField({ type, value, editToggle, setValueHandler })
         if (holdTrigger) {
             setIsEditing(true);
             triggerEdit(true);
+            inputRef.current.select();
+            inputRef.current.focus();
         };
     }, [holdTrigger, triggerEdit]);
 

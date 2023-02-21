@@ -7,7 +7,7 @@ export function ErrorsProvider({ children }) {
 
     /**
      * Sets the current error list.
-     * @param {Object} newErrors An array contaning objects, each with a single key value pair.
+     * @param {Object} newErrors An array containing objects, each with a single key value pair.
      * @example
      * { tag: "login", text: "contains invalid characters." }
      */

@@ -30,7 +30,7 @@ export default function MessagesContainer({ currentMessages, side, messageBg, cl
 
     /**
      * Clear the "currentMessages" list.
-     * Done with a delay for the disolve animation.
+     * Done with a delay for the dissolve animation.
      */
     const clearList = useCallback(() => {
         setIsVisible(false);

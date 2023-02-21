@@ -3,7 +3,6 @@ import styles from "./EndGameModal.module.scss";
 
 import UserContext from "../../../contexts/UserContext";
 import GameContext from "../../../contexts/GameContext";
-import { getStorage } from "../../../utils/localStorage";
 
 import Modal from "../../shared/Modal/Modal";
 import SvgTimer from "../../shared/SvgTimer/SvgTimer";
@@ -35,10 +34,6 @@ export default function EndGameModal({ isVisible, visibilityHandler }) {
     for (let i = 0; i < endGameScores.length; i++) {
         const increment = endGameScores[i].scores.length || 0;
 
-        if (endGameScores[i].scores.length < 1) {
-            endGameScores[i].scores = [0];
-        };
-        
         totalTurns += increment;
         endGameScores[i].turns = increment;
         endGameScores[i].highestScore = Math.max(...endGameScores[i].scores);
@@ -51,11 +46,11 @@ export default function EndGameModal({ isVisible, visibilityHandler }) {
     const lowestTime = [...endGameScores].sort((a, b) => a.timer - b.timer)[0];
 
     const winnerIndex = playerTurnIndex - 1 < 0 ? endGameScores.length - 1 : playerTurnIndex - 1;
-    const winner = gameSettings.scoreTarget > 0 ? scores[winnerIndex] : sortedScores[0];
+    const winner = gameSettings.scoreTarget > 0 ? endGameScores[winnerIndex] : sortedScores[0];
 
     const winnerStats = [
         ["Points", <p>{winner.scoreTotal}</p>],
-        ["Turns", <p>{winner.turns}</p> ],
+        ["Turns", <p>{winner.turns}</p>],
         ["Playtime", gameSettings.individualTimers && <SvgTimer id={"individual-resW"} digits={winner.timer}/>]
     ];
 
@@ -64,7 +59,7 @@ export default function EndGameModal({ isVisible, visibilityHandler }) {
         ["Turns", <p>{totalTurns}</p> ],
         ["Game time", (gameSettings.mainTimer || gameSettings.individualTimers) && <SvgTimer id={"individual-resG"} digits={gameSettings.mainTimer ? mainTimer : individualTimers.reduce((a, b) => a + b)}/>]
     ];
-    
+
     /**
      * Handles a stat array (winnerStats, gameStats).
      * @param {Array.<Array.<any>>} stats A stats array do be displayed.
@@ -101,7 +96,7 @@ export default function EndGameModal({ isVisible, visibilityHandler }) {
                     <button id="endGame" className={styles.topButton} onClick={closeModalAndEnd}>END</button>
                 </div>
 
-                <div className={styles.scoreDetailsInternal}>
+                <div id="scoreDetails" className={styles.scoreDetailsInternal}>
                     <div className={styles.scoreDetailsTop}>
                         <StatsSection title="Winner">
                             <h4 className={styles.winnerName}>{winner.name}</h4>
@@ -126,7 +121,7 @@ export default function EndGameModal({ isVisible, visibilityHandler }) {
                         </StatsSection>}
                     </div>
                     
-                    <div className={styles.ranking}>
+                    <div id="ranking" className={styles.ranking}>
                         {sortedScores && sortedScores.map((player, idx) => <RankRow
                             position={idx + 1}
                             playerName={player.name}

@@ -19,7 +19,7 @@ import EndGameModal from './components/core/EndGameModal/EndGameModal';
 export default function App() {
 	const [endgameModalVisible, setEndgameModalVisible] = useState(false);
 
-	return <>
+return <>
 		{/* <ErrorBoundary> */}
 			<ErrorsProvider>
 				<UserProvider>

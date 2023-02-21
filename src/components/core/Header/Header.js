@@ -20,7 +20,6 @@ export default function Header() {
     const [userSettingsVisible, setUserSettingsVisible] = useState(false);
     const [gameSettingsVisible, setGameSettingsVisible] = useState(false);
 
-
     const toggleUserSettings = (state) => {
         if (!state) errorsContext.dispatch({ type: "clear", payload: "errors" });
         setUserSettingsVisible(state);
