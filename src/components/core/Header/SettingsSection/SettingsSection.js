@@ -83,7 +83,7 @@ export default function SettingsSection({ settingsUrl, title }) {
         <h3>{sectionTitle}</h3>
 
         {settings && settings.map((setting, idx) =>  {
-            const { type, title, id, min } = setting;
+            const { type, title, id, min, max } = setting;
 
             const availableFields = {
                 login: <Auth
@@ -105,6 +105,7 @@ export default function SettingsSection({ settingsUrl, title }) {
                     id={id}
                     section={settingsSection}
                     min={min}
+                    max={max}
                     value={values[id]}
                     changeHandler={handleSettingValue}
                     disabled={changedLoading}

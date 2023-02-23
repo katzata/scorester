@@ -1,4 +1,5 @@
 @use "../../../mixins/main-components-style" as styles-mixin;
+@use "../../../mixins/colors";
 
 footer {
     @include styles-mixin.main-components-style;
@@ -60,16 +61,17 @@ footer {
         object-fit: contain;
         transition-duration: .3s;
 
-        use {
-            transition-duration: .1s;
-        }
-
+        use,
         text {
             font-family: "Pacifico", cursive;
             font-size: 30px;
             font-weight: 100;
             transition-duration: .3s;
             user-select: none;
+        }
+
+        use {
+            transition-duration: .1s;
         }
     }
 }

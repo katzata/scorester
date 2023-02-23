@@ -43,7 +43,7 @@ function Auth({ title, handleLoggedState }) {
         const usernameNotValid = checkInput({ inputType: "username", value: username });
         const passwordNotValid = checkInput({ inputType: "password", value: password });
         const rePasswordNotValid = checkInput({ inputType: "rePassword", value: rePassword });
-    
+
         if (usernameNotValid || passwordNotValid || rePasswordNotValid || password !== rePassword) {
             const errors = [];
 
@@ -270,7 +270,7 @@ function Auth({ title, handleLoggedState }) {
     const setUserData = useCallback(() => {
         userContext.setData(isLoggedCheck);
     }, [userContext, isLoggedCheck]);
-    
+
     useEffect(() => {
         if (isLoggedCheck && !fetchError && !isLogged) {
             if (isLoggedCheck.Errors === undefined) {
@@ -283,7 +283,7 @@ function Auth({ title, handleLoggedState }) {
         };
 
         if (fetchError && !isLoggedCheck && !isLogged) {
-            setErrorData("add_warnings", [fetchError]);
+            setErrorData("add_warnings", [fetchError.message]);
         };
     }, [isLogged, isLoggedCheck, fetchError, setUserData, setErrorData]);
 
@@ -293,7 +293,7 @@ function Auth({ title, handleLoggedState }) {
         {!isLogged && <>
             <form className={styles.loginForm} onSubmit={(e) => handleSubmit(e, handleLoggedState)}>
                 <p>{title}</p>
-                
+
                 <fieldset disabled={loading}>
                     <input
                         type="text"
@@ -319,7 +319,7 @@ function Auth({ title, handleLoggedState }) {
                         value={rePassword}
                         onChange={handleInput}
                     />}
-                
+
                     <button>{formType(isRegistering)}</button>
                 </fieldset>
             </form>

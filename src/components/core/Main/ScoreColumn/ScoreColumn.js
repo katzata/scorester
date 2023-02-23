@@ -15,9 +15,8 @@ export default function ScoreColumn({
     inputModalVisibilityHandler
     }) {
     const { playerTurnIndex } = useContext(GameContext).gameData;
-
     const [editingIndex, setEditingIndex] = useState(null);
-        
+
     const isCurrentlyPlaying = playerTurnIndex === index;
     const columnStyles = {
         backgroundColor: isCurrentlyPlaying ? "#121212" : "transparent",
@@ -85,7 +84,6 @@ export default function ScoreColumn({
         const newScores = [...playerScores];
         newScores[idx] = Number(value);
 
-        // setCurrentScores(newScores);
         setIsEditingInput(false);
         handleEditValue("score", { idx, value });
     };
@@ -100,7 +98,7 @@ export default function ScoreColumn({
                     setValueHandler={handleNameEditValue}
                 />
             </div>
-            
+
             <div className={styles.columnBody}>
                 {playerScores && playerScores.length > 0 && playerScores.map((el, idx) => <InputField
                     type="number"

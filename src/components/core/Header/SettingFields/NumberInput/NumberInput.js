@@ -19,7 +19,7 @@ import styles from "./NumberInput.module.scss";
  * @param {Number} props.min (OPTIONAL) The minimum possible value that can be displayed.
  * @param {CallableFunction} props.changeHandler A callback that updates the values.
  */
-function NumberInput({ title, id, section, value, min, changeHandler, disabled}) {
+function NumberInput({ title, id, section, value, min, max, changeHandler, disabled}) {
     const [currentValue, setCurrentValue] = useState(Number(value));
     const inputRef = useRef(null);
 
@@ -32,7 +32,7 @@ function NumberInput({ title, id, section, value, min, changeHandler, disabled})
         const input = parseInt(e.target.value);
         const newValue = input >= min ? input : min;
 
-        if (input >= min) {
+        if (input >= min && input <= max) {
             changeHandler({
                 type: e.target.type,
                 id: e.target.id,
@@ -56,6 +56,7 @@ function NumberInput({ title, id, section, value, min, changeHandler, disabled})
      * @returns The last known good value or null.
      */
     const handleBlur = () => (currentValue !== value ? setCurrentValue(value) : null);
+
     useEffect(() => {
         setCurrentValue(Number(value));
     }, [value]);
@@ -68,6 +69,7 @@ function NumberInput({ title, id, section, value, min, changeHandler, disabled})
             type="number"
             id={id}
             min={""}
+            max={max}
             placeholder={min ? min : 0}
             data-section={section}
             value={currentValue || ""}

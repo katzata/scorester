@@ -15,9 +15,10 @@
         >input,
         >button {
             height: 24px;
-            border-radius: 2px;
-            box-shadow: 0 0 2px 1px rgba(255, 255, 255, .5);
-            color: rgba(255, 255, 255, .8);
+            border-radius: 3px;
+            border: 1px solid colors.$modal-border-color;
+            box-shadow: 0 0 2px 1px colors.$button-bg;
+            color: colors.$secondary-font-color;
         }
         
         >input {
@@ -26,7 +27,6 @@
             text-align: center;
             transition-duration: .1s;
             background-color: colors.$modal-fg;
-            border: 1px solid rgba(255, 255, 255, .5);
             
             &[name="rePassword"] {
                 width: 94%;
@@ -91,7 +91,6 @@
             font-style: italic;
             font-size: 14px;
             border-radius: 4px;
-            border: 1px solid rgba(255, 255, 255, .8);
             background-color: rgba(0, 0, 0, .65);
             overflow: hidden;
         }
@@ -110,8 +109,8 @@
             padding: 4px 0;
             border-radius: 2px;
             background-color: rgba(0, 0, 0, 0.3);
-            box-shadow: 0 0 2px 1px rgb(255 255 255 / 50%);
-            color: rgba(255, 255, 255, 0.8);
+            box-shadow: 0 0 2px 1px colors.$button-bg;
+            color: colors.$secondary-font-color;
         }
 
         button:nth-child(1) {

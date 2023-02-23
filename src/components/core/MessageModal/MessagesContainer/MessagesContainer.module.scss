@@ -1,4 +1,6 @@
-$box-shadow: 0 0 0px 1px rgba(255, 255, 255, .8);
+@use "../../../../mixins/colors";
+
+$box-shadow: 0 0 0 1px colors.$message-container-box-shadow;
 
 .shadowWrapper {
     position: absolute;
@@ -39,7 +41,7 @@ $box-shadow: 0 0 0px 1px rgba(255, 255, 255, .8);
                 box-shadow: $box-shadow;
                 
                 &>path {
-                    fill: rgba(255, 255, 255, .7);
+                    fill: colors.$secondary-font-color;
                 }
             }
         }
@@ -60,7 +62,7 @@ $box-shadow: 0 0 0px 1px rgba(255, 255, 255, .8);
 
             .error {
                 font-size: 18px;
-                text-shadow: 0 0px 3px black;
+                text-shadow: 0 0 3px black;
                 letter-spacing: .5px;
             }
         }

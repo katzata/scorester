@@ -1,9 +1,15 @@
+@use "../../../../../mixins/colors";
+
 .checkbox {
     display: flex;
     margin-bottom: 12px;
     gap: 30px;
 
     input {
-        margin-left: auto;
+        width: 15px;
+        height: 15px;
+        padding: 0;
+        margin: auto 0 auto auto;
+        border: 1px solid colors.$modal-border-color;
     }
 }

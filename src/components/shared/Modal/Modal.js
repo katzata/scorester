@@ -8,10 +8,10 @@ import Icons from "../Icons/Icons";
  * @param {String} props.position
  * @param {Array} props.children
  * @param {CallableFunction} props.visibilityHandler
- * 
+ *
  * @component
  * @props isVisible - Set the modal visibility.
- * @props position - Defines the type of positioning that will be applyed (absolute, fixed...).
+ * @props position - Defines the type of positioning that will be applied (absolute, fixed...).
  * @props children - The default react children array.
  * @props visibilityHandler - A callback that closes the modal.
  */

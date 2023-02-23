@@ -92,7 +92,7 @@ export default function Main({ setEndgameModalVisible }) {
             setInputModalVisible(false);
         };
     }, [pressedKey, inputModalVisible, scores]);
-    
+
     return <main className={styles.main}>
         <MessageModal/>
 

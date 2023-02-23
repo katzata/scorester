@@ -5,9 +5,9 @@
  * @param {String} props.text
  * @param {Number|String} props.width
  * @param {Number|String} props.height
- * 
+ *
  * @component
- * @param props.text The text that will be visualised.
+ * @param props.text The text that will be visualized.
  * @param props.width The desired svg width !!!WILL BE CONVERTED TO PIXELS!!!.
  * @param props.height The desired svg height !!!WILL BE CONVERTED TO PIXELS!!!. 
  */

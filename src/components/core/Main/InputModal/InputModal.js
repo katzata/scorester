@@ -15,7 +15,7 @@ export default function InputModal({ isVisible, player, handleScoreInput, visibi
         handleScoreInput(inputValue);
         setInputValue("");
     };
-    
+
     useEffect(() => {
         if (isVisible && document.activeElement !== inputRef.current) {
             inputRef.current.focus();

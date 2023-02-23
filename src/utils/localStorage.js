@@ -26,7 +26,7 @@ export const getStorage = (storageKeys) => {
         for (const key of storageKeys) {
             data.push(convertJson(localStorage.getItem(key)));
         };
-        
+
         return data;
     } else {
         return convertJson(localStorage.getItem(storageKeys));
