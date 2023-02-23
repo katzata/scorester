@@ -15,6 +15,7 @@ export default function ScoreColumn({
     inputModalVisibilityHandler
     }) {
     const { playerTurnIndex } = useContext(GameContext).gameData;
+
     const [editingIndex, setEditingIndex] = useState(null);
 
     const isCurrentlyPlaying = playerTurnIndex === index;
@@ -69,7 +70,7 @@ export default function ScoreColumn({
         };
 
         if (type === "score") {
-            editPlayerScore(idx, value);
+            editPlayerScore(index, { index: idx, newScore: value });
         };
     };
 

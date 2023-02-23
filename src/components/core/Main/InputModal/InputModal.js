@@ -12,6 +12,7 @@ export default function InputModal({ isVisible, player, handleScoreInput, visibi
 
     const handleConfirm = () => {
         inputRef.current.blur();
+
         handleScoreInput(inputValue);
         setInputValue("");
     };

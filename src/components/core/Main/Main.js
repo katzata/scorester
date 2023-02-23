@@ -76,15 +76,15 @@ export default function Main({ setEndgameModalVisible }) {
 	 * @param {Number} index The index indicating which player score to edit.
 	 * @param {String} newScore The new score value.
 	 */
-    const handleScoreEdit = (index, newScore) => {
+    const handleScoreEdit = (playerIndex, { index, newScore }) => {
         const localData = getStorage("scGameDetails");
 		const newPlayerScores = [...scores.map(el => el.scores)];
 
-        newPlayerScores[playerTurnIndex][index] = Number(newScore);
-        localData.scores[playerTurnIndex].scores = newPlayerScores[playerTurnIndex];
+        newPlayerScores[playerIndex][index] = Number(newScore);
+        localData.scores[playerIndex].scores = newPlayerScores[playerIndex];
 
         saveToStorage("scGameDetails", localData);
-        gameContext.dispatch({ type: "edit_score", payload: newPlayerScores[playerTurnIndex] });
+        gameContext.dispatch({ type: "edit_score", payload: { playerIndex, scores: newPlayerScores[playerIndex] }});
     };
 
     useEffect(() => {

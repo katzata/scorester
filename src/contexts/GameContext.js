@@ -15,7 +15,7 @@ export function GameProvider({ children }) {
         scores: scores !== undefined ? scores : [...Array(1).keys()].map(el => ({ name: `Player ${el + 1}`, scores: [], scoreTotal: 0 })),
         individualTimers:  individualTimers !== undefined ? individualTimers : [...Array(1).fill(0)]
     };
-    
+
     const [gameData, dispatch] = useReducer(reducer, mergeObjectData(storageData, defaultData));
 
     /**
@@ -69,8 +69,11 @@ export function GameProvider({ children }) {
                 newData.playerTurnIndex = increment < scores.length ? increment : 0;
                 return newData;
             case "edit_score":
-                newData.scores[newData.playerTurnIndex].scores = action.payload;
-                newData.scores[newData.playerTurnIndex].scoreTotal = Number([...action.payload].reduce((a, b) => a + b));
+                const editIndex = action.payload.playerIndex;
+                const editedScores = action.payload.scores;
+
+                newData.scores[editIndex].scores = editedScores;
+                newData.scores[editIndex].scoreTotal = Number([...editedScores].reduce((a, b) => a + b));
                 return newData;
             case "player_name":
                 const [nameIndex, newName] = action.payload;
@@ -84,7 +87,7 @@ export function GameProvider({ children }) {
                     } else {
                         newData.scores.pop();
                         newData.individualTimers.pop();
-                        
+
                         if (newData.playerTurnIndex >= newData.scores.length) {
                             newData.playerTurnIndex = newData.scores.length - 1;
                         };
@@ -119,7 +122,7 @@ export function GameProvider({ children }) {
     }, [gameData, updateStorage]);
 
     const value = useMemo(() => ({ gameData, dispatch }), [gameData]);
-    
+
     return <GameContext.Provider value={value}>
         {children}
     </GameContext.Provider>;
