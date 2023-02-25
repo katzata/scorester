@@ -7,14 +7,14 @@ import useClickAndHold from "../../../../../hooks/useClickAndHold";
 import useKeyPress from "../../../../../hooks/useKeyPress";
 import Icons from "../../../../shared/Icons/Icons";
 
-export default function InputField({ type, value, editToggle, setValueHandler }) {
+export default function InputField({ type, value, isEditingInput, editToggle, setValueHandler }) {
     const { isPlaying } = useContext(GameContext).gameData;
     const { editableFields } = useContext(UserContext).userData.gameSettings;
 
     const [currentValue, setCurrentValue] = useState(value);
     const [isEditing, setIsEditing] = useState(false);
     const [holdTrigger, setIsHolding] = useClickAndHold();
-    const [ pressedKey ] = useKeyPress();
+    const [pressedKey] = useKeyPress();
 
     const inputRef = useRef(null);
 
@@ -35,9 +35,7 @@ export default function InputField({ type, value, editToggle, setValueHandler })
      */
     const handleHold = (holdState) => {
         if (isPlaying && editableFields) {
-            if ((editableFields && type === "number") || type === "text") {
-                setIsHolding(holdState);
-            };
+            if (type === "number" || type === "text") setIsHolding(holdState);
         } else {
             if (type === "text") setIsHolding(holdState);
         };
@@ -62,9 +60,7 @@ export default function InputField({ type, value, editToggle, setValueHandler })
     /**
      * Trigger the edit state.
      */
-    const triggerEdit = useCallback((state) => {
-        editToggle(state);
-    }, [editToggle]);
+    const triggerEdit = useCallback(editToggle, [editToggle]);
 
     /**
      * Confirm the edited value.
@@ -79,7 +75,7 @@ export default function InputField({ type, value, editToggle, setValueHandler })
     }, [currentValue, resetToggles, setValueHandler, value]);
 
     useEffect(() => {
-        if (holdTrigger && !isEditing) {
+        if (holdTrigger && !isEditing && !isEditingInput) {
             setIsEditing(true);
             triggerEdit(true);
         };
@@ -92,21 +88,17 @@ export default function InputField({ type, value, editToggle, setValueHandler })
         if (isEditing && pressedKey === "enter") {
             handleConfirm();
         };
-    }, [isEditing, holdTrigger, triggerEdit, pressedKey, handleConfirm, resetToggles, value]);
+    }, [isEditing, holdTrigger, triggerEdit, pressedKey, handleConfirm, resetToggles, value, isEditingInput]);
 
-    return <div
-        className={styles.scoreField}
-        onMouseUp={() => handleHold(false)}
-        onTouchEnd={() => handleHold(false)}
-    >
+    return <div className={styles.scoreField}>
         <input
             ref={inputRef}
             type={type}
             style={inputStyles}
             value={currentValue}
             onChange={(e) => setCurrentValue(e.target.value)}
-            enterKeyHint="go"
-            disabled={!isEditing}
+            enterKeyHint="done"
+            readOnly={!isEditing}
         />
 
         <button className={styles.confirmEditButton} style={buttonStyles} onClick={handleConfirm}>
@@ -117,9 +109,9 @@ export default function InputField({ type, value, editToggle, setValueHandler })
             className={styles.editToggle}
             style={{ zIndex: isEditing ? "-1" : "0" }}
             onMouseDown={() => handleHold(true)}
-            // onMouseUp={() => handleHold(false)}
             onTouchStart={() => handleHold(true)}
-            // onTouchEnd={() => handleHold(false)}
+            onMouseUp={() => handleHold(false)}
+            onTouchEnd={() => handleHold(false)}
         />
     </div>;
 };

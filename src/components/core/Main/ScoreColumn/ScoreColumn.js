@@ -5,6 +5,7 @@ import GameContext from "../../../../contexts/GameContext";
 import InputField from "./InputField/InputField";
 
 export default function ScoreColumn({
+    isEditingInput,
     index,
     player,
     playerScores,
@@ -29,21 +30,17 @@ export default function ScoreColumn({
      * Sets the isEditingInput toggle @see Main.js
      * @param {Object} data An object that contains two key value pairs.
      * @param {Number} data.idx (Optional) The index of the score (input field) that is being edited.
-     * Only a single value is permited. Used to prevent simultaneous input field edits.
+     * Only a single value is permitted. Used to prevent simultaneous input field edits.
      * @param {Boolean} data.state The state defining wether an input field is beng currently edited.
      * Intended to set isEditingInput.
      */
     const handleEditToggle = ({ idx, state }) => {
         if (editingIndex === null) {
-            if (idx) {
-                setEditingIndex(idx);
-            };
+            if (idx) setEditingIndex(idx);
         } else {
-            if (!state && idx) {
-                setEditingIndex(null);
-            };
+            if (!state && idx) setEditingIndex(null);
         };
-        
+
         setIsEditingInput(state);
     };
 
@@ -58,23 +55,6 @@ export default function ScoreColumn({
     };
 
     /**
-     * Sets a new player name using the editPlayerName callback component prop.
-     * Uses the index component prop in order to define which player name is being currently edited.
-     * @param {String} name A string representing the new player name.
-     */
-    const handleEditValue = (type, data) => {
-        const { idx, value } = data;
-
-        if (type === "name") {
-            editPlayerName(idx, value);
-        };
-
-        if (type === "score") {
-            editPlayerScore(index, { index: idx, newScore: value });
-        };
-    };
-
-    /**
      * Edit an already existing player score field.
      * Sets the isEditingInput toggle @see Main.js
      * @param {Object} data An object containing two key value pairs.
@@ -86,7 +66,7 @@ export default function ScoreColumn({
         newScores[idx] = Number(value);
 
         setIsEditingInput(false);
-        handleEditValue("score", { idx, value });
+        editPlayerScore(index, { index: idx, newScore: value });
     };
 
     return <section className={styles.scoreColumn} style={columnStyles} onClick={() => inputModalVisibilityHandler(true)}>
@@ -94,9 +74,11 @@ export default function ScoreColumn({
             <div className={styles.columnHeader}>
                 <InputField
                     type="text"
+                    isEditingInput={isEditingInput}
                     value={player}
                     editToggle={(state) => handleEditToggle({ state })}
                     setValueHandler={handleNameEditValue}
+                    visibilityHandler={inputModalVisibilityHandler}
                 />
             </div>
 
@@ -105,7 +87,9 @@ export default function ScoreColumn({
                     type="number"
                     value={el}
                     editToggle={(state) => handleEditToggle({ idx, state })}
+                    isEditingInput={isEditingInput}
                     setValueHandler={(value) => handleScoreEditValue({ idx, value })}
+                    visibilityHandler={inputModalVisibilityHandler}
                     key={`scoreField${index}-${idx}`}
                 />)}
             </div>

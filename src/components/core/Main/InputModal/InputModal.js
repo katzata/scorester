@@ -6,14 +6,14 @@ import Modal from "../../../shared/Modal/Modal";
 import Icons from "../../../shared/Icons/Icons";
 
 export default function InputModal({ isVisible, player, handleScoreInput, visibilityHandler, zIndex }) {
-    const [pressedKey] = useKeyPress();
     const [inputValue, setInputValue] = useState("");
+    const [pressedKey] = useKeyPress();
     const inputRef = useRef(null);
 
     const handleConfirm = () => {
         inputRef.current.blur();
 
-        handleScoreInput(inputValue);
+        handleScoreInput(Number(inputValue));
         setInputValue("");
     };
 
@@ -23,7 +23,7 @@ export default function InputModal({ isVisible, player, handleScoreInput, visibi
         };
 
         if (isVisible && pressedKey === "enter") {
-            handleScoreInput(inputValue);
+            handleScoreInput(Number(inputValue));
         };
     }, [isVisible, pressedKey, inputValue, handleScoreInput]);
 
@@ -41,8 +41,8 @@ export default function InputModal({ isVisible, player, handleScoreInput, visibi
                         className={styles.scoreInput}
                         type="number"
                         value={inputValue}
-                        onChange={(e) => setInputValue(Number(e.target.value))}
-                        enterKeyHint="go"
+                        enterKeyHint="done"
+                        onChange={(e) => setInputValue(e.target.value)}
                     />
 
                     <button className={styles.insertScoreButton} onClick={handleConfirm}>

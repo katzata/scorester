@@ -8,13 +8,13 @@ export default function useClickAndHold() {
     const [timeStamp, setTimeStamp] = useState(null);
     const [holdTrigger, setHoldTrigger] = useState(false);
     const [isHolding, setIsHolding] = useState(false);
-    const [delay, setDelay] = useState(1000);
+    const [delay, setDelay] = useState(1200);
 
     const getTimeStamp = () => new Date().getTime();
 
     useEffect(() => {
         let holdCheckInterval;
-        
+
         if (isHolding) {
             setTimeStamp(getTimeStamp());
 

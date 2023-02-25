@@ -56,7 +56,10 @@ function Auth({ title, handleLoggedState }) {
             setErrorData("add_errors", errors);
         } else {
             const body = new URLSearchParams({ username, password, rePassword });
-            fetchData("/register", body).then(res => handleResponse("register", res || fetchError));
+            fetchData("/register", body).then(res => {
+                handleResponse("register", res || fetchError)
+                clearInput();
+            });
         };
     };
 
@@ -85,6 +88,7 @@ function Auth({ title, handleLoggedState }) {
                 const data = res || fetchError;
 
                 handleResponse(action, data);
+                clearInput();
             });
         };
     };
@@ -110,14 +114,12 @@ function Auth({ title, handleLoggedState }) {
         const check = window.confirm("Are you sure you want to delete your account?");
 
         if (check) {
-            const body = new URLSearchParams({ id });
-
-            fetchData("/delete", body).then(res => {
+            fetchData("/delete").then(res => {
                 if (res && res.status) {
                     const { username, userSettings, gameSettings } = userContext.userData;
                     userContext.setData({ username, userSettings, gameSettings }, true);
                 } else {
-                    setErrorData("add_errors", [{ tag: "delete", subTag: "connection", text: res }]);
+                    setErrorData("add_errors", [{ tag: "delete", subTag: "connection", text: res.Errors || res }]);
                 };
             });
         };
@@ -233,6 +235,12 @@ function Auth({ title, handleLoggedState }) {
         };
     };
 
+    const clearInput = () => {
+        if (username !== "") setUsername("");
+        if (password !== "") setPassword("");
+        if (rePassword !== "") setRePassword("");
+    };
+
     /**
      * Set the error data in the errors context.
      */
@@ -250,12 +258,12 @@ function Auth({ title, handleLoggedState }) {
                         errors.push({ tag: formType(isRegistering), subTag: "api", text: error });
                     } else {
                         const formattedError = { ...error };
-        
+
                         if (error.message && (error.message.includes("Failed to fetch") || error.message.includes("Load failed"))) {
                             formattedError.tag = "connection";
                             formattedError.text = "No connection to the server!";
                         };
-        
+
                         errors.push(formattedError);
                     };
                 };

@@ -13,8 +13,7 @@ export function UserProvider({ children }) {
             numberOfPlayers: 1,
             mainTimer: false,
             individualTimers: false,
-            autoSwitchTurns: false,
-            scoreTarget: 0,
+            scoreTarget: "",
             editableFields: false
         }
     };

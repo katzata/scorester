@@ -22,9 +22,9 @@ const useFetch = (endpoint, body, local) => {
 		if (!endpoint && typeof endpoint !== "string") {
 			return JSON.stringify({ res: "Bad request" });
 		};
-		
+
 		setLoading(true);
-		
+
 		const searchParams = new URLSearchParams(fetchBody);
 		const url = `${fetchLocal ? "" : process.env.REACT_APP_REST}${endpoint}`;
 		const options = {
@@ -37,7 +37,7 @@ const useFetch = (endpoint, body, local) => {
 		};
 
 		if (fetchBody) options["body"] = searchParams;
-		
+
 		return fetch(url, !fetchLocal ? options : null)
 			.then((res) => res.json())
 			.catch(err => {

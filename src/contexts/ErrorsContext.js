@@ -60,7 +60,7 @@ export function ErrorsProvider({ children }) {
                     existingErrors.push(incomingError);
                 } else {
                     const errors = existingErrors.filter(err => err.tag === incomingError.tag && err.text === incomingError.text);
-                    
+
                     if (errors.length === 0) {
                         existingErrors.push(incomingError);
                     };
@@ -77,7 +77,6 @@ export function ErrorsProvider({ children }) {
                     };
                 };
             };
-            
         };
 
         return existingErrors;

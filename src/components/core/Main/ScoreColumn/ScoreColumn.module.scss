@@ -8,7 +8,7 @@
     display: block;
     box-shadow: inset 0 0 2px 0px rgba(255, 255, 255, .5);
     border: 1px solid rgba(255, 255, 255, .1);
-    
+
     .columnInternal {
         position: relative;
         height: 100%;
@@ -21,7 +21,7 @@
             height: calc(36px + (main-styles.$additional-height / 2));
             padding: 0 9px;
             display: flex;
-            
+
             >div {
                 margin: auto 0;
             }
@@ -37,14 +37,15 @@
                 line-height: 18px;
             }
         }
-        
+
         .columnBody {
             overflow-y: auto;
+            user-select: none;
         }
-        
+
         .columnFooter {
             border-top: 1px solid rgba(255, 255, 255, .4);
-            
+
             >span {
                 margin: auto 0 auto auto;
                 font-size: 18px;

@@ -32,9 +32,7 @@ export default function Main({ setEndgameModalVisible }) {
      * @param {Boolean} state The expected modal visibility state.
      */
     const handleModalVisibility = useCallback((state) => {
-        if (isPlaying && !isEditingInput) {
-            setInputModalVisible(state);
-        };
+        if (isPlaying && !isEditingInput) setInputModalVisible(state);
     }, [isEditingInput, isPlaying]);
 
     /**
@@ -102,12 +100,13 @@ export default function Main({ setEndgameModalVisible }) {
             handleScoreInput={handleScoreInput}
             scoreTarget={scoreTarget}
             visibilityHandler={handleModalVisibility}
-            zIndex={numberOfPlayers}
+            zIndex={numberOfPlayers * 10}
         />
 
         <section id="scoreColumnsContainer" className={styles.scoreColumnsContainer}>
             {scores && scores.map((playerData, idx) => {
                 return <ScoreColumn
+                    isEditingInput={isEditingInput}
                     index={idx}
                     player={playerData.name}
                     playerScores={playerData.scores}
