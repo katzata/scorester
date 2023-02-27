@@ -87,7 +87,7 @@ function Auth({ title, handleLoggedState }) {
             fetchData("/login", body).then(res => {
                 const action = res && fetchError ? "add_errors" : "";
                 const data = res || fetchError;
-                console.log(data);
+
                 handleResponse(action, data);
                 setConnectionStatus(true);
             });
@@ -299,6 +299,7 @@ function Auth({ title, handleLoggedState }) {
                 if (isLoggedCheck.Errors[0] !== "no id") {
                     setErrorData("add_errors", isLoggedCheck.Errors);
                 };
+                setUserData({ hasConnection: false });
             };
         } else {
             if (hasConnection && fetchError && fetchError.message && (fetchError.message.includes("Failed to fetch") || fetchError.message.includes("Load failed"))) {

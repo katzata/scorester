@@ -23,6 +23,7 @@ const useFetch = (endpoint, body, local) => {
 			return JSON.stringify({ res: "Bad request" });
 		};
 
+		setError(null);
 		setLoading(true);
 
 		const searchParams = new URLSearchParams(fetchBody);
@@ -38,8 +39,6 @@ const useFetch = (endpoint, body, local) => {
 
 		if (fetchBody) options["body"] = searchParams;
 
-		if (error) setError(null);
-
 		return fetch(url, !fetchLocal ? options : null)
 			.then(res => res.json())
 			.catch(err => {
@@ -51,7 +50,7 @@ const useFetch = (endpoint, body, local) => {
 				setData(data);
 				return data;
 			});
-	}, [error]);
+	}, []);
 
 	useEffect(() => {
 		fetchData(endpoint, body, local);
