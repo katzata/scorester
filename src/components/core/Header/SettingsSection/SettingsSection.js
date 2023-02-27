@@ -22,17 +22,17 @@ export default function SettingsSection({ settingsUrl, title }) {
     const sectionTitle = title || `${capitalize(settingsSection[1])} settings`;
     settingsSection[0] = `S${settingsSection[0].slice(1)}`;
     settingsSection = settingsSection.reverse().join("");
-    
+
     const userContext = useContext(UserContext);
     const gameContext = useContext(GameContext);
     const errorsContext = useContext(ErrorsContext);
-    const { isLogged } = userContext.userData;
+    const { isLogged, hasConnection } = userContext.userData;
     const sectionEndpoint = `/${settingsSection}`;
     const values = userContext.userData[settingsSection];
 
     const [settings, error, loading] = useFetch(settingsUrl, null, true);
     const [settingsChanged, changedError, changedLoading, fetchData] = useFetch();
-    
+
     /**
      * Extract the necessary values from the element in order to update them.
      * @param {HTMLElement} setting The HTML element whose value is currently being updated.
@@ -78,7 +78,7 @@ export default function SettingsSection({ settingsUrl, title }) {
             };
         });
     };
-    
+
     return <div className={styles.settingsSection}>
         <h3>{sectionTitle}</h3>
 
@@ -112,7 +112,7 @@ export default function SettingsSection({ settingsUrl, title }) {
                     key={`user${idx}`}
                 />
             };
-            
+
             return availableFields[type];
         })}
 

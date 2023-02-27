@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import './App.css';
 
-// import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
+import ErrorBoundary from './ErrorBoundary/ErrorBoundary';
 
 import { UserProvider } from './contexts/UserContext';
 import { GameProvider } from './contexts/GameContext';
@@ -20,7 +20,7 @@ export default function App() {
 	const [endgameModalVisible, setEndgameModalVisible] = useState(false);
 
 	return <>
-		{/* <ErrorBoundary> */}
+		<ErrorBoundary>
 			<ErrorsProvider>
 				<UserProvider>
 					<GameProvider>
@@ -35,6 +35,6 @@ export default function App() {
 					</GameProvider>
 				</UserProvider>
 			</ErrorsProvider>
-		{/* </ErrorBoundary> */}
+		</ErrorBoundary>
 	</>;
 };

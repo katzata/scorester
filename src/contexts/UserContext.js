@@ -8,6 +8,7 @@ export function UserProvider({ children }) {
     const storageData = getStorage("scUserDetails");
     const defaultData = {
         username: "",
+        hasConnection: true,
         userSettings: { keepRecord: false },
         gameSettings: {
             numberOfPlayers: 1,

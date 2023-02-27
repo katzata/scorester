@@ -1,42 +1,44 @@
 import React from "react";
+import styles from "./ErrorBoundary.module.scss"
 
 class ErrorBoundary extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { 
-            error: null,
-            info: null
-        };
+
+        this.children = props.children;
+        this.state = { hasError: false };
     };
-    
+
+    static getDerivedStateFromError() {
+        return { hasError: true };
+    };
+
+    handleReload() {
+        window.localStorage.clear();
+        window.location.reload()
+    };
+
     componentDidMount() {
-        window.onerror = (error) => {
-            this.setState({ error, info: error.message });
+        window.onerror = (error, errorInfo) => {
+            console.warn(error, errorInfo);
+            this.setState({ hasError: true });
         };
     };
-  
-    componentDidCatch(error, info) {
-        this.setState({ error, info });
+
+    componentDidCatch(error, errorInfo) {
+        console.warn(error, errorInfo);
+        this.setState({ hasError: true });
     };
-  
+
     render() {
-        const h1Styles = {
-            color: "white"
-        };
-        const buttonStyles = {
-            color: "white",
-            backgroundColor: "rgba(0, 0, 0, .5)",
-            border: "none"
+        if (this.state.hasError) {
+            return <div className={styles.errorBoundary}>
+                <h1>Something went terribly wrong!</h1>
+                <button onClick={this.handleReload}>Reload the application</button>
+            </div>;
         };
 
-        return <>
-            {this.state.error && <>
-                <h1 style={h1Styles}>Something went terribly wrong!</h1>
-                <button style={buttonStyles} onClick={window.location.reload()}>Click to reload</button>
-            </>}
-
-            {!this.state.error && this.props.children}
-        </>;
+        return this.children;
     };
 };
 

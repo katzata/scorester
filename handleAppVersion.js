@@ -10,22 +10,22 @@ if (npm_config_major || npm_config_minor || npm_config_patch) {
         version[0] = Number(version[0]) + 1;
         version[1] = 0;
         version[2] = 0;
-    
+
         packageData.version = version.join(".");
     };
-    
+
     if (npm_config_minor) {
         console.log("minor build");
         version[1] = Number(version[1]) + 1;
         version[2] = 0;
-    
+
         packageData.version = version.join(".");
     };
-    
+
     if (npm_config_patch) {
         console.log("patch build");
         version[2] = Number(version[2]) + 1;
-    
+
         packageData.version = version.join(".");
     };
 

@@ -1,5 +1,8 @@
 @use "../../../../mixins/main-components-style" as main-styles;
 
+$thin: 400;
+$bold: 500;
+
 .scoreColumn {
     height: 100%;
     min-width: 86px;
@@ -21,6 +24,7 @@
             height: calc(36px + (main-styles.$additional-height / 2));
             padding: 0 9px;
             display: flex;
+            font-weight: $bold;
 
             >div {
                 margin: auto 0;
@@ -29,6 +33,9 @@
 
         .columnHeader {
             border-bottom: 1px solid rgba(255, 255, 255, .4);
+            input {
+                font-weight: $bold;
+            }
 
             >button {
                 display: inline;
@@ -39,8 +46,14 @@
         }
 
         .columnBody {
+            padding: 0 9px;
             overflow-y: auto;
             user-select: none;
+
+            input {
+                font-weight: $thin;
+                text-align: right;
+            }
         }
 
         .columnFooter {
@@ -48,8 +61,8 @@
 
             >span {
                 margin: auto 0 auto auto;
-                font-size: 18px;
-                line-height: 18px;
+                font-size: 20px;
+                line-height: 20px;
                 text-align: right;
             }
         }

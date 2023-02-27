@@ -13,7 +13,7 @@ function Auth({ title, handleLoggedState }) {
     const errorsContext = useContext(ErrorsContext);
     const userContext = useContext(UserContext);
     const gameContext = useContext(GameContext);
-    const { isLogged } = userContext.userData;
+    const { isLogged, hasConnection } = userContext.userData;
     const { dispatch } = errorsContext;
     const { id } = getStorage("scUserDetails") || {};
     const fetchBody = useMemo(() => ({ id }), [id]);
@@ -56,9 +56,10 @@ function Auth({ title, handleLoggedState }) {
             setErrorData("add_errors", errors);
         } else {
             const body = new URLSearchParams({ username, password, rePassword });
+
             fetchData("/register", body).then(res => {
-                handleResponse("register", res || fetchError)
-                clearInput();
+                handleResponse("register", res || fetchError);
+                setConnectionStatus(true);
             });
         };
     };
@@ -86,9 +87,9 @@ function Auth({ title, handleLoggedState }) {
             fetchData("/login", body).then(res => {
                 const action = res && fetchError ? "add_errors" : "";
                 const data = res || fetchError;
-
+                console.log(data);
                 handleResponse(action, data);
-                clearInput();
+                setConnectionStatus(true);
             });
         };
     };
@@ -101,6 +102,7 @@ function Auth({ title, handleLoggedState }) {
             if (res && res.status) {
                 const { username, userSettings, gameSettings } = userContext.userData;
                 userContext.setData({ username, userSettings, gameSettings }, true);
+                setConnectionStatus(true);
             } else {
                 setErrorData("add_warning", [{ tag: "logout", subTag: "connection", text: res }]);
             };
@@ -146,13 +148,12 @@ function Auth({ title, handleLoggedState }) {
 
         if (data && id) {
             data.isLogged = true;
-            userContext.setData(data);
+            clearInput();
 
+            userContext.setData(data);
             gameSettings && gameContext.dispatch({ type: "number_of_players", payload: Number(gameSettings.numberOfPlayers) });
         } else {
-            if (Errors) {
-                setErrorData(action, Errors);
-            };
+            if (Errors) setErrorData(action, Errors);
         };
     };
 
@@ -235,10 +236,21 @@ function Auth({ title, handleLoggedState }) {
         };
     };
 
+    /**
+     * Clear all the user input.
+     */
     const clearInput = () => {
         if (username !== "") setUsername("");
         if (password !== "") setPassword("");
         if (rePassword !== "") setRePassword("");
+    };
+
+    /**
+     * Set the connection status.
+     * @param {Boolean} toggle The connection status.
+     */
+    const setConnectionStatus = (toggle) => {
+        if (hasConnection !== toggle) setUserData({ hasConnection: toggle });
     };
 
     /**
@@ -275,12 +287,12 @@ function Auth({ title, handleLoggedState }) {
     /**
      * Set the user context data.
      */
-    const setUserData = useCallback(() => {
-        userContext.setData(isLoggedCheck);
-    }, [userContext, isLoggedCheck]);
+    const setUserData = useCallback((data) => {
+        userContext.setData(data);
+    }, [userContext]);
 
     useEffect(() => {
-        if (isLoggedCheck && !fetchError && !isLogged) {
+        if (hasConnection && isLoggedCheck && !fetchError && !isLogged) {
             if (isLoggedCheck.Errors === undefined) {
                 setUserData(isLoggedCheck);
             } else {
@@ -288,12 +300,17 @@ function Auth({ title, handleLoggedState }) {
                     setErrorData("add_errors", isLoggedCheck.Errors);
                 };
             };
+        } else {
+            if (hasConnection && fetchError && fetchError.message && (fetchError.message.includes("Failed to fetch") || fetchError.message.includes("Load failed"))) {
+                setUserData({ hasConnection: false });
+                setErrorData("add_warnings", [{ text: fetchError.message }]);
+            };
         };
 
-        if (fetchError && !isLoggedCheck && !isLogged) {
-            setErrorData("add_warnings", [fetchError.message]);
+        if (hasConnection && fetchError && !isLoggedCheck && !isLogged) {
+            setErrorData("add_warnings", [{ text: fetchError.message }]);
         };
-    }, [isLogged, isLoggedCheck, fetchError, setUserData, setErrorData]);
+    }, [isLogged, isLoggedCheck, fetchError, hasConnection, setUserData, setErrorData]);
 
     const inputStyle = { width: isRegistering ? "94%" : "48%" };
 

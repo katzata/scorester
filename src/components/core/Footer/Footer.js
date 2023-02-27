@@ -35,12 +35,12 @@ export default function Footer({ endGameModalVisibilityHandler }) {
     };
 
     const startButtonStyles = {
-        width: `${isPlaying && timersPresent ? 70 : 100}%`,
+        width: `${isPlaying && timersPresent ? 68 : 100}%`,
         backgroundColor: `rgb(${isPlaying ? "150, 0, 0" : "0, 150, 0"})`
     };
 
     const pauseButtonStyles = {
-        width: `${isPlaying && timersPresent ? 30 : 0}%`,
+        width: `${isPlaying && timersPresent ? 32 : 0}%`,
         backgroundColor: "#FFD000"
     };
 
@@ -58,9 +58,9 @@ export default function Footer({ endGameModalVisibilityHandler }) {
             onClick={handleIsPlayingToggle}
         >
             <svg width="184px" height="104px" viewBox="0 0 92 104">
-                <use href="#startButtonSvgText" stroke={`rgb(${isPlaying ? "126, 0, 0" : "0, 126, 0"})`} strokeWidth="3"></use>
+                <use href="#startButtonSvgText" stroke={`rgb(${isPlaying ? "126, 0, 0" : "0, 126, 0"})`} strokeWidth="4"></use>
                 <text id="startButtonSvgText" x="50%" y="58%" textAnchor="middle" dominantBaseline="middle" fill="white">
-                    {isPlaying ? "STOP" : "START"}
+                    {isPlaying ? "Stop" : "Start"}
                 </text>
             </svg>
         </button>
@@ -72,10 +72,10 @@ export default function Footer({ endGameModalVisibilityHandler }) {
             onClick={handlePauseToggle}
         >
             <svg width="240px" height="104px" viewBox="0 0 120 104">
-                <use href="#pauseButtonSvgText" stroke={`rgba(${gamePaused ? "0, 0, 0, .7" : "0, 0, 0, .7"})`} strokeWidth="3"></use>
-                
+                <use href="#pauseButtonSvgText" stroke={`rgba(${gamePaused ? "0, 0, 0, .7" : "0, 0, 0, .7"})`} strokeWidth="4"></use>
+
                 <text id="pauseButtonSvgText" x="49%" y="58%" textAnchor="middle" dominantBaseline="middle" fill={`rgb(${gamePaused ? "0, 150, 0" : "150, 0, 0"})`}>
-                    {gamePaused ? "RESUME" : "PAUSE"}
+                    {gamePaused ? "Resume" : "Pause"}
                 </text>
             </svg>
         </button>

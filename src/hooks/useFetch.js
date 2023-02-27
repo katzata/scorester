@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
  * A hook that handles fetch requests.
  * @param {String} endpoint A valid url endpoint.
  * @param {Object} body An object that will be appended as a request body if present.
- * @param {Boolean} local Indicates if the request is local and if so the base request path will not be applyed.
+ * @param {Boolean} local Indicates if the request is local and if so the base request path will not be applied.
  * @returns [data, error, loading, fetchData].
  */
 const useFetch = (endpoint, body, local) => {
@@ -38,18 +38,20 @@ const useFetch = (endpoint, body, local) => {
 
 		if (fetchBody) options["body"] = searchParams;
 
+		if (error) setError(null);
+
 		return fetch(url, !fetchLocal ? options : null)
-			.then((res) => res.json())
+			.then(res => res.json())
 			.catch(err => {
 				setLoading(false);
 				setError(err);
 			})
-			.then((data) => {
+			.then(data => {
 				setLoading(false);
 				setData(data);
 				return data;
 			});
-	}, []);
+	}, [error]);
 
 	useEffect(() => {
 		fetchData(endpoint, body, local);
