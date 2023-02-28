@@ -59,6 +59,7 @@ function NumberInput({ title, id, section, value, min, max, changeHandler, disab
 
     useEffect(() => {
         setCurrentValue(Number(value));
+        inputRef.current.focus();
     }, [value]);
 
     return <div className={styles.numberInput}>
@@ -76,6 +77,7 @@ function NumberInput({ title, id, section, value, min, max, changeHandler, disab
             onChange={handleInput}
             onBlur={handleBlur}
             disabled={disabled}
+            key={id}
         />
     </div>;
 };

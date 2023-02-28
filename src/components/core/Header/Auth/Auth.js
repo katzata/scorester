@@ -56,10 +56,10 @@ function Auth({ title, handleLoggedState }) {
             setErrorData("add_errors", errors);
         } else {
             const body = new URLSearchParams({ username, password, rePassword });
+            setConnectionStatus(true);
 
             fetchData("/register", body).then(res => {
                 handleResponse("register", res || fetchError);
-                setConnectionStatus(true);
             });
         };
     };
@@ -84,12 +84,13 @@ function Auth({ title, handleLoggedState }) {
         } else {
             const body = new URLSearchParams({ username, password });
 
+            setConnectionStatus(true);
+
             fetchData("/login", body).then(res => {
                 const action = res && fetchError ? "add_errors" : "";
                 const data = res || fetchError;
 
                 handleResponse(action, data);
-                setConnectionStatus(true);
             });
         };
     };
@@ -98,13 +99,15 @@ function Auth({ title, handleLoggedState }) {
      * Log the user out.
      */
     const logout = () => {
+        setConnectionStatus(true);
+
         fetchData("/logout").then(res => {
             if (res && res.status) {
                 const { username, userSettings, gameSettings } = userContext.userData;
-                userContext.setData({ username, userSettings, gameSettings }, true);
-                setConnectionStatus(true);
+                setUserData({ username, hasConnection, userSettings, gameSettings }, true);
             } else {
                 setErrorData("add_warning", [{ tag: "logout", subTag: "connection", text: res }]);
+                setConnectionStatus(false);
             };
         });
     };
@@ -116,10 +119,12 @@ function Auth({ title, handleLoggedState }) {
         const check = window.confirm("Are you sure you want to delete your account?");
 
         if (check) {
+            setConnectionStatus(true);
+
             fetchData("/delete").then(res => {
                 if (res && res.status) {
                     const { username, userSettings, gameSettings } = userContext.userData;
-                    userContext.setData({ username, userSettings, gameSettings }, true);
+                    setUserData({ username, userSettings, gameSettings }, true);
                 } else {
                     setErrorData("add_errors", [{ tag: "delete", subTag: "connection", text: res.Errors || res }]);
                 };
@@ -144,13 +149,13 @@ function Auth({ title, handleLoggedState }) {
      * @param {Object} data The response object (initially json);
      */
     const handleResponse = (action, data) => {
-        const { id, gameSettings, Errors } = data;
+        const { id, gameSettings, Errors } = data || {};
 
         if (data && id) {
             data.isLogged = true;
             clearInput();
 
-            userContext.setData(data);
+            setUserData(data);
             gameSettings && gameContext.dispatch({ type: "number_of_players", payload: Number(gameSettings.numberOfPlayers) });
         } else {
             if (Errors) setErrorData(action, Errors);
@@ -287,8 +292,8 @@ function Auth({ title, handleLoggedState }) {
     /**
      * Set the user context data.
      */
-    const setUserData = useCallback((data) => {
-        userContext.setData(data);
+    const setUserData = useCallback((data, replace) => {
+        userContext.setData(data, replace);
     }, [userContext]);
 
     useEffect(() => {
@@ -299,6 +304,7 @@ function Auth({ title, handleLoggedState }) {
                 if (isLoggedCheck.Errors[0] !== "no id") {
                     setErrorData("add_errors", isLoggedCheck.Errors);
                 };
+
                 setUserData({ hasConnection: false });
             };
         } else {
@@ -365,7 +371,7 @@ function Auth({ title, handleLoggedState }) {
 
             <div className={styles.loggedButtonsContainer}>
                 <button id="deleteAccount" onClick={() => deleteAccount(handleLoggedState)}>Delete account</button>
-                <button id="logout" onClick={() => logout(handleLoggedState)}>LOGOUT</button>
+                <button id="logout" onClick={() => logout()}>LOGOUT</button>
             </div>
         </div>}
     </>

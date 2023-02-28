@@ -22,7 +22,8 @@ export default function ScoreColumn({
     const isCurrentlyPlaying = playerTurnIndex === index;
     const columnStyles = {
         backgroundColor: isCurrentlyPlaying ? "#121212" : "transparent",
-        userSelect: isCurrentlyPlaying ? "auto" : "none"
+        userSelect: isCurrentlyPlaying ? "auto" : "none",
+        boxShadow: "0 0 2px 0 white"
     };
 
     /**
