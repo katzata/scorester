@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import styles from "./ScoreColumn.module.scss";
 import GameContext from "../../../../contexts/GameContext";
 
@@ -18,6 +18,7 @@ export default function ScoreColumn({
     const { playerTurnIndex } = useContext(GameContext).gameData;
 
     const [editingIndex, setEditingIndex] = useState(null);
+    const columnRef = useRef(null);
 
     const isCurrentlyPlaying = playerTurnIndex === index;
     const columnStyles = {
@@ -70,6 +71,17 @@ export default function ScoreColumn({
         editPlayerScore(index, { index: idx, newScore: value });
     };
 
+    useEffect(() => {
+        if (columnRef.current.children.length > 0) {
+            const containerHeight = columnRef.current.offsetHeight;
+            const lastInputPosition = columnRef.current.lastChild.offsetTop;
+
+            if (containerHeight < lastInputPosition) {
+                columnRef.current.scrollTo(0, lastInputPosition);
+            };
+        }
+    }, [playerScores.length]);
+
     return <section className={styles.scoreColumn} style={columnStyles} onClick={() => inputModalVisibilityHandler(true)}>
         <div className={styles.columnInternal}>
             <div className={styles.columnHeader}>
@@ -83,7 +95,7 @@ export default function ScoreColumn({
                 />
             </div>
 
-            <div className={styles.columnBody}>
+            <div ref={columnRef} className={styles.columnBody}>
                 {playerScores && playerScores.length > 0 && playerScores.map((el, idx) => <InputField
                     type="number"
                     value={el}

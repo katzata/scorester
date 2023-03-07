@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import styles from "./EndGameModal.module.scss";
 
 import UserContext from "../../../contexts/UserContext";
@@ -23,11 +23,10 @@ import RankRow from "./RankRow/RankRow";
  * @returns A summary of the finished game.
  */
 export default function EndGameModal({ isVisible, visibilityHandler }) {
-    const userContext = useContext(UserContext);
     const gameContext = useContext(GameContext);
-    const { individualTimers , mainTimer, scores, playerTurnIndex } = gameContext.gameData;
-    const { gameSettings } = userContext.userData;
-    
+    const { individualTimers, mainTimer, scores, playerTurnIndex } = gameContext.gameData;
+    const { gameSettings } = useContext(UserContext).userData;
+
     const endGameScores = [...scores];
     let totalTurns = 0;
 
@@ -37,7 +36,7 @@ export default function EndGameModal({ isVisible, visibilityHandler }) {
         totalTurns += increment;
         endGameScores[i].turns = increment;
         endGameScores[i].highestScore = Math.max(...endGameScores[i].scores);
-        endGameScores[i].timer = individualTimers[i];
+        endGameScores[i].timer = individualTimers[i].total;
     };
 
 
@@ -53,11 +52,11 @@ export default function EndGameModal({ isVisible, visibilityHandler }) {
         ["Turns", <p>{winner.turns}</p>],
         ["Playtime", gameSettings.individualTimers && <SvgTimer id={"individual-resW"} digits={winner.timer}/>]
     ];
-
+console.log(individualTimers, scores);
     const gameStats = [
         ["Game points", <p>{endGameScores.map(el => el.scoreTotal).reduce((a, b) => a + b)}</p>],
         ["Turns", <p>{totalTurns}</p> ],
-        ["Game time", (gameSettings.mainTimer || gameSettings.individualTimers) && <SvgTimer id={"individual-resG"} digits={gameSettings.mainTimer ? mainTimer : individualTimers.reduce((a, b) => a + b)}/>]
+        ["Game time", (gameSettings.mainTimer || gameSettings.individualTimers) && <SvgTimer id={"individual-resG"} digits={gameSettings.mainTimer ? mainTimer : individualTimers.reduce((a, b) => (a.total + a.elapsed) + (b.total + b.elapsed))}/>]
     ];
 
     /**
@@ -75,7 +74,7 @@ export default function EndGameModal({ isVisible, visibilityHandler }) {
      * Close the endgame modal and reset the game data.
      */
     function closeModalAndResume() {
-        gameContext.dispatch({ type: "resume_game" });
+        gameContext.setData({ type: "resume_game" });
         visibilityHandler(false);
     };
 
@@ -83,9 +82,13 @@ export default function EndGameModal({ isVisible, visibilityHandler }) {
      * Close the endgame modal and reset the game data.
      */
     function closeModalAndEnd() {
-        gameContext.dispatch({ type: "stop_game" });
+        gameContext.setData({ type: "stop_game" });
         visibilityHandler(false);
     };
+
+    useEffect(() => {
+        // console.log(isVisible);
+    }, [isVisible]);
 
     return <div id="endGameModal" className={styles.endGameModal}>
         <Modal isVisible={isVisible} position="absolute">
@@ -112,7 +115,10 @@ export default function EndGameModal({ isVisible, visibilityHandler }) {
                     <div className={styles.playerStats}>
                         <StatsSection title="Most scored">
                             <h4 className={styles.winnerName}>{highestScored.name}</h4>
-                            <p>{highestScored.highestScore} <span>pts.</span></p>
+                            <p>
+                                {!isNaN(highestScored.highestScore) && highestScored.highestScore >= 0 ? highestScored.highestScore : 0 }
+                                <span> pts.</span>
+                            </p>
                         </StatsSection>
 
                         {gameSettings.individualTimers && <StatsSection title="Lowest time">
@@ -120,7 +126,7 @@ export default function EndGameModal({ isVisible, visibilityHandler }) {
                             <SvgTimer id="lowestTime" digits={lowestTime.timer}/>
                         </StatsSection>}
                     </div>
-                    
+
                     <div id="ranking" className={styles.ranking}>
                         {sortedScores && sortedScores.map((player, idx) => <RankRow
                             position={idx + 1}

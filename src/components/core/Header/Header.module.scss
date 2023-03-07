@@ -9,7 +9,7 @@ header {
 
     grid-template-rows: calc(47px + styles-mixin.$additional-height);
     justify-items: center;
-    
+
     >svg {
         flex-grow: 1;
         height: 100%;
@@ -32,22 +32,22 @@ header {
         min-width: 90px;
         max-width: 108px;
     }
-    
+
     .buttonsContainer {
         display: block;
-        
+
         .buttonWrapper {
             width: 50%;
             height: 100%;
             display: inline-flex;
-        
+
             >button {
                 position: relative;
                 width: 100%;
                 height: 100%;
                 display: flex;
                 background-color: transparent;
-                
+
                 &::after {
                     content: "";
                     position: absolute;
@@ -63,7 +63,7 @@ header {
                         rgba(0, 0, 0, .4)
                     );
                 }
-        
+
                 svg {
                     width: 45%;
                     height: auto;

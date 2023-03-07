@@ -6,14 +6,16 @@ const GameContext = createContext();
 
 export function GameProvider({ children }) {
     const storageData = getStorage("scGameDetails") || {};
-    const { isPlaying, gamePaused, playerTurnIndex, mainTimer, individualTimers, scores } = storageData;
+    const { isPlaying, gamePaused, initialGameTs, pausesDuration, playerTurnIndex, mainTimer, individualTimers, scores } = storageData;
     const defaultData = {
         isPlaying: isPlaying !== undefined ? isPlaying : false,
         gamePaused: gamePaused !== undefined ? gamePaused : false,
+        initialGameTs: initialGameTs !== undefined ? initialGameTs : 0,
+        pausesDuration: pausesDuration !== undefined ? pausesDuration : { total: 0, pausedAt: 0 },
         playerTurnIndex: playerTurnIndex !== undefined ? playerTurnIndex : 0,
         mainTimer: mainTimer !== undefined ? mainTimer : 0,
         scores: scores !== undefined ? scores : [...Array(1).keys()].map(el => ({ name: `Player ${el + 1}`, scores: [], scoreTotal: 0 })),
-        individualTimers:  individualTimers !== undefined ? individualTimers : [...Array(1).fill(0)]
+        individualTimers:  individualTimers !== undefined ? individualTimers : [...Array(1).fill({ elapsed: 0, currentTs: 0, total: 0, pausesDuration: { pausedAt : 0 } })]
     };
 
     const [gameData, dispatch] = useReducer(reducer, mergeObjectData(storageData, defaultData));
@@ -36,92 +38,186 @@ export function GameProvider({ children }) {
      * @returns An updated state object.
      */
     function reducer(state, action) {
-        let newData = { ...state };
-
         switch (action.type) {
             case "start_game":
-                newData.isPlaying = true;
-                return newData;
+                return {...state, ...action.payload};
             case "stop_game":
-                newData.isPlaying = false;
-                newData.gamePaused = false;
-                newData.mainTimer = 0;
-                newData.playerTurnIndex = 0;
-
-                for (let i = 0; i < newData.scores.length; i++) {
-                    newData.scores[i].scores = [];
-                    newData.scores[i].scoreTotal = 0;
-                    newData.individualTimers[i] = 0;
-                };
-
-                return newData;
+                return {...state, ...action.payload};
             case "pause_game":
-                newData.gamePaused = true;
-                return newData;
+                return {...state, ...action.payload};
             case "resume_game":
-                newData.gamePaused = false;
-                return newData;
+                return {...state, ...action.payload};
             case "add_score":
-                const increment = newData.playerTurnIndex + 1;
-
-                newData.scores[newData.playerTurnIndex].scoreTotal += (action.payload || 0);
-                newData.scores[newData.playerTurnIndex].scores.push(action.payload);
-                newData.playerTurnIndex = increment < scores.length ? increment : 0;
-                return newData;
+                return {...state, ...action.payload};
             case "edit_score":
-                const editIndex = action.payload.playerIndex;
-                const editedScores = action.payload.scores;
-
-                newData.scores[editIndex].scores = editedScores;
-                newData.scores[editIndex].scoreTotal = Number([...editedScores].reduce((a, b) => a + b));
-                return newData;
+                return {...state, ...action.payload};
             case "player_name":
-                const [nameIndex, newName] = action.payload;
-                newData.scores[nameIndex].name = newName;
-                return newData;
+                return {...state, ...action.payload};
             case "number_of_players":
-                while (newData.scores.length !== action.payload) {
-                    if (newData.scores.length <= action.payload) {
-                        newData.individualTimers.push(0);
-                        newData.scores.push({ name: `Player ${newData.scores.length + 1}`, scores: [], scoreTotal: 0 });
-                    } else {
-                        newData.scores.pop();
-                        newData.individualTimers.pop();
-
-                        if (newData.playerTurnIndex >= newData.scores.length) {
-                            newData.playerTurnIndex = newData.scores.length - 1;
-                        };
-                    };
-                };
-
-                return newData;
+                return {...state, ...action.payload};
             case "timers_update":
-                const { mainTimerVisible, individualTimersVisible } = action.payload;
-
-                if (mainTimerVisible) {
-                    newData.mainTimer += 1;
-                };
-
-                if (individualTimersVisible) {
-                    newData.individualTimers[playerTurnIndex] += 1;
-                };
-
-                return newData;
+                return {...state, ...action.payload};
+            case "timers_reset":
+                return {...state, ...action.payload};
             default:
                 return state;
         };
     };
 
     /**
-     * Update the localStorage object.
+     * Dispatch the appropriate actions and update the localStorage object.
      */
-    const updateStorage = useCallback(() => setStorage({ key:"scGameDetails", value: gameData}), [gameData])
+    const setData = useCallback(({ type, payload }) => {
+        const newData = { ...gameData };
+        const tStamp = Date.now();
 
-    useEffect(() => {
-        updateStorage();
-    }, [gameData, updateStorage]);
+        if (type === "start_game") {
+            newData.isPlaying = true;
 
-    const value = useMemo(() => ({ gameData, dispatch }), [gameData]);
+            if (payload.mainTimerVisible || payload.individualTimers) {
+                newData.initialGameTs = tStamp;
+            };
+
+            if (payload.individualTimers) {
+                newData.individualTimers[newData.playerTurnIndex].currentTs = tStamp;
+            };
+        };
+
+        if (type === "stop_game") {
+            newData.isPlaying = false;
+            newData.gamePaused = false;
+            newData.playerTurnIndex = 0;
+            newData.mainTimer = 0;
+            newData.initialGameTs = 0;
+            newData.pausesDuration = { total: 0, pausedAt: 0 };
+
+            for (let i = 0; i < newData.scores.length; i++) {
+                newData.scores[i].scores = [];
+                newData.scores[i].scoreTotal = 0;
+                newData.individualTimers[i] = { elapsed: 0, currentTs: 0, total: 0, pausesDuration: { pausedAt : 0 } };
+            };
+        };
+
+        if (type === "pause_game") {
+            newData.gamePaused = true;
+
+            if (newData.mainTimer > 0) {
+                newData.pausesDuration.pausedAt = tStamp;
+            };
+        };
+
+        if (type === "resume_game") {
+            newData.gamePaused = false;
+
+            if (newData.mainTimer > 0) {
+                newData.initialGameTs += tStamp - newData.pausesDuration.pausedAt;
+            };
+
+            if (newData.individualTimers[newData.playerTurnIndex].currentTs > 0) {
+                newData.individualTimers.map(el => ({
+                    ...el,
+                    currentTs: el.currentTs += tStamp - newData.pausesDuration.pausedAt
+                }));
+            };
+
+            if (newData.pausesDuration.pausedAt !== 0) {
+                newData.pausesDuration.pausedAt = 0;
+            };
+        };
+
+        if (type === "add_score") {
+            const newTurnIndex = newData.playerTurnIndex + 1 < newData.scores.length ? newData.playerTurnIndex + 1 : 0;
+
+            newData.scores[newData.playerTurnIndex].scoreTotal += (payload || 0);
+            newData.scores[newData.playerTurnIndex].scores.push(payload);
+
+            if (newData.individualTimers[newData.playerTurnIndex].elapsed > 0 || newData.individualTimers[newData.playerTurnIndex].total > 0) {
+                newData.individualTimers[newData.playerTurnIndex].total = newData.individualTimers[newData.playerTurnIndex].elapsed;
+            };
+
+            newData.playerTurnIndex = newTurnIndex;
+            newData.individualTimers[newTurnIndex].currentTs = tStamp;
+        };
+
+        if (type === "edit_score") {
+            newData.scores[payload.playerIndex].scores = payload.scores;
+            newData.scores[payload.playerIndex].scoreTotal = Number([...payload.scores].reduce((a, b) => a + b));
+        };
+
+        if (type === "player_name") {
+            newData.scores[payload.index].name = payload.name;
+        };
+
+        if (type === "number_of_players") {
+            while (newData.scores.length !== payload) {
+                if (newData.scores.length <= payload) {
+                    newData.individualTimers.push({ elapsed: 0, currentTs: 0, total: 0, pausesDuration: { pausedAt : 0 } });
+                    newData.scores.push({ name: `Player ${newData.scores.length + 1}`, scores: [], scoreTotal: 0 });
+                } else {
+                    newData.scores.pop();
+                    newData.individualTimers.pop();
+
+                    if (newData.playerTurnIndex >= newData.scores.length) {
+                        newData.playerTurnIndex = newData.scores.length - 1;
+                    };
+                };
+            };
+        };
+
+        if (type === "timers_update") {
+            const { mainTimerVisible, individualTimersVisible } = payload;
+
+            if (mainTimerVisible) {
+                if (newData.initialGameTs === 0) {
+                    newData.initialGameTs = tStamp;
+                };
+
+                const timeElapsed = tStamp - newData.initialGameTs;
+                newData.mainTimer = timeElapsed;
+            } else {
+                if (newData.mainTimer !== 0) newData.mainTimer = 0;
+            };
+
+            if (individualTimersVisible) {
+                if (newData.individualTimers[newData.playerTurnIndex].currentTs === 0) {
+                    newData.individualTimers[newData.playerTurnIndex].currentTs = tStamp;
+                };
+
+                const timeElapsed = tStamp - newData.individualTimers[newData.playerTurnIndex].currentTs;
+                newData.individualTimers[newData.playerTurnIndex].elapsed = newData.individualTimers[newData.playerTurnIndex].total + timeElapsed;
+            } else {
+                if (newData.individualTimers[newData.playerTurnIndex].elapsed !== 0) newData.individualTimers[newData.playerTurnIndex].elapsed = 0;
+            };
+
+            if (!mainTimerVisible && newData.initialGameTs !== 0) {
+                newData.initialGameTs = 0;
+            };
+        };
+
+        if (type === "timers_reset") {
+            if (payload === "mainTimer") {
+                newData.initialGameTs = 0;
+                newData.mainTimer = 0;
+            };
+
+            if (payload === "individualTimers") {
+                newData.individualTimers = newData.individualTimers.map(() => ({
+                    elapsed: 0,
+                    currentTs: 0,
+                    total: 0,
+                    pausesDuration: { pausedAt : 0 }
+                }));
+            };
+        };
+
+        setStorage({ key:"scGameDetails", value: newData });
+
+        if (type) {
+            dispatch({ type, payload: newData });
+        };
+    }, [gameData]);
+
+    const value = useMemo(() => ({ gameData, setData }), [gameData, setData]);
 
     return <GameContext.Provider value={value}>
         {children}

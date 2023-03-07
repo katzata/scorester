@@ -2,7 +2,7 @@
 import styles from "./SvgTimer.module.scss";
 
 /**
- * Component displaying a properly formated svg clock.
+ * Component displaying a properly formatted svg clock.
  * 
  * @param {Object} props
  * @param {String} props.id
@@ -15,10 +15,10 @@ import styles from "./SvgTimer.module.scss";
  * @param {Number | String} props.style Set the desired font size.
  */
 export default function SvgTimer({ id, digits, fontSize, style }) {
+    const seconds = parseInt((digits / 1000) % 60);
+    const minutes = parseInt((digits / (1000 * 60)) % 60);
+    const hours = parseInt((digits / (1000* 60 * 60)) % 24);
     const formatTimer = (time) => Number(time) < 10 ? `0${time}` : time;
-    const hours = Math.floor(digits / 3600);
-    const minutes = Math.floor((digits % 3600) / 60);
-    const seconds = digits % 60;
 
     return <svg id={id} className={styles.svgTimer} style={style || {}} height="60px" viewBox="0 0 210 60">
         <defs>

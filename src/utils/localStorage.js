@@ -5,19 +5,20 @@ import { convertJson } from "./utils";
  * @param {Object || Array} storageData Either an object or an array of objects that contain a single key value pair (named key and value).
  */
 export const setStorage = (storageData) => {
+    // console.log("storageData", storageData);
     if (storageData instanceof Array) {
         for (const data of storageData) {
-            localStorage.setItem(data.key, convertJson(data.value));
+            localStorage.setItem(data.key, JSON.stringify(data.value));
         };
     } else {
-        localStorage.setItem(storageData.key, convertJson(storageData.value));
+        localStorage.setItem(storageData.key, JSON.stringify(storageData.value));
     };
 };
 
 /**
  * Gets a local storage entry.
- * @param {Object || Array} storageKeys Either a string or an array of strings that represent localstorage keys.
- * @returns the value associated with the sepcific key (if it exists).
+ * @param {Object || Array} storageKeys Either a string or an array of strings that represent local storage keys.
+ * @returns the value associated with the specific key (if it exists).
  */
 export const getStorage = (storageKeys) => {
     if (storageKeys instanceof Array) {
@@ -47,7 +48,7 @@ export const clearStorage = () => {
 
 /**
 	 * Update the local storage data object (scUserDetails/scGameDetails).
-	 * @param {String} key The key respresenting the necessary details object within the local storage.
+	 * @param {String} key The key representing the necessary details object within the local storage.
 	 * @param {Object} data The key value pairs represent the data that will be changed in the local storage object.
      * If the value is a nested value (will be an array) an index and value keys should be provided in order to change the proper element.
      * E.G. { dataKey: { index: 0, value: "x" }}
@@ -57,7 +58,7 @@ export const saveToStorage = (key, data) => {
 
     for (const [dataKey, state] of Object.entries(data)) {
         if (localData[dataKey] !== undefined) {
-            if (state.index) {
+            if (state && state.index) {
                 localData[dataKey][state.index] = state.value;
             } else {
                 localData[dataKey] = state;

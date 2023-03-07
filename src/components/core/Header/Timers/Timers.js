@@ -8,7 +8,7 @@ import SvgTimer from "../../../shared/SvgTimer/SvgTimer";
 
 /**
  * Component displaying all possible timers (main timer, individual timers).
- * 
+ *
  * @param {Object} props
  * @param {Boolean} props.isPlaying
  * @param {Boolean} props.gamePaused
@@ -16,19 +16,19 @@ import SvgTimer from "../../../shared/SvgTimer/SvgTimer";
  * @param {Number} props.numberOfPlayers
  * @param {Boolean} props.gameSettings.mainTimer
  * @param {Boolean} props.gameSettings.individualTimers
- * 
+ *
  * @props isPlaying - The current playing state.
- * @props gamePaused - Indcates wether the game is paused or not.
+ * @props gamePaused - Indicates wether the game is paused or not.
  * @props playerTurnIndex - Indicates the current player turn.
  * @props numberOfPlayers - Indicates the current number of players.
  * @props gameSettings.mainTimer - Indicates the main timer visibility.
  * @props gameSettings.individualTimers - Indicates the individual timers visibility.
  */
 export default function Timers() {
-    const userContext = useContext(UserContext);
     const gameContext = useContext(GameContext);
-    const { gameSettings } = userContext.userData;
-    const { isPlaying, gamePaused, playerTurnIndex, mainTimer, individualTimers } = gameContext.gameData;
+    const { gameSettings } = useContext(UserContext).userData;
+    const { setData, gameData } = gameContext;
+    const { isPlaying, gamePaused, playerTurnIndex, mainTimer, individualTimers } = gameData;
 
     /**
      * Handle all available timers (main and individual).
@@ -36,11 +36,11 @@ export default function Timers() {
     const handleTimers = useCallback(() => {
         const mainTimerVisible = gameSettings.mainTimer;
         const individualTimersVisible = gameSettings.individualTimers;
-        
+
         if (mainTimerVisible || individualTimersVisible) {
-            gameContext.dispatch({ type: "timers_update", payload: { mainTimerVisible, individualTimersVisible } });
+            setData({ type: "timers_update", payload: { mainTimerVisible, individualTimersVisible } });
         };
-    }, [gameContext, gameSettings.individualTimers, gameSettings.mainTimer]);
+    }, [setData, gameSettings.individualTimers, gameSettings.mainTimer]);
 
     useEffect(() => {
         if (isPlaying && !gamePaused) {
@@ -48,7 +48,7 @@ export default function Timers() {
             return () => clearInterval(timersInterval);
         };
     }, [isPlaying, gamePaused, handleTimers]);
-    
+
     return <section className={styles.timersSection}>
         { gameSettings.mainTimer && <SvgTimer id="gameTimer" digits={mainTimer}/> }
 
@@ -67,7 +67,7 @@ export default function Timers() {
 
                     return <SvgTimer
                         id={`individual${idx}`}
-                        digits={timer}
+                        digits={timer.elapsed}
                         width="70"
                         height="100%"
                         style={{ transform: `translateY(${position}%)`, zIndex: offsetToggle ? "0" : "-1" }}

@@ -20,19 +20,19 @@
             box-shadow: 0 0 2px 1px colors.$button-bg;
             color: colors.$secondary-font-color;
         }
-        
+
         >input {
             width: 48%;
             margin: 1% auto;
             text-align: center;
             transition-duration: .1s;
             background-color: colors.$modal-fg;
-            
+
             &[name="rePassword"] {
                 width: 94%;
             }
         }
-        
+
         >button {
             width: 98%;
             margin: 6px auto;

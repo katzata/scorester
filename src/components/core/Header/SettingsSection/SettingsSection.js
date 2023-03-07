@@ -26,7 +26,7 @@ export default function SettingsSection({ settingsUrl, title }) {
     const userContext = useContext(UserContext);
     const gameContext = useContext(GameContext);
     const errorsContext = useContext(ErrorsContext);
-    const { isLogged, hasConnection } = userContext.userData;
+    const { isLogged } = userContext.userData;
     const sectionEndpoint = `/${settingsSection}`;
     const values = userContext.userData[settingsSection];
 
@@ -46,7 +46,35 @@ export default function SettingsSection({ settingsUrl, title }) {
         setValues(newValues);
 
         if (id === "numberOfPlayers") {
-            gameContext.dispatch({ type: "number_of_players", payload: Number(value) });
+            gameContext.setData({ type: "number_of_players", payload: Number(value) });
+        };
+
+        if ((id === "mainTimer" || id === "individualTimers") && !checked) {
+            resetTimers(id);
+        };
+    };
+
+    /**
+     * Reset the specific timer/s.
+     * The game will be resumed if no timers are present.
+     * @param {String} id The timers that will be reset (mainTimer/individualTimers).
+     */
+    const resetTimers = (id) => {
+        let shouldResume = false;
+        gameContext.setData({ type: "timers_reset", payload: id });
+
+        if (id === "mainTimer") {
+            if (!values.individualTimers) {
+                shouldResume = true;
+            };
+        } else {
+            if (!values.mainTimer) {
+                shouldResume = true;
+            };
+        };
+
+        if (gameContext.gameData.gamePaused && shouldResume) {
+            gameContext.setData({ type: "resume_game" });
         };
     };
 

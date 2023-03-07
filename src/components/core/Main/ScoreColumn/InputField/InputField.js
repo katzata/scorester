@@ -19,7 +19,8 @@ export default function InputField({ type, value, isEditingInput, editToggle, se
     const inputRef = useRef(null);
 
     const inputStyles = {
-        width: isEditing ? "calc(96% - 44px)" : "96%",
+        width: isEditing ? "calc(100% - 44px)" : "100%",
+        // marginLeft: isEditing ? "auto" : "0",
         userSelect: isEditing ? "auto" : "none"
     };
 

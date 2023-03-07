@@ -10,7 +10,7 @@ export default function Footer({ endGameModalVisibilityHandler }) {
     const gameContext = useContext(GameContext);
     const { mainTimer, individualTimers } = userContext.userData.gameSettings;
     const { isPlaying, gamePaused } = gameContext.gameData;
-    const { dispatch } = gameContext;
+    const { setData } = gameContext;
     const timersPresent = mainTimer || individualTimers;
 
     const [pressedKey] = useKeyPress();
@@ -20,9 +20,9 @@ export default function Footer({ endGameModalVisibilityHandler }) {
      */
     const handleIsPlayingToggle = () => {
         if (!isPlaying) {
-            gameContext.dispatch({ type: "start_game" });
+            setData({ type: "start_game", payload: { mainTimer, individualTimers } });
         } else {
-            gameContext.dispatch({ type: "pause_game" });
+            setData({ type: "pause_game", payload: { mainTimer, individualTimers } });
             endGameModalVisibilityHandler(true);
         };
     };
@@ -31,7 +31,7 @@ export default function Footer({ endGameModalVisibilityHandler }) {
      * Pause and unpause the game.
      */
     const handlePauseToggle = () => {
-        gameContext.dispatch({ type: !gamePaused ? "pause_game" : "resume_game" });
+        setData({ type: !gamePaused ? "pause_game" : "resume_game" });
     };
 
     const startButtonStyles = {
@@ -46,9 +46,9 @@ export default function Footer({ endGameModalVisibilityHandler }) {
 
     useEffect(() => {
         if (isPlaying && pressedKey === "pause") {
-            dispatch({ type: !gamePaused ? "pause_game" : "resume_game" });
+            setData({ type: !gamePaused ? "pause_game" : "resume_game" });
         };
-    }, [pressedKey, dispatch, isPlaying, gamePaused]);
+    }, [pressedKey, setData, isPlaying, gamePaused]);
 
     return <footer>
         <button

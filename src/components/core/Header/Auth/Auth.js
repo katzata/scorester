@@ -156,9 +156,13 @@ function Auth({ title, handleLoggedState }) {
             clearInput();
 
             setUserData(data);
-            gameSettings && gameContext.dispatch({ type: "number_of_players", payload: Number(gameSettings.numberOfPlayers) });
+            gameSettings && gameContext.setData({ type: "number_of_players", payload: Number(gameSettings.numberOfPlayers) });
         } else {
-            if (Errors) setErrorData(action, Errors);
+            if (Errors) {
+                setErrorData("add_errors", Errors);
+            } else {
+                setErrorData("add_errors", [data.message]);
+            };
         };
     };
 
@@ -287,7 +291,7 @@ function Auth({ title, handleLoggedState }) {
             };
 
             dispatch({ type: action, payload: errors });
-    }, [dispatch, isRegistering]);
+    }, [dispatch, isRegistering, fetchError]);
 
     /**
      * Set the user context data.

@@ -11,21 +11,27 @@ export default function InputModal({ isVisible, player, handleScoreInput, visibi
     const inputRef = useRef(null);
 
     const handleConfirm = () => {
-        inputRef.current.blur();
-
+        visibilityHandler(false);
         handleScoreInput(Number(inputValue));
         setInputValue("");
     };
 
     useEffect(() => {
-        if (isVisible && document.activeElement !== inputRef.current) {
-            inputRef.current.focus();
+        if (isVisible) {
+            if (document.activeElement !== inputRef.current) {
+                inputRef.current.focus();
+            };
+        } else {
+            if (document.activeElement === inputRef.current) {
+                inputRef.current.blur();
+            };
         };
 
         if (isVisible && pressedKey === "enter") {
             handleScoreInput(Number(inputValue));
+            visibilityHandler(false);
         };
-    }, [isVisible, pressedKey, inputValue, handleScoreInput]);
+    }, [isVisible, pressedKey, handleScoreInput, inputValue, visibilityHandler]);
 
     return <section id="inputModal" className={styles.modalContainer} style={{ transform: `scaleY(${isVisible ? 100 : 0}%)`, zIndex }}>
         <Modal isVisible={isVisible} position="absolute" visibilityHandler={visibilityHandler}>

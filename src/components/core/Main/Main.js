@@ -20,8 +20,8 @@ export default function Main({ setEndgameModalVisible }) {
     const userContext = useContext(UserContext);
     const gameContext = useContext(GameContext);
     const { numberOfPlayers, scoreTarget } = userContext.userData.gameSettings;
-    const { isPlaying, scores, playerTurnIndex } = gameContext.gameData;
-    const { dispatch } = gameContext;
+    const { isPlaying, gamePaused, scores, playerTurnIndex } = gameContext.gameData;
+    const { setData } = gameContext;
 
     const [pressedKey] = useKeyPress();
     const [inputModalVisible, setInputModalVisible] = useState(false);
@@ -32,8 +32,10 @@ export default function Main({ setEndgameModalVisible }) {
      * @param {Boolean} state The expected modal visibility state.
      */
     const handleModalVisibility = useCallback((state) => {
-        if (isPlaying && !isEditingInput) setInputModalVisible(state);
-    }, [isEditingInput, isPlaying]);
+        if (isPlaying && !isEditingInput && !gamePaused) {
+            setInputModalVisible(state);
+        };
+    }, [isEditingInput, isPlaying, gamePaused]);
 
     /**
      * Gets the game data from the local storage, updates the player score arrays and saves the new data to the local storage.
@@ -44,14 +46,13 @@ export default function Main({ setEndgameModalVisible }) {
         const score = inputValue === "" ? 0 : inputValue;
         const total = scores[playerTurnIndex].scoreTotal + inputValue;
 
-        dispatch({ type: "add_score", payload: score });
-        handleModalVisibility(false);
+        setData({ type: "add_score", payload: score });
 
         if (scoreTarget > 0 && total >= scoreTarget) {
             setEndgameModalVisible(true);
-            dispatch({ type: "pause_game" });
+            setData({ type: "pause_game" });
         };
-    }, [scores, playerTurnIndex, dispatch, handleModalVisibility, scoreTarget, setEndgameModalVisible]);
+    }, [scores, playerTurnIndex, setData, scoreTarget, setEndgameModalVisible]);
 
     /**
 	 * Edit a player name field.
@@ -62,11 +63,11 @@ export default function Main({ setEndgameModalVisible }) {
 		const localData = getStorage("scGameDetails");
 		const newPlayerNames = [...scores.map(el => el.name)];
 
-		localData["scores"][index].name = newName;
+		// localData["scores"][index].name = newName;
 		newPlayerNames[index] = newName;
 
-        saveToStorage("scGameDetails", localData);
-        gameContext.dispatch({ type: "player_name", payload: [index, newName] });
+        // saveToStorage("scGameDetails", localData);
+        setData({ type: "player_name", payload: {index, name: newName }});
 	};
 
     /**
@@ -82,21 +83,21 @@ export default function Main({ setEndgameModalVisible }) {
         localData.scores[playerIndex].scores = newPlayerScores[playerIndex];
 
         saveToStorage("scGameDetails", localData);
-        gameContext.dispatch({ type: "edit_score", payload: { playerIndex, scores: newPlayerScores[playerIndex] }});
+        setData({ type: "edit_score", payload: { playerIndex, scores: newPlayerScores[playerIndex] }});
     };
 
     useEffect(() => {
-        if (inputModalVisible && pressedKey === "cancel") {
+        if ((gamePaused && inputModalVisible) || (inputModalVisible && pressedKey === "cancel")) {
             setInputModalVisible(false);
         };
-    }, [pressedKey, inputModalVisible, scores]);
+    }, [pressedKey, inputModalVisible, scores, gamePaused]);
 
     return <main className={styles.main}>
         <MessageModal/>
 
         <InputModal
             isVisible={inputModalVisible}
-            player={scores[playerTurnIndex].name}
+            player={scores[playerTurnIndex].name || ""}
             handleScoreInput={handleScoreInput}
             scoreTarget={scoreTarget}
             visibilityHandler={handleModalVisibility}

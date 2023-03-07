@@ -21,12 +21,12 @@ export default function Modal({ id, isVisible, position, children, visibilityHan
     const visibilityStyles = {
         position: isVisible ? position : "absolute",
         transitionDelay: !isVisible ? ".1s" : "0s",
-        zIndex: !isVisible ? -1 : 10
+        zIndex: !isVisible ? -1 : 11
     };
 
     return <div id={id} className={styles.modal} style={visibilityStyles}>
         <div className={styles.modalInternal} style={{ transform: `scale(${scale}, ${scale})` }}>
-            {visibilityHandler && <button className={styles.closeButton} onClick={() => visibilityHandler(false)}>
+            {visibilityHandler && <button className={styles.closeButton} onClick={() => {visibilityHandler(false)}}>
                 <Icons current="close" />
             </button>}
 

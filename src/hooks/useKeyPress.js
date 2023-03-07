@@ -1,39 +1,40 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 export default function useKeyPress() {
     const [keyCode, setKeyCode] = useState(null);
 
-    const handleKeyPress = (e) => {
-        const { code } = e;
+    const handleKeyPress = useCallback((e) => {
+        const { code, key } = e;
+        const currentKey = code !== "" ? code : key;
         const setAction = (type, command) => type === "keydown" ? command : null;
         let action = null;
 
-        if (code === "Enter" || code === "NumpadEnter") {
+        if (currentKey === "Enter" || currentKey === "NumpadEnter") {
             action = "enter";
         };
 
-        if (code === "Escape") {
+        if (currentKey === "Escape") {
             action = "cancel";
         };
 
-        if (code === "Pause") {
+        if (currentKey === "Pause") {
             action = "pause";
         };
 
         if (action) {
             setKeyCode(setAction(e.type, action));
         };
-    };
+    }, []);
 
     useEffect(() => {
         window.addEventListener("keydown", handleKeyPress);
         window.addEventListener("keyup", handleKeyPress);
 
         return () => {
-            window.removeEventListener("keydown", handleKeyPress)
-            window.removeEventListener("keyup", handleKeyPress)
+            window.removeEventListener("keydown", handleKeyPress);
+            window.removeEventListener("keyup", handleKeyPress);
         };
-    }, []);
+    }, [handleKeyPress]);
 
     return [keyCode, handleKeyPress];
 };
