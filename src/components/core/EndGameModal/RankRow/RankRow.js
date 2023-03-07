@@ -3,12 +3,12 @@ import SvgTimer from "../../../shared/SvgTimer/SvgTimer"
 
 /**
  * A component that renders player data
- * @param {Object} props 
+ * @param {Object} props
  * @param {Number} props.position
  * @param {String} props.playerName
  * @param {Number} props.score
  * @param {Number} props.timer
- * 
+ *
  * @component
  * @props position - The list index.
  * @props playerName - The player name.
@@ -24,7 +24,7 @@ export default function RankRow({ position, playerName, score, timer }) {
             {score}
             <span> pts.</span>
         </span>
-        
+
         {timer !== undefined && <SvgTimer id={`individual-res${position}`} digits={timer}/>}
     </p>;
 };

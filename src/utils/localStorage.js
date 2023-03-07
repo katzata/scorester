@@ -1,11 +1,8 @@
-import { convertJson } from "./utils";
-
 /**
  * Sets key value pair/s in local storage.
  * @param {Object || Array} storageData Either an object or an array of objects that contain a single key value pair (named key and value).
  */
 export const setStorage = (storageData) => {
-    // console.log("storageData", storageData);
     if (storageData instanceof Array) {
         for (const data of storageData) {
             localStorage.setItem(data.key, JSON.stringify(data.value));
@@ -25,12 +22,12 @@ export const getStorage = (storageKeys) => {
         const data = [];
 
         for (const key of storageKeys) {
-            data.push(convertJson(localStorage.getItem(key)));
+            data.push(JSON.parse(localStorage.getItem(key)));
         };
 
         return data;
     } else {
-        return convertJson(localStorage.getItem(storageKeys));
+        return JSON.parse(localStorage.getItem(storageKeys));
     };
 };
 

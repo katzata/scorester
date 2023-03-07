@@ -1,4 +1,4 @@
-import { createContext, useCallback, useEffect, useMemo, useReducer } from "react";
+import { createContext, useCallback, useMemo, useReducer } from "react";
 import { getStorage, setStorage } from "../utils/localStorage";
 import { mergeObjectData } from "../utils/utils";
 
@@ -21,8 +21,7 @@ export function GameProvider({ children }) {
     const [gameData, dispatch] = useReducer(reducer, mergeObjectData(storageData, defaultData));
 
     /**
-     * Sets the current context state according to the provided actions.
-     * Saves to local storage the updated state.
+     * Sets the current context state according to the provided actions adding the necessary data.
      * @param {Object.<any>} state The current state.
      * @param {Object} action The current action (may have payload).
      * @actions
@@ -30,12 +29,14 @@ export function GameProvider({ children }) {
      * - stop_game
      * - pause_game
      * - resume_game
-     * - add_score - payload Number
-     * - edit_score - payload Number
-     * - player_name - payload String
-     * - number_of_players - payload Number
-     * - timers_update - payload Object
+     * - add_score
+     * - edit_score
+     * - player_name
+     * - number_of_players
+     * - timers_update
+     * - timers_reset
      * @returns An updated state object.
+     * return on every row to avoid the ESLINT WARNING...
      */
     function reducer(state, action) {
         switch (action.type) {

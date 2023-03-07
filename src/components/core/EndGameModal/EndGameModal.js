@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import styles from "./EndGameModal.module.scss";
 
 import UserContext from "../../../contexts/UserContext";
@@ -23,8 +23,8 @@ import RankRow from "./RankRow/RankRow";
  * @returns A summary of the finished game.
  */
 export default function EndGameModal({ isVisible, visibilityHandler }) {
-    const gameContext = useContext(GameContext);
-    const { individualTimers, mainTimer, scores, playerTurnIndex } = gameContext.gameData;
+    const { gameData, setData } = useContext(GameContext);
+    const { individualTimers, mainTimer, scores, playerTurnIndex } = gameData;
     const { gameSettings } = useContext(UserContext).userData;
 
     const endGameScores = [...scores];
@@ -52,7 +52,7 @@ export default function EndGameModal({ isVisible, visibilityHandler }) {
         ["Turns", <p>{winner.turns}</p>],
         ["Playtime", gameSettings.individualTimers && <SvgTimer id={"individual-resW"} digits={winner.timer}/>]
     ];
-console.log(individualTimers, scores);
+
     const gameStats = [
         ["Game points", <p>{endGameScores.map(el => el.scoreTotal).reduce((a, b) => a + b)}</p>],
         ["Turns", <p>{totalTurns}</p> ],
@@ -74,7 +74,7 @@ console.log(individualTimers, scores);
      * Close the endgame modal and reset the game data.
      */
     function closeModalAndResume() {
-        gameContext.setData({ type: "resume_game" });
+        setData({ type: "resume_game" });
         visibilityHandler(false);
     };
 
@@ -82,13 +82,9 @@ console.log(individualTimers, scores);
      * Close the endgame modal and reset the game data.
      */
     function closeModalAndEnd() {
-        gameContext.setData({ type: "stop_game" });
+        setData({ type: "stop_game" });
         visibilityHandler(false);
     };
-
-    useEffect(() => {
-        // console.log(isVisible);
-    }, [isVisible]);
 
     return <div id="endGameModal" className={styles.endGameModal}>
         <Modal isVisible={isVisible} position="absolute">

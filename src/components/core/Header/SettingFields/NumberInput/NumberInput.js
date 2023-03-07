@@ -1,5 +1,4 @@
 import { useEffect, useRef, useState } from "react";
-// import useKeyPress from "../../../../../hooks/useKeyPress";
 import styles from "./NumberInput.module.scss";
 
 /**
@@ -11,7 +10,7 @@ import styles from "./NumberInput.module.scss";
  * @param {Number} props.value
  * @param {Number} props.min
  * @param {CallableFunction} props.changeHandler
- * 
+ *
  * @props
  * @param {String} props.title Title text for the input field.
  * @param {String} props.id Id for the input field.
@@ -21,7 +20,6 @@ import styles from "./NumberInput.module.scss";
  * @param {CallableFunction} props.changeHandler A callback that updates the values.
  */
 function NumberInput({ title, id, section, value, min, max, changeHandler, disabled}) {
-    // const [pressedKey] = useKeyPress(null);
     const [currentValue, setCurrentValue] = useState(Number(value));
     const inputRef = useRef(null);
 
@@ -71,8 +69,8 @@ function NumberInput({ title, id, section, value, min, max, changeHandler, disab
             ref={inputRef}
             type="number"
             id={id}
-            min={""}
-            max={max}
+            min={min || ""}
+            max={max || ""}
             placeholder={min ? min : 0}
             data-section={section}
             value={currentValue || ""}

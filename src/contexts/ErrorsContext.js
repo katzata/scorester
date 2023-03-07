@@ -14,15 +14,11 @@ export function ErrorsProvider({ children }) {
     function reducer(state, action) {
         const { payload } = action;
         const newState = (list, prevState) => prevState[list].length > 0 ? [...prevState[list]] : [];
-        const newErrors = [...state.errors];
-        const newWarnings = [...state.warnings];
 
         switch (action.type) {
             case "add_errors":
-                console.log(state.errors);
                 return {
                     ...state,
-                    // errors: payload.filter(el => state.errors.includes())
                     errors: setErrorData("add", payload, newState("errors", state))
                 };
             case "remove_errors":
@@ -82,7 +78,7 @@ export function ErrorsProvider({ children }) {
                 };
             };
         };
-        console.log(existingErrors);
+
         return existingErrors;
     };
 

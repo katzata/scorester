@@ -13,7 +13,7 @@ $summary-title-font-weight: 400;
     >svg {
         width: auto;
     }
-    
+
     .scoreDetails {
         width: 92vw;
         max-width: 500px;
@@ -65,22 +65,22 @@ $summary-title-font-weight: 400;
             font-family: fonts.$secondary-font;
             font-weight: 500;
         }
-        
+
         .scoreDetailsInternal {
             padding: 1%;
             overflow: auto;
-            
+
             .scoreDetailsTop {
                 width: 100%;
                 display: flex;
-                
+
                 .winnerName {
                     margin-bottom: 15px;
                     font-size: 25px;
                     line-height: 20px;
                     text-align: center;
                 }
-                
+
                 p {
                     color: rgba(255, 255, 255, .75);
                 }
@@ -102,7 +102,7 @@ $summary-title-font-weight: 400;
                 }
             }
         }
-    
+
         .playerStats {
             display: flex;
 
@@ -123,7 +123,7 @@ $summary-title-font-weight: 400;
                 >P {
                     font-family: fonts.$secondary-font;
                     font-size: 18px;
-                    
+
                     >span {
                         font-size: 16px;
                     }
@@ -136,7 +136,7 @@ $summary-title-font-weight: 400;
                 }
             }
         }
-    
+
         .ranking {
             width: 100%;
             min-height: 137px;

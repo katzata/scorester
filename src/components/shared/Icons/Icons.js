@@ -1,7 +1,6 @@
 import styles from "./Icons.module.scss";
 
 /**
- * 
  * @param {Object} props
  * @param {String} props.current
  * @param {Number | String} props.size

@@ -5,7 +5,6 @@ import ErrorsContext from "../../../contexts/ErrorsContext";
 import MessagesContainer from "./MessagesContainer/MessagesContainer";
 
 /**
- * 
  * @param {Object} props
  * @param {String} props.messageBg
  * @param {String} props.side

@@ -14,6 +14,7 @@ export default function Footer({ endGameModalVisibilityHandler }) {
     const timersPresent = mainTimer || individualTimers;
 
     const [pressedKey] = useKeyPress();
+
     /**
      * Start the game if the isPlaying context toggle is false.
      * If the isPlaying context toggle is true, show the endGameModal component.

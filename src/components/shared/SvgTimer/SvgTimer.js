@@ -1,9 +1,7 @@
-// import { useEffect } from "react";
 import styles from "./SvgTimer.module.scss";
 
 /**
  * Component displaying a properly formatted svg clock.
- * 
  * @param {Object} props
  * @param {String} props.id
  * @param {Number} props.digits
@@ -12,7 +10,8 @@ import styles from "./SvgTimer.module.scss";
  * @component
  * @param {String} props.id Used to set the individual gradient id.
  * @param {Number} props.digits A timer in seconds.
- * @param {Number | String} props.style Set the desired font size.
+ * @param {Number | String} props.fontSize Set the desired font size.
+ * @param {Object} props.style Set the desired styles.
  */
 export default function SvgTimer({ id, digits, fontSize, style }) {
     const seconds = parseInt((digits / 1000) % 60);

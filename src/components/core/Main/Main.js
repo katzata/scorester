@@ -60,13 +60,9 @@ export default function Main({ setEndgameModalVisible }) {
 	 * @param {String} newName The new name value.
 	 */
 	const handlePlayerNameEdit = (index, newName) => {
-		const localData = getStorage("scGameDetails");
 		const newPlayerNames = [...scores.map(el => el.name)];
-
-		// localData["scores"][index].name = newName;
 		newPlayerNames[index] = newName;
 
-        // saveToStorage("scGameDetails", localData);
         setData({ type: "player_name", payload: {index, name: newName }});
 	};
 

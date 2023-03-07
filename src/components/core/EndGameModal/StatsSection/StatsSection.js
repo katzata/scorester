@@ -5,7 +5,7 @@ import styles from "./StatsSection.module.scss";
  * @param {Object} props
  * @param {String} props.title
  * @param {JSX} props.children
- * 
+ *
  * @component
  * @props title - The section title
  * @props children - The default react children object.
